@@ -1,0 +1,350 @@
+{% load static %}
+<html>
+  <head>
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const userNameInput = form.querySelector("#t1");
+        const emailInput = form.querySelector("#e1");
+        const fnameInput = form.querySelector("#fname");
+        const lnameInput = form.querySelector("#lname");
+        const phoneInput = form.querySelector("#phone");
+        const passwordInput = form.querySelector("#p1");
+        const confirmPasswordInput = form.querySelector("#p2");
+        
+        const userNameValidation = form.querySelector("#uname-validation");
+        const emailValidation = form.querySelector("#email-validation");
+        const fnameValidation = form.querySelector("#fname-validation");
+        const lnameValidation = form.querySelector("#lname-validation");
+        const phoneValidation = form.querySelector("#phone-validation");
+        const passwordValidation = form.querySelector("#password-validation");
+        const confirmPasswordValidation = form.querySelector("#confirm-password-validation");
+    
+        form.addEventListener("submit", function (event) {
+          let isValid = true;
+    
+          if (!userNameInput.value) {
+            userNameInput.classList.add("is-invalid");
+            userNameValidation.textContent = "User name is required.";
+            userNameValidation.style.color = "red";
+            isValid = false;
+          }
+          else if (!userNameInput.value || userNameInput.value.length < 2 || !/^[A-Za-z]+$/.test(userNameInput.value)) {
+            userNameInput.classList.add("is-invalid");
+            userNameValidation.textContent = "Username must contain only alphabets and cannot be less than 2 characters.";
+            userNameValidation.style.color = "red";
+            isValid = false;
+          } else {
+            userNameInput.classList.remove("is-invalid");
+            userNameInput.classList.add("is-valid");
+            userNameValidation.textContent = "";
+          }
+    
+
+
+          if (!emailInput.value) {
+            emailInput.classList.add("is-invalid");
+            emailValidation.textContent = "Email address is required.";
+            emailValidation.style.color = "red";
+            isValid = false;
+          }
+          else if (!emailInput.value || !isValidEmail(emailInput.value)) {
+            emailInput.classList.add("is-invalid");
+            emailValidation.textContent = "Invalid email address.";
+            emailValidation.style.color = "red";
+            isValid = false;
+          } else {
+            emailInput.classList.remove("is-invalid");
+            emailInput.classList.add("is-valid");
+            emailValidation.textContent = "";
+          }
+    
+          if (!fnameInput.value) {
+            fnameInput.classList.add("is-invalid");
+            fnameValidation.textContent = "Firstname required.";
+            fnameValidation.style.color = "red";
+            isValid = false;
+          }
+          else if (!fnameInput.value || fnameInput.value.length < 2 || !/^[A-Za-z]+$/.test(fnameInput.value)) {
+            fnameInput.classList.add("is-invalid");
+            fnameValidation.textContent = "Name must contain only alphabets.";
+            fnameValidation.style.color = "red";
+            isValid = false;
+          } else {
+            fnameInput.classList.remove("is-invalid");
+            fnameInput.classList.add("is-valid");
+            fnameValidation.textContent = "";
+          }
+
+          
+
+          if (!lnameInput.value) {
+            lnameInput.classList.add("is-invalid");
+            lnameValidation.textContent = "Lastname required.";
+            lnameValidation.style.color = "red";
+            isValid = false;
+          }
+          else if (!lnameInput.value || lnameInput.value.length < 2 || !/^[A-Za-z]+$/.test(lnameInput.value)) {
+            lnameInput.classList.add("is-invalid");
+            lnameValidation.textContent = "Name must contain only alphabets.";
+            lnameValidation.style.color = "red";
+            isValid = false;
+          } else {
+            lnameInput.classList.remove("is-invalid");
+            lnameInput.classList.add("is-valid");
+            lnameValidation.textContent = "";
+          }
+
+
+          if (!phoneInput.value) {
+            phoneInput.classList.add("is-invalid");
+            phoneValidation.textContent = "Phone number is required.";
+            phoneValidation.style.color = "red";
+            isValid = false;
+          }
+          else if (!phoneInput.value || !isvalidPhoneNumber(phoneInput.value)) {
+            phoneInput.classList.add("is-invalid");
+            phoneValidation.textContent = "Invalid Phone Number.";
+            phoneValidation.style.color = "red";
+            isValid = false;
+          } else {
+            phoneInput.classList.remove("is-invalid");
+            phoneInput.classList.add("is-valid");
+            phoneValidation.textContent = "";
+          }
+  
+
+
+          if (!passwordInput.value) {
+            passwordInput.classList.add("is-invalid");
+            passwordValidation.textContent = "Password is required.";
+            passwordValidation.style.color = "red";
+            isValid = false;
+          } 
+          else if (!passwordInput.value || !isValidPassword(passwordInput.value)) {
+            passwordInput.classList.add("is-invalid");
+            passwordValidation.textContent = "Password must contain atleast 5 characters and atleast one uppercase, lowercase letter, one digit, and one special character.";
+            passwordValidation.style.color = "red";
+            isValid = false;
+          } else {
+            passwordInput.classList.remove("is-invalid");
+            passwordInput.classList.add("is-valid");
+            passwordValidation.textContent = "";
+          }
+
+           
+          if (!confirmPasswordInput.value) {
+            confirmPasswordInput.classList.add("is-invalid");
+            isValid = false;
+          } else if (passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.classList.add("is-invalid");
+            confirmPasswordValidation.textContent = "Passwords do not match.";
+            confirmPasswordValidation.style.color = "red";
+            isValid = false;
+          }  else {
+            confirmPasswordInput.classList.remove("is-invalid");
+            confirmPasswordInput.classList.add("is-valid");
+            confirmPasswordValidation.textContent = "";
+          }
+          
+    
+          if (!isValid) {
+            event.preventDefault();
+          }
+        });
+    
+
+        function isvalidPhoneNumber(phone) {
+          const phoneNumberPattern = /^(?!0)(?!.*0{4})[0-9]{10}$/; 
+          return phoneNumberPattern.test(phone);
+        }
+
+        function isValidEmail(email) {
+          const emailRegex = /^[a-zA-Z0-9._%+-]+@(gmail\.com|[a-zA-Z0-9.-]+\.(com|in))$/;
+          return emailRegex.test(email);
+        }
+    
+        function isValidPassword(password) {
+          const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{5,12}$/;
+          return passwordRegex.test(password);
+        }
+      });
+      
+    </script>
+
+  </head>
+  <body>
+<!-- Section: Design Block -->
+<section class="text-center text-lg-start">
+    <style>
+      .cascading-right {
+        margin-right: -50px;
+      }
+      @media (max-width: 991.98px) {
+        .cascading-right {
+          margin-right: 0;
+        }
+      }
+    </style>
+    <!-- Jumbotron -->
+    <div class="container py-4">
+      <div class="row g-0 align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <div class="card cascading-right" style="
+              background: hsla(0, 0%, 100%, 0.55);
+              backdrop-filter: blur(30px);
+              ">
+            <div class="card-body p-5 shadow-5 text-center">
+              <h2 class="fw-bold mb-5">Sign up now</h2>
+              <form method="POST">
+                 {% csrf_token %}
+                 {% if messages %}
+                 <ul class="messages">
+                     {% for message in messages %}
+                         <p {% if message.tags %} class="{{ message.tags }}"{% endif %} style="color:red;"><b>{{ message }}</b></p>
+                     {% endfor %}
+                 </ul>
+             {% endif %}
+                <!-- 2 column grid layout with text inputs for the first and last names -->
+
+
+                <div class="form-outline mb-4">
+                  {% comment %} <label class="form-label" for="form3Example1"><b>Username</b></label> {% endcomment %}
+                  <input type="text" id="t1" class="form-control" name="username" placeholder="Username"/>
+                 
+                  <div id="uname-validation"></div>
+                </div>
+                <div class="form-outline mb-4">
+                  {% comment %} <label class="form-label" for="form3Example3"><b>Email address</b></label> {% endcomment %}
+                  <input type="email" id="e1" class="form-control" name="email" placeholder="Email"/>
+                 
+                  <div id="email-validation"></div>
+                </div>
+
+                  <div class="d-flex">
+                    <div class="col-6">
+                      <div class="form-outline mb-4">
+                        {% comment %} <label class="form-label" for="form3Example1"><b>First Name</b></label> {% endcomment %}
+                        <input type="text" id="fname" class="form-control" name="first_name" placeholder="First Name"/>
+                        <div id="fname-validation"></div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-outline mb-4">
+                        {% comment %} <label class="form-label" for="form3Example1"><b>Last Name</b></label> {% endcomment %}
+                        <input type="text" id="lname" class="form-control" name="last_name" placeholder="Last Name"/>
+                        <div id="lname-validation"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                    
+                 <!-- <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                      <input type="text" id="form3Example2" class="form-control" />
+                      <label class="form-label" for="form3Example2">Last name</label>
+                    </div>
+                  </div>-->
+                <!-- Email input -->
+               
+
+                
+                
+                {% comment %} <div class="input-group col-lg-12">
+                  <div class="input-group-prepend">
+                      <span class="input-group-text bg-white px-4 border-md border-right-0">
+                          <i class="fa fa-caret-down text-muted"></i>
+                      </span>
+                  </div>
+                  <select id="role" name="role" class="form-control bg-white border-left-0 border-md pr-5" required>
+                      <option value="" selected disabled>Register as</option>
+                      <option value="customer">Buy products</option>
+                      <option value="seller">Sell products</option>
+                      <option value="delivery">Delivery team</option>
+                  </select>
+              </div> {% endcomment %}
+
+
+                <!-- Password input -->
+                <div class="form-outline mb-4">
+                  {% comment %} <label class="form-label" for="form3Example4"><b>Password</b></label> {% endcomment %}
+                  <input type="password" id="p1" class="form-control" name="password" placeholder="Password"/>
+                  
+                  <div id="password-validation"></div>
+                </div>
+  
+                <div class="form-outline mb-4">
+                  {% comment %} <label class="form-label" for="form3Example4"><b>Confirm Password</b></label> {% endcomment %}
+                  <input type="password" id="p2" class="form-control" name="cpwd" placeholder="Confirm Password" />
+                  
+                  <div id="confirm-password-validation"></div>
+                </div>
+                <div class="form-outline mb-4">
+                  {% comment %} <label class="form-label" for="form3Example4"><b>Phone</b></label> {% endcomment %}
+                  <input type="number" id="phone" class="form-control" name="phone" placeholder="Phone" />
+                  
+                  <div id="phone-validation"></div>
+                </div>
+                <!-- Checkbox -->
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-4">
+                  Sign up
+                </button>
+  
+                {% load socialaccount %}
+                <!-- Register buttons -->
+
+                <div class="text-center">
+                  <p>or sign up with:</p>
+                  <button type="button" class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-facebook-f"></i>
+                  </button>
+  
+                  <button type="button" class="btn btn-link btn-floating mx-1">
+                    <a href="#"><i class="fab fa-google"></i></a>
+
+                  </button>
+  
+                  <button type="button" class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-twitter"></i>
+                  </button>
+  
+                  <button type="button" class="btn btn-link btn-floating mx-1">
+                    <i class="fab fa-github"></i>
+                  </button>
+                </div>
+                <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="login"
+                  class="link-danger">Login</a></p>
+              </form>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <img src="{% static 'img/front-view-stacked-books-graduation-cap-diploma-education-day.jpg' %}" class="w-100 rounded-4 shadow-4"
+            alt=" " />
+        </div>
+      </div>
+    </div>
+    <!-- Jumbotron -->
+  </section>
+  <!-- Section: Design Block -->
+</body>
+  </html>

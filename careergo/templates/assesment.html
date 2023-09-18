@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="styles.css">
+<title>Student Assessment</title>
+<style>
+  /* Add your CSS styling here */
+  body {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  h1 {
+    text-align: center;
+    padding: 20px;
+    background-color: #3498db;
+    color: white;
+}
+
+  
+  nav {
+    flex: 1;
+    padding: 20px;
+    background-color: #1f2631;
+    color: white;
+  }
+  
+  nav h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid white;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  nav li {
+    margin-bottom: 15px;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s;
+  }
+  
+  nav a:hover {
+    color: #ffc107;
+  }
+  
+  main {
+    flex: 3;
+    padding: 20px;
+  }
+  
+  .question-section {
+    display: none;
+  }
+  
+  button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #e0a800;
+  }
+ 
+  #assessment-content {
+    float: left;
+    width: 80%;
+    padding: 20px;
+}
+#side-panel {
+    float: left;
+    width: 10%;
+    background-color: #3498db;
+    color: white;
+    padding: 40px;
+    margin-top: -24px;
+    height: 700px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+}
+#side-panel h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  #side-panel ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #side-panel li {
+    margin-bottom: 5px;
+  }
+  
+  #side-panel a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  #side-panel a:hover {
+    color: #0066cc;
+  }
+
+  .custom-container {
+    background-color: #ffff;
+    color: black;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  .custom-container h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .custom-container p {
+    font-size: 18px;
+  }
+
+  .score-box {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  
+<div id="side-panel">
+  <h2>Categories</h2>
+    <ul>
+      <li><a href="#math" onclick="showQuestion('math')">Math</a></li>
+      <li><a href="#science" onclick="showQuestion('science')">Science</a></li>
+      <li><a href="#history" onclick="showQuestion('history')">History</a></li>
+    </ul>
+</div>
+
+<div id="assessment-content">
+    <h1>Assessment Test</h1>
+
+ <div class="custom-container">
+    <button onclick="showQuestion('math')">Start Assessment</button>
+  <main>
+    <section id="math" class="question-section">
+      <h2>Math Assessment</h2>
+      <p>What is 5 + 3?</p>
+      <label>
+        <input type="radio" name="math_option" value="7"> 7
+      </label>
+      <label>
+        <input type="radio" name="math_option" value="8"> 8
+      </label>
+      <label>
+        <input type="radio" name="math_option" value="9"> 9
+      </label>
+      <label>
+        <input type="radio" name="math_option" value="10"> 10
+      </label>
+      <button onclick="checkMathAnswer()">Submit</button>
+      <p id="math_result"></p>
+      <p id="math_score"></p>
+      <button onclick="nextQuestion('science')">Next</button>
+    </section>
+    
+    <section id="science" class="question-section">
+      <h2>Science Assessment</h2>
+      <p>Which planet is known as the Red Planet?</p>
+      <label>
+        <input type="radio" name="science_option" value="Venus"> Venus
+      </label>
+      <label>
+        <input type="radio" name="science_option" value="Mars"> Mars
+      </label>
+      <label>
+        <input type="radio" name="science_option" value="Jupiter"> Jupiter
+      </label>
+      <label>
+        <input type="radio" name="science_option" value="Saturn"> Saturn
+      </label>
+      <button onclick="checkScienceAnswer()">Submit</button>
+      <p id="science_result"></p>
+      <p id="science_score"></p>
+      <button onclick="nextQuestion('history')">Next</button>
+    </section>
+    
+    <section id="history" class="question-section">
+      <h2>History Assessment</h2>
+      <p>Who wrote the "Declaration of Independence"?</p>
+      <label>
+        <input type="radio" name="history_option" value="George Washington"> George Washington
+      </label>
+      <label>
+        <input type="radio" name="history_option" value="Thomas Jefferson"> Thomas Jefferson
+      </label>
+      <label>
+        <input type="radio" name="history_option" value="Abraham Lincoln"> Abraham Lincoln
+      </label>
+      <label>
+        <input type="radio" name="history_option" value="Benjamin Franklin"> Benjamin Franklin
+      </label>
+      <button onclick="checkHistoryAnswer()">Submit</button>
+      <p id="history_result"></p>
+      <p id="history_score"></p>
+    </section>
+</div>
+<h2>Scores:</h2>
+<div class="score-box">Math: <span id="category_math_score">0</span><br><br>
+Science: <span id="category_science_score">0</span><br><br>
+History: <span id="category_history_score">0</span><br><br>
+
+<h2 class="score-box">Total Score: <span id="total_score">0</span></h2>
+</div>
+</main>
+</div>
+
+</div> 
+
+  <script>
+    let mathScore = 0;
+    let scienceScore = 0;
+    let historyScore = 0;
+    
+    function showQuestion(category) {
+      var sections = document.getElementsByClassName("question-section");
+      for (var i = 0; i < sections.length; i++) {
+        sections[i].style.display = "none";
+      }
+      document.getElementById(category).style.display = "block";
+    }
+    
+    function nextQuestion(nextCategory) {
+      showQuestion(nextCategory);
+    }
+    
+    function checkMathAnswer() {
+      var selectedOption = document.querySelector('input[name="math_option"]:checked');
+      if (selectedOption && selectedOption.value === "8") {
+        mathScore = 1;
+        document.getElementById("math_result").textContent = "Correct!";
+      } else {
+        document.getElementById("math_result").textContent = "Incorrect. Try again.";
+      }
+      document.getElementById("math_score").textContent = "Score: " + mathScore;
+      document.getElementById("category_math_score").textContent = mathScore;
+      updateTotalScore();
+    }
+    
+    function checkScienceAnswer() {
+      var selectedOption = document.querySelector('input[name="science_option"]:checked');
+      if (selectedOption && selectedOption.value === "Mars") {
+        scienceScore = 1;
+        document.getElementById("science_result").textContent = "Correct!";
+      } else {
+        document.getElementById("science_result").textContent = "Incorrect. Try again.";
+      }
+      document.getElementById("science_score").textContent = "Score: " + scienceScore;
+      document.getElementById("category_science_score").textContent = scienceScore;
+      updateTotalScore();
+    }
+    
+    function checkHistoryAnswer() {
+      var selectedOption = document.querySelector('input[name="history_option"]:checked');
+      if (selectedOption && selectedOption.value === "Thomas Jefferson") {
+        historyScore = 1;
+        document.getElementById("history_result").textContent = "Correct!";
+      } else {
+        document.getElementById("history_result").textContent = "Incorrect. Try again.";
+      }
+      document.getElementById("history_score").textContent = "Score: " + historyScore;
+      document.getElementById("category_history_score").textContent = historyScore;
+      updateTotalScore();
+    }
+    
+    function updateTotalScore() {
+      var totalScore = mathScore + scienceScore + historyScore;
+      document.getElementById("total_score").textContent = totalScore;
+    }
+  </script>
+</body>
+</html>

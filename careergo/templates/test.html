@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assessment Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #3498db;
+            color: white;
+        }
+
+        #assessment-form {
+            width: 60%;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #assessment-form div {
+            margin-bottom: 15px;
+        }
+        #assessment-content {
+            float: left;
+            width: 80%;
+            padding: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        #side-panel {
+            float: left;
+            width: 10%;
+            background-color: #3498db;
+            color: white;
+            padding: 40px;
+            margin-top: -24px;
+            height: 700px;
+            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        #categories {
+            margin-top: 20px;
+        }
+        #categories li {
+            margin-bottom: 10px;
+        }
+
+        #categories li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        #categories li a:hover {
+            color: #f39c12;
+        }
+        .question {
+            display: none;
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .question p {
+            margin: 0 0 10px;
+        }
+
+        .question label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+
+        .category-score {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="side-panel">
+        <h2>Categories</h2>
+        <ul id="categories">
+            <li><a href="#" onclick="showCategory('category1')">Category 1</a></li>
+            <li><a href="#" onclick="showCategory('category2')">Category 2</a></li>
+            <!-- Add more categories here -->
+        </ul>
+    </div>
+    <div id="assessment-content">
+        <h1>Assessment Test</h1>
+        <form id="assessment-form">
+            <div class="question category1">
+                <!-- Category 1 questions here -->
+                <p>Question 1 : What is ...</p>
+                <label><input type="radio" name="q1_category1" value="0"> Option 1</label>
+                <p>Question 2 : What is ...</p>
+                <label><input type="radio" name="q1_category1" value="0"> Option 1</label>
+                <!-- More options and questions... -->
+            </div>
+            <div class="question category2">
+                <!-- Category 2 questions here -->
+                <p>Question 1 : Which planet is ...</p>
+                <label><input type="radio" name="q1_category2" value="0"> Option 1</label>
+                <p>Question 2 : Which planet is ...</p>
+                <label><input type="radio" name="q1_category2" value="0"> Option 1</label>
+                <!-- More options and questions... -->
+            </div>
+            <!-- Add more question divs for other categories... -->
+            <button type="submit" onclick="calculateScore()">Submit</button>
+        </form>
+        <div id="results">
+            <h2>Results</h2>
+            <div id="category-results"></div>
+            <p id="total-score" class="category-score"></p>
+        </div>
+    </div>
+
+    <script>
+        const categories = ['category1', 'category2','cat3']; // Add more categories here
+        const categoryResults = {};
+
+        function showCategory(category) {
+
+
+            const questions = document.getElementsByClassName('question');
+            for (let i = 0; i < questions.length; i++) {
+                questions[i].style.display = 'none';
+            }
+           
+
+            const categoryQuestions = document.getElementsByClassName(category);
+            for (let i = 0; i < categoryQuestions.length; i++) {
+                categoryQuestions[i].style.display = 'block';
+            }
+            
+        }
+
+        function calculateScore() {
+            for (let i = 0; i < categories.length; i++) {
+                const category = categories[i];
+                const categoryQuestions = document.getElementsByClassName(category);
+                let categoryScore = 0;
+
+                for (let j = 0; j < categoryQuestions.length; j++) {
+                    const radios = categoryQuestions[j].getElementsByTagName('input');
+                    const correctAnswer = parseInt(radios[0].value);
+
+                    for (let k = 0; k < radios.length; k++) {
+                        if (radios[k].checked && parseInt(radios[k].value) === correctAnswer) {
+                            categoryScore++;
+                            break;
+                        }
+                    }
+                }
+
+                categoryResults[category] = categoryScore;
+                const categoryResultElement = document.getElementById('category-results');
+                if (categoryResultElement) {
+                    categoryResultElement.innerHTML += `<p>Category ${category}: Score ${categoryScore}</p>`;
+                }
+            }
+
+            let totalScore = 0;
+            for (const category in categoryResults) {
+                totalScore += categoryResults[category];
+            }
+
+            const totalScoreElement = document.getElementById('total-score');
+            if (totalScoreElement) {
+                totalScoreElement.textContent = `Total Score: ${totalScore}`;
+            }
+        }
+    </script>
+</body>
+</html>
