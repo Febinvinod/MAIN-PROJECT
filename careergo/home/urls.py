@@ -9,7 +9,11 @@ urlpatterns = [
     path('login',views.login,name="login"),
     path('logout/',views.logout,name="logout"),
     path("accounts/", include("allauth.urls")),
-    path('profile',views.profile,name="profile"),
+    path('profile',views.profile,name='profile'),
+    path('adminpage',views.adminpage,name='adminpage'),
+    path('providerpage',views.providerpage,name='providerpage'),
+    # path('coursedetail',views.coursedetail,name='coursedetail'),
+ 
 
      path('password_reset/',auth_views.PasswordResetView.as_view(),name='password_reset'),
      path('password_reset/done/',auth_views.PasswordResetDoneView.as_view(),name='password_reset_done'),

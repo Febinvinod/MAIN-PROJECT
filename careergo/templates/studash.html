@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% load static %}
+{% csrf_token %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <!-- Add Bootstrap CSS link here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Add your custom CSS styles here -->
+    <style>
+        /* Add your custom styles here */
+        .dashboard-container {
+            padding: 20px;
+        }
+        .welcome-message {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar (you can customize this as needed) -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Student Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Courses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Container -->
+    <div class="container dashboard-container">
+        <div class="welcome-message">Welcome, John Doe!</div>
+
+        <!-- Student Information Card -->
+        <div class="card">
+            <div class="card-header">
+                Student Information
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> John Doe</p>
+                <p><strong>Student ID:</strong> 12345</p>
+                <p><strong>Email:</strong> john.doe@example.com</p>
+                <p><strong>Program:</strong> Computer Science</p>
+            </div>
+        </div>
+
+        <!-- Enrolled Courses Card -->
+        <div class="card">
+            <div class="card-header">
+                Enrolled Courses
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Course 1: Introduction to Programming</li>
+                    <li>Course 2: Data Structures and Algorithms</li>
+                    <li>Course 3: Web Development</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap and jQuery scripts here -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

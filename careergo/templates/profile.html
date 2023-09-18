@@ -3,6 +3,169 @@
     <head>
         <link href="{% static 'img/favicon.ico' %}" rel="icon">
 
+        <style>
+            .profile-pic-wrapper {
+                position: relative;
+                width: 200px; /* Set the width and height to match your image size */
+                height: 200px;
+                justify-content: center;
+                overflow: hidden;
+                border-radius: 50%;
+            }
+            
+            .profile-pic-container {
+                position: relative;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .profile-pic-container img {
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                object-fit: cover;
+            }
+            
+            .file-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                background-color: rgba(0, 0, 0, 0.5);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .profile-pic-wrapper:hover .file-overlay {
+                opacity: 1;
+            }
+            
+            .file {
+                color: #fff;
+                text-align: center;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+            
+            .file:hover {
+                background-color: rgba(0, 0, 0, 0.7);
+            }
+            .error-message{
+              color: red;
+          }
+            
+        </style>
+
+
+        <script>
+          // Function to validate phone number (10 digits)
+          function validatePhoneNumber(input) {
+            var phoneNumber = input.value.replace(/\D/g, ''); // Remove non-numeric characters
+            var errorElement = input.nextElementSibling; // Get the next sibling element (assumes it's the error message element)
+        
+            if (phoneNumber.length === 10) {
+                input.classList.remove('is-invalid');
+                if (errorElement) {
+                    errorElement.textContent = ''; // Clear the error message
+                }
+            } else {
+                input.classList.add('is-invalid');
+                if (errorElement) {
+                    errorElement.textContent = 'Phone number must be exactly 10 digits.'; // Set the error message
+                }
+            }
+        }
+        
+          // Function to validate country, state, and city (alphabets only)
+          function validateAlphabets(input) {
+            var inputValue = input.value.trim(); // Remove leading and trailing spaces
+            var pattern = /^[a-zA-Z\s]+$/;
+            var errorElement = input.nextElementSibling; // Get the next sibling element (assumes it's the error message element)
+        
+            if (inputValue.length >= 2 && pattern.test(inputValue)) {
+                input.classList.remove('is-invalid');
+                if (errorElement) {
+                    errorElement.textContent = ''; // Clear the error message
+                }
+            } else {
+                input.classList.add('is-invalid');
+                if (errorElement) {
+                    errorElement.textContent = 'Please enter at least 2 alphabetic characters.'; // Set the error message
+                }
+            }
+        }
+        
+          // Function to validate pincode (6 digits)
+          function validatePincode(input) {
+            var pincode = input.value.trim(); // Remove leading and trailing spaces
+            var pattern = /^\d{6}$/;
+            var errorElement = input.nextElementSibling; // Get the next sibling element (assumes it's the error message element)
+        
+            if (pattern.test(pincode)) {
+                input.classList.remove('is-invalid');
+                if (errorElement) {
+                    errorElement.textContent = ''; // Clear the error message
+                }
+            } else {
+                input.classList.add('is-invalid');
+                if (errorElement) {
+                    errorElement.textContent = 'Enter valid 6 digit pincode.'; // Set the error message
+                }
+            }
+        }
+
+        function validatePassword(input) {
+          var password = input.value;
+          var minLength = 5;
+          var uppercaseRegex = /[A-Z]/;
+          var lowercaseRegex = /[a-z]/;
+          var digitRegex = /[0-9]/;
+          var specialCharRegex = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/;
+          var errorElement = input.nextElementSibling; // Get the next sibling element (assumes it's the error message element)
+      
+          if (
+              password.length >= minLength &&
+              uppercaseRegex.test(password) &&
+              lowercaseRegex.test(password) &&
+              digitRegex.test(password) &&
+              specialCharRegex.test(password)
+          ) {
+              input.classList.remove('is-invalid');
+              if (errorElement) {
+                  errorElement.textContent = ''; // Clear the error message
+              }
+          } else {
+              input.classList.add('is-invalid');
+              if (errorElement) {
+                  errorElement.textContent = 'Password must contain at least 5 characters, one uppercase letter, one lowercase letter, one digit, and one special character.'; // Set the error message
+              }
+          }
+      }
+
+      function validatePass() {
+        var newPassword = document.getElementById("new_password").value;
+        var confirmPassword = document.getElementById("confirm_password").value;
+        var passwordError = document.getElementById("password-error");
+    
+        if (newPassword !== confirmPassword) {
+            passwordError.innerHTML = "Passwords do not match";
+            return false; // Prevent form submission
+        } else {
+            passwordError.innerHTML = ""; // Clear error message
+            return true; // Allow form submission
+        }
+    }
+      
+      
+        </script>
+        
+
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
@@ -22,90 +185,156 @@
     <body>
         <div class="container-xl px-4 mt-4">
             <!-- Account page navigation-->
-            <nav class="nav nav-borders">
-                <a class="nav-link active ms-0" href="#" target="__blank">Profile</a>
-                <a class="nav-link" href="/" target="__blank">Home</a>
-                
+            <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                <a href="{% url 'index' %}" class="navbar-brand ml-lg-3">
+                    <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CAREERGO</h1>
+                </a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                    <div class="navbar-nav mx-auto py-0">
+
+                      {% if user.role == user.COURSE_PROVIDER %}
+                        <a href="{% url 'providerpage' %}" class="nav-item nav-link active">Home</a>
+                        <a href="{% url 'profile' %}" class="nav-item nav-link active">Profile</a>
+                      {% else %}
+                      <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                        <a href="{% url 'profile' %}" class="nav-item nav-link active">Profile</a>
+                      {% endif %}
             </nav>
-            <hr class="mt-0 mb-4">
-            <div class="row">
-                <div class="col-xl-4">
-                    <!-- Profile picture card-->
-                    <div class="card mb-4 mb-xl-0">
-                        <div class="card-header">Profile Picture</div>
-                        <div class="card-body text-center">
-                            <!-- Profile picture image-->
-                            <img class="img-account-profile rounded-circle mb-2" src="http://bootdey.com/img/Content/avatar/avatar1.png" alt="">
-                            <!-- Profile picture help block-->
-                            <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
-                            <!-- Profile picture upload button-->
-                            <button class="btn btn-primary" type="button">Upload new image</button>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <section class="gray pt-5 pb-5">
+                    <div class="container-fluid">
+            
+                        <div class="row justify-content-center">
+            
+                            <div class="col-lg-9 col-md-8">
+                                <div class="dashboard-body">
+            
+                                    <div class="dashboard-wraper">
+                                        <div class="row">
+            
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="submit-page px-0">
+                                                    <div class="form-group col-md-12 text-center">
+                                                        <center>
+                                                      <label class="mt-2 mb-1">Profile Photo</label>
+                                                      <div class="profile-photo">
+                                                        <div class="profile-pic-wrapper mt-3">
+                                                          <div class="profile-pic-container">
+                                                            {% if user_profile.profile %}
+                                                            <img class="rounded-circle" src="{{ user_profile.profile.url }}" alt="Profile Picture" style="width: 200px; height: 200px;" />
+                                                          {% else %}
+                                                            <div class="rounded-circle no-file-message">
+                                                              <img class="rounded-circle" src="{% static '/img/avatar.jpeg' %}" alt="Profile Picture" style="width: 200px; height: 200px;" />
+                                                            </div>
+                                                          {% endif %}
+                                                            <div class="file-overlay">
+                                                              <div class="file btn btn-sm btn-primary mt-2" style="background-color: transparent; border: none;">
+                                                                <input type="file" name="profile_pic">
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </center>
+                                                    </div>
+                                                  </div>
+                                                  
+                                    
+                                                    <!-- Basic Information -->
+                                                    <div class="frm_submit_block  mb-5">
+                                                        <h3>{{ user.username }}</h3>
+                                                        <div class="frm_submit_wrap">
+                                                            <div class="row">
+            
+                                      <div class="form-group col-md-6 pd-20">
+                                        <label class="mt-2 mb-1">UserName</label>
+                                        <input type="text" name="username" class="form-control" value="{{ user.username }}" disabled>
+                                    </div>
+                                      <div class="form-group col-md-6 pd-20">
+                                        <label class="mt-2 mb-1">Email</label>
+                                        <input type="text" name="email" class="form-control" value="{{ user.email }}" disabled>
+                                    </div>
+                                    <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">First Name</label>
+                                      <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" readonly>
+                                    </div>
+                                    <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">Last Name</label>
+                                      <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" readonly>
+                                    </div>
+                                    <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">Phone Number</label>
+                                      <input type="text" id="phone_no" name="phone_no" class="form-control" value="{{ user.phone_no }}" onkeyup="validatePhoneNumber(this)">
+                                      <div class="error-message"></div>
+                                    </div>
+                                    <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">country</label>
+                                      <input type="text" name="country" class="form-control" value="{{ user_profile.country }}" onkeyup="validateAlphabets(this)" >
+                                      <div class="error-message"></div>
+                                    </div>
+                                    <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">State</label>
+                                      <input type="text" name="state" class="form-control" value="{{ user_profile.state }}" onkeyup="validateAlphabets(this)">
+                                      <div class="error-message"></div>
+                                    </div>
+                                    <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">City</label>
+                                      <input type="text" name="city" class="form-control" value="{{ user_profile.city }}" onkeyup="validateAlphabets(this)">
+                                      <div class="error-message"></div>
+                                    </div>
+                                    <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">pincode</label>
+                                      <input type="text" name="pin_code" class="form-control" value="{{ user_profile.pin_code }}" onkeyup="validatePincode(this)">
+                                      <div class="error-message"></div>
+                                    </div>
+
+                                    {% comment %} <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">Update Password</label>
+                                      <input type="text" name="password" class="form-control" value="{{ user.password }}" onkeyup="validatePassword(this)">
+                                      <div class="error-message"></div>
+                                    </div> {% endcomment %}
+
+                                    <div class="form-group col-md-6 pd-20">
+                                      <label for="new_password" class="mt-2 mb-1">New Password:</label>
+                                      <input type="password" name="new_password" id="new_password" class="form-control" onkeyup="validatePassword(this)">
+                                      <div class="error-message"></div>
+                                  </div>
+                                  
+                                  <div class="form-group col-md-6 pd-20">
+                                      <label for="confirm_password" class="mt-2 mb-1">Confirm Password:</label>
+                                      <input type="password" name="confirm_password" id="confirm_password" class="form-control" onkeyup="validatePass(this)">
+                                      <div class="error-message" id="password-error"></div>
+                                  </div>
+                                  
+                                                                <!-- More form fields... -->
+            
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="form-group col-lg-12 col-md-12 text-center">
+                                                        <button class="btn btn-success" type="submit">Submit</button>
+                                                    </div>
+            
+                                                </div>
+                                            </div>
+            
+                                        </div>
+            
+                                    </div>
+                                    <!-- row -->
+            
+                                </div>
+                            </div>
+            
                         </div>
                     </div>
-                </div>
-                <div class="col-xl-8">
-                    <!-- Account details card-->
-                    <div class="card mb-4">
-                        <div class="card-header">Account Details</div>
-                        <div class="card-body">
-                            <form>
-                                <!-- Form Group (username)-->
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="inputUsername">Username (how your name will appear to other users on the site)</label>
-                                    <input class="form-control" id="inputUsername" type="text" placeholder="Enter your username" value="{{user.username}}"readonly>
-                                </div>
-                                <!-- Form Row-->
-                                <div class="row gx-3 mb-3">
-                                    <!-- Form Group (first name)-->
-                                    <div class="col-md-6">
-                                        <label class="small mb-1" for="inputFirstName">First name</label>
-                                        <input class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="{{user.first_name}}">
-                                    </div>
-                                    <!-- Form Group (last name)-->
-                                    <div class="col-md-6">
-                                        <label class="small mb-1" for="inputLastName">Last name</label>
-                                        <input class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" value="{{user.last_name}}">
-                                    </div>
-                                </div>
-                                <!-- Form Row        -->
-                                <div class="row gx-3 mb-3">
-                                    <!-- Form Group (organization name)-->
-                                    <div class="col-md-6">
-                                        <label class="small mb-1" for="inputOrgName">Address</label>
-                                        <input class="form-control" id="inputOrgName" type="text" placeholder="Enter your Address" value="">
-                                    </div>
-                                    <!-- Form Group (location)-->
-                                    <div class="col-md-6">
-                                        <label class="small mb-1" for="inputLocation">Country</label>
-                                        <input class="form-control" id="inputLocation" type="text" placeholder="Enter your location" value="">
-                                    </div>
-                                </div>
-                                <!-- Form Group (email address)-->
-                                <div class="mb-3">
-                                    <label class="small mb-1" for="inputEmailAddress">Email address</label>
-                                    <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="{{user.email}}"readonly>
-                                </div>
-                                <!-- Form Row-->
-                                <div class="row gx-3 mb-3">
-                                    <!-- Form Group (phone number)-->
-                                    <div class="col-md-6">
-                                        <label class="small mb-1" for="inputPhone">Phone number</label>
-                                        <input class="form-control" id="inputPhone" type="tel" placeholder="Enter your phone number" value="{{user.phone_no}}">
-                                    </div>
-                                    <!-- Form Group (birthday)-->
-                                    <div class="col-md-6">
-                                        <label class="small mb-1" for="inputBirthday">Birthday</label>
-                                        <input class="form-control" id="inputBirthday" type="text" name="birthday" placeholder="Enter your birthday" value="">
-                                    </div>
-                                </div>
-                                <!-- Save changes button-->
-                                <button class="btn btn-primary" type="button">Save changes</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </section>
+            </form>
   
 </body>
   </html>

@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Courseprovider_profile,Oncourse
 
-# Register your models here.
+admin.site.register(Courseprovider_profile)
+admin.site.register(Oncourse)
+

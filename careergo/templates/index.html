@@ -77,11 +77,13 @@
             </button>
             <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
                 <div class="navbar-nav mx-auto py-0">
+                    
+
                     {% if user.is_authenticated %}
                     <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
                     <a href="" class="nav-item nav-link">About</a>
                   
-                    <a href="" class="nav-item nav-link">Courses</a>
+                    <a href="/courseprovider/courselist" class="nav-item nav-link">Courses</a>
                     
                     <div class="nav-item dropdown">
                         <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
@@ -98,7 +100,8 @@
                         <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
                     </div>
                 </div>
-                    <a href="{% url 'logout' %}" class="nnav-item nav-link active"> Logout </a>
+                {% comment %} <a href="{% url '' %}" class="nav-item nav-link active"> Enrolled Courses </a> {% endcomment %}
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active"> Logout </a>
 
 
                     {% else %}
@@ -149,7 +152,7 @@
                 <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s" style="cursor: pointer">
                     <div class="service-item text-center pt-3">
                         <div class="p-4">
-                            <a href="{% url 'test:assesment' %}" style="text-decoration: none">
+                            <a href="{% url 'test:assessment' %}" style="text-decoration: none">
                             <i class="fa fa-3x fa-graduation-cap text-primary mb-4"></i>
                             <h5 class="mb-3">Assesment</h5>
                             <p>To test skills of students</p>
