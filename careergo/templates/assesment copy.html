@@ -1,0 +1,871 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="styles.css">
+<title>Student Assessment</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<style>
+  /* Add your CSS styling here */
+  body {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  h1 {
+    text-align: center;
+    padding: 20px;
+    background-color: #3498db;
+    color: white;
+}
+
+  
+  nav {
+    flex: 1;
+    padding: 20px;
+    background-color: #1f2631;
+    color: white;
+  }
+  
+  nav h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid white;
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  nav li {
+    margin-bottom: 15px;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s;
+  }
+  
+  nav a:hover {
+    color: #ffc107;
+  }
+  
+  main {
+    flex: 3;
+    padding: 20px;
+  }
+  
+  .question-section {
+    display: none;
+  }
+  
+  button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #e0a800;
+  }
+ 
+  #assessment-content {
+    float: left;
+    width: 80%;
+    padding: 20px;
+}
+#side-panel {
+    float: left;
+    width: 10%;
+    background-color: #3498db;
+    color: white;
+    padding: 40px;
+    margin-top: -24px;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+}
+#side-panel h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  #side-panel ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #side-panel li {
+    margin-bottom: 5px;
+  }
+  
+  #side-panel a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  #side-panel a:hover {
+    color: #0066cc;
+  }
+
+  .custom-container {
+    background-color: #ffff;
+    color: black;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  .custom-container h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .custom-container p {
+    font-size: 18px;
+  }
+
+  .score-box {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin: 5px 0;
+    text-align: center;
+  }
+
+  
+    /* Existing styles remain unchanged */
+  
+    /* Add styling for the stream selection section */
+    #stream-selection {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    }
+  
+    #stream-selection h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+  
+    #stream-selection p {
+      font-size: 18px;
+    }
+  
+    #stream-selection label {
+      font-size: 18px;
+      display: block;
+      margin-top: 10px;
+    }
+  
+    #stream-selection select,
+    #stream-selection input[type="number"] {
+      width: 50%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  
+   
+      /* Existing CSS styles */
+    
+      .submit-button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px; /* Adjust the font size as needed */
+        transition: background-color 0.3s;
+        margin-top: 20px; /* Adjust the margin as needed */
+      }
+    
+      .submit-button:hover {
+        background-color: #e0a800;
+      }
+      #logical_reasoning, #communication_skills, #quantitative_aptitude, #analytical_skills {
+        user-select: none;
+      }
+      /* Add a CSS class to style read-only links */
+.read-only-link {
+  color: gray; /* Change text color to gray */
+  pointer-events: none; /* Disable click events */
+}
+
+    
+      /* Existing CSS styles */
+        
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('#assessment-content').on('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    
+    // Serialize form data
+    var formData = $(this).serialize();
+    
+    // Make an AJAX POST request to your Django view
+    $.ajax({
+      type: 'POST',
+      url: $(this).attr('action'),
+      data: formData,
+      success: function(response) {
+        $('#recommended-courses-list').empty();
+        
+        // Append the recommended courses to the list
+        $.each(response.recommended_courses, function(index, course) {
+          $('#recommended-courses-list').append('<ul> ' + course + ' </ul>');
+        });
+        // Handle the response, e.g., update the recommended courses section
+        //$('#recommended-courses').html(response.recommended_courses);
+      }
+    });
+  });
+});
+
+var timer;
+var timeLeft = 300; // 5 minutes in seconds (5 * 60)
+
+function startTimer() {
+  // Update the timer display every second
+  timer = setInterval(function() {
+    var minutes = Math.floor(timeLeft / 60);
+    var seconds = timeLeft % 60;
+    
+    // Format the time as "MM:SS"
+    var formattedTime = minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+    
+    // Display the time
+    document.getElementById("timer").innerHTML = "Time Left: " + formattedTime;
+    
+    // Check if the time is up
+    if (timeLeft <= 0) {
+      clearInterval(timer); // Stop the timer
+      document.getElementById("timer").innerHTML = "Time's up!";
+      document.getElementById("submit-button").disabled = true; // Disable the submit button
+      document.getElementById("log_submit-button").disabled = true; // Disable the submit button
+      document.getElementById("com_submit-button").disabled = true; // Disable the submit button
+      document.getElementById("quan_submit-button").disabled = true; // Disable the submit button
+      document.getElementById("ana_submit-button").disabled = true; // Disable the submit button
+    } else {
+      timeLeft--;
+    }
+  }, 1000); // Update every 1 second (1000 milliseconds)
+}
+
+
+  // Function to enable the category links
+function enableCategoryLinks() {
+  var categoryLinks = document.querySelectorAll(".read-only-link");
+  for (var i = 0; i < categoryLinks.length; i++) {
+    categoryLinks[i].classList.remove("read-only-link"); // Remove the read-only class
+  }
+}
+
+// Function to prevent default behavior of links
+function preventDefault(event) {
+  event.preventDefault();
+}
+
+// Function to start the assessment
+
+// Call the function to add click event listeners to the links
+window.onload = function() {
+  var categoryLinks = document.querySelectorAll(".read-only-link");
+  for (var i = 0; i < categoryLinks.length; i++) {
+    categoryLinks[i].addEventListener("click", preventDefault);
+  }
+}
+
+  // Function to shuffle an array randoml
+
+  
+</script>
+
+  
+  
+
+</head>
+
+<body>
+  {% if user.is_authenticated %}
+   
+<div id="side-panel">
+  <a href="{% url 'index' %}" style="text-decoration: none; color: white; font-weight: bold;">Home</a><br><br>
+  <h2>Categories</h2>
+  <ul>
+    <li><a href="#logical_reasoning" class="read-only-link" onclick="showQuestion('logical_reasoning')">Logical Reasoning</a></li><br>
+    <li><a href="#communication_skills" onclick="showQuestion('communication_skills')" class="read-only-link" >Communication Skills</a></li><br>
+    <li><a href="#quantitative_aptitude" onclick="showQuestion('quantitative_aptitude')" class="read-only-link" >Quantitative Aptitude</a></li><br>
+    <li><a href="#analytical_skills" onclick="showQuestion('analytical_skills')" class="read-only-link" >Analytical Skills</a></li><br>
+  </ul>
+</div>
+
+
+<form id="assessment-content" method="post" action="{% url 'test:assessment' %}" >
+  {% csrf_token %}
+
+    <div id="timer">Time Left: 5:00</div>
+      
+<div id="assessment-content">
+    <h1>Assessment Test</h1>
+
+     <!-- Add the section for stream selection and CGPA -->
+
+  </section>
+
+ <div class="custom-container">
+
+    <button onclick="showQuestion('logical_reasoning'),startTimer(),enableCategoryLinks()" id= "start-assessment-button">Start Assessment</button>
+  <main>
+    <section id="logical_reasoning" class="question-section">
+      <h2>Logical Reasoning Assessment</h2>
+      
+      <p><b>Question 1:</b> What comes next in the sequence: 2, 4, 8, 16, ...?</p>
+      <label>
+        <input type="radio" name="logical_reasoning_option_1" value="32"> 32
+      </label>
+      <label>
+        <input type="radio" name="logical_reasoning_option_1" value="64"> 64
+      </label>
+      <label>
+        <input type="radio" name="logical_reasoning_option_1" value="128"> 128
+      </label>
+      <label>
+        <input type="radio" name="logical_reasoning_option_1" value="256"> 256
+      </label>
+      <p id="logical_reasoning_result_1"></p>
+
+     <p><b>Question 2:</b> What comes next in the sequence: 3, 6, 12, 24, ...?</p>
+      <label>
+      <input type="radio" name="logical_reasoning_option_2" value="48"> 48
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_2" value="36"> 36
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_2" value="60"> 60
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_2" value="72"> 72
+      </label>
+      <p id="logical_reasoning_result_2"></p>
+
+      <p><b>Question 3:</b> If all cats are animals, and some animals are dogs, can we conclude that some cats are dogs?</p>
+      <label>
+      <input type="radio" name="logical_reasoning_option_3" value="Yes"> Yes
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_3" value="No"> No
+      </label>
+      <p id="logical_reasoning_result_3"></p>
+      <p><b>Question 4:</b> If John is taller than Mike, and Mike is taller than Sarah, who is the shortest among them?</p>
+      <label>
+      <input type="radio" name="logical_reasoning_option_4" value="John"> John
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_4" value="Mike"> Mike
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_4" value="Sarah"> Sarah
+      </label>
+      <p id="logical_reasoning_result_4"></p>
+      <p><b>Question 5:</b> A shirt costs $20. During a sale, it's discounted by 30%. How much will the shirt cost during the sale?</p>
+      <label>
+      <input type="radio" name="logical_reasoning_option_5" value="$10"> $10
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_5" value="$14"> $14
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_5" value="$16"> $16
+      </label>
+      <label>
+      <input type="radio" name="logical_reasoning_option_5" value="$18"> $18
+      </label>
+      <p id="logical_reasoning_result_5"></p>
+
+
+      <button id="log_submit-button" onclick="checkLogicalReasoningAnswer()">Submit</button>
+      
+      <p id="logical_reasoning_score"></p>
+      <button onclick="nextQuestion('communication_skills')">Next Question</button>
+
+    </section>
+    
+
+    
+    <section id="communication_skills" class="question-section">
+      <h2>Communication Skills Assessment</h2>
+      <p><b>Question 1:</b> Which of the following is not a form of non-verbal communication?</p>
+      <label>
+        <input type="radio" name="communication_skills_option_1" value="Speaking"> Speaking
+      </label>
+      <label>
+        <input type="radio" name="communication_skills_option_1" value="Gestures"> Gestures
+      </label>
+      <label>
+        <input type="radio" name="communication_skills_option_1" value="Facial Expressions"> Facial Expressions
+      </label>
+      <label>
+        <input type="radio" name="communication_skills_option_1" value="Text Message"> Text Message
+      </label>
+      <p id="communication_skills_result_1"></p>
+
+      <p><b>Question 2:</b> What is an example of non-verbal communication?</p>
+      <label>
+      <input type="radio" name="communication_skills_option_2" value="Handshake"> Handshake
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_2" value="Phone Call"> Phone Call
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_2" value="Email"> Email
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_2" value="Radio Broadcast"> Radio Broadcast
+      </label>
+      <p id="communication_skills_result_2"></p>
+      
+      <p><b>Question 3:</b> Which non-verbal communication cue can indicate interest and attentiveness in a conversation?</p>
+      <label>
+      <input type="radio" name="communication_skills_option_3" value="Crossing Arms"> Crossing Arms
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_3" value="Maintaining Eye Contact"> Maintaining Eye Contact
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_3" value="Turning Away"> Turning Away
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_3" value="Using a Monotone Voice"> Using a Monotone Voice
+      </label>
+      <p id="communication_skills_result_3"></p>
+
+      <p><b>Question 4:</b> What type of communication involves written or typed messages?</p>
+      <label>
+      <input type="radio" name="communication_skills_option_4" value="Verbal Communication"> Verbal Communication
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_4" value="Non-Verbal Communication"> Non-Verbal Communication
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_4" value="Visual Communication"> Visual Communication
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_4" value="Written Communication"> Written Communication
+      </label>
+      <p id="communication_skills_result_4"></p>
+
+      <p><b>Question 5: </b>Which of the following is an example of paralanguage in communication?</p>
+      <label>
+      <input type="radio" name="communication_skills_option_5" value="Body Language"> Body Language
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_5" value="Tone of Voice"> Tone of Voice
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_5" value="Morse Code"> Morse Code
+      </label>
+      <label>
+      <input type="radio" name="communication_skills_option_5" value="Written Language"> Written Language
+      </label>
+      <p id="communication_skills_result_5"></p>
+
+
+      <button id="com_submit-button" onclick="checkCommunicationSkillsAnswer()">Submit</button>
+      <p id="communication_skills_score"></p>
+      <button onclick="previousQuestion()">Previous Question</button>
+      <button onclick="nextQuestion('quantitative_aptitude')">Next Question</button>
+    </section>
+    
+
+    <section id="quantitative_aptitude" class="question-section">
+      <h2>Quantitative Aptitude Assessment</h2>
+      <p><b>Question 1:</b> What is the square root of 144?</p>
+      <label>
+        <input type="radio" name="quantitative_aptitude_option_1" value="12"> 12
+      </label>
+      <label>
+        <input type="radio" name="quantitative_aptitude_option_1" value="8"> 8
+      </label>
+      <label>
+        <input type="radio" name="quantitative_aptitude_option_1" value="16"> 16
+      </label>
+      <label>
+        <input type="radio" name="quantitative_aptitude_option_1" value="10"> 10
+      </label>
+      <p id="quantitative_aptitude_result_1"></p>
+
+      <p><b>Question 2:</b> What is 25% of 80?</p>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_2" value="20"> 20
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_2" value="25"> 25
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_2" value="30"> 30
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_2" value="35"> 35
+      </label>
+      <p id="quantitative_aptitude_result_2"></p>
+
+      <p><b>Question 3:</b> If a car travels at a speed of 60 miles per hour for 3 hours, how far does it travel?</p>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_3" value="120 miles"> 120 miles
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_3" value="180 miles"> 180 miles
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_3" value="200 miles"> 200 miles
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_3" value="360 miles"> 360 miles
+      </label>
+      <p id="quantitative_aptitude_result_3"></p>
+
+      <p><b>Question 4:</b> If the price of a shirt is $40, and it's on sale for 25% off, what is the sale price?</p>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_4" value="$10"> $10
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_4" value="$30"> $30
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_4" value="$35"> $35
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_4" value="$45"> $45
+      </label>
+      <p id="quantitative_aptitude_result_4"></p>
+
+      <p><b>Question 5:</b> If the area of a square is 64 square units, what is the length of one side of the square?</p>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_5" value="4 units"> 4 units
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_5" value="8 units"> 8 units
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_5" value="16 units"> 16 units
+      </label>
+      <label>
+      <input type="radio" name="quantitative_aptitude_option_5" value="32 units"> 32 units
+      </label>
+      <p id="quantitative_aptitude_result_5"></p>
+
+
+
+      <button id="quan_submit-button" onclick="checkQuantitativeAptitudeAnswer()">Submit</button>
+    
+      <p id="quantitative_aptitude_score"></p>
+      <button onclick="previousQuestion()">Previous Question</button>
+      <button onclick="nextQuestion('analytical_skills')">Next Question</button>
+    </section>
+
+    
+    <section id="analytical_skills" class="question-section">
+      <h2>Analytical Skills Assessment</h2>
+      <p><b>Question 1:</b> If all apples are fruits and some fruits are red, are all apples red?</p>
+      <label>
+        <input type="radio" name="analytical_skills_option_1" value="Yes"> Yes
+      </label>
+      <label>
+        <input type="radio" name="analytical_skills_option_1" value="No"> No
+      </label>
+      <p id="analytical_skills_result_1"></p>
+
+      <p><b>Question 2:</b> If a company's revenue increased by 20% in the first quarter and then decreased by 10% in the second quarter, what was the net change in revenue over the two quarters?</p>
+      <label>
+      <input type="radio" name="analytical_skills_option_2" value="10% increase"> 10% increase
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_2" value="8% increase"> 8% increase
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_2" value="10% decrease"> 10% decrease
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_2" value="8% decrease"> 8% decrease
+      </label>
+      <p id="analytical_skills_result_2"></p>
+
+      <p><b>Question 3:</b> If a car travels at a speed of 60 miles per hour for the first half of its journey and then at 40 miles per hour for the second half, what is the average speed for the entire trip?</p>
+      <label>
+      <input type="radio" name="analytical_skills_option_3" value="50 miles per hour"> 50 miles per hour
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_3" value="48 miles per hour"> 48 miles per hour
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_3" value="55 miles per hour"> 55 miles per hour
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_3" value="45 miles per hour"> 45 miles per hour
+      </label>
+      <p id="analytical_skills_result_3"></p>
+
+      <p><b>Question 4:</b> If a bookstore sold 120 books in the morning and 180 books in the afternoon, what percentage of the total books sold for the day were sold in the afternoon?</p>
+      <label>
+      <input type="radio" name="analytical_skills_option_4" value="60%"> 60%
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_4" value="40%"> 40%
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_4"value="70%"> 70%
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_4" value="30%"> 30%
+      </label>
+      <p id="analytical_skills_result_4"></p>
+
+      <p><b>Question 5:</b> If the price of a product was reduced by 25%, and then increased by 20%, what was the overall percentage change in the price?</p>
+      <label>
+      <input type="radio" name="analytical_skills_option_5" value="5% decrease"> 5% decrease
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_5" value="5% increase"> 5% increase
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_5" value="10% decrease"> 10% decrease
+      </label>
+      <label>
+      <input type="radio" name="analytical_skills_option_5" value="10% increase"> 10% increase
+      </label>
+      <p id="analytical_skills_result_5"></p>
+
+
+      <button id="ana_submit-button" onclick="checkAnalyticalSkillsAnswer()">Submit</button>
+     
+      <p id="analytical_skills_score"></p>
+      <button onclick="previousQuestion()">Previous Question</button>
+      <button onclick="nextQuestion('stream-selection')">Next Question</button>
+    </section>
+
+    <section id="stream-selection" class="question-section">
+      <h2>Stream Selection and Plus Two (12th Grade) CGPA</h2>
+      <p>Please select your stream and enter your Plus Two CGPA:</p>
+  
+      <label for="stream">Select Your Stream:</label>
+      <select id="stream" name="stream" required>
+        <option value="none">Select Stream</option>
+        <option value="Science">Science</option>
+        <option value="Commerce">Commerce</option>
+        <option value="Humanities">Humanities</option>
+      </select>
+  <br><br>
+      <label for="plus-two-cgpa">Enter Your Plus Two (12th Grade) CGPA:</label>
+      <input type="number" id="plus-two-cgpa" name="plus-two-cgpa" min="0" max="10" step="0.01" required><br><br>
+      
+      <input type="submit" value="Submit Assessment" class="submit-button" id="submit-button">
+
+</div>
+<h2>Scores:</h2>
+<div class="score-box">Logical Reasoning: 
+  <span id="category_logical_reasoning_score" name="category_logical_reasoning_score"></span>/ 10<br><br>
+  Communication Skills: <span id="category_communication_skills_score" name="category_communication_skills_score"></span>/ 10<br><br>
+  Quantitative Aptitude: <span id="category_quantitative_aptitude_score" name="category_quantitative_aptitude_score"></span>/ 10<br><br>
+  Analytical Skills: <span id="category_analytical_skills_score" name="category_analytical_skills_score"></span>/ 10<br><br>
+
+<input type="hidden" id="category_logical_reasoning_score_input" name="category_logical_reasoning_score" value="0">
+<input type="hidden" id="category_communication_skills_score_input" name="category_communication_skills_score" value="0">
+<input type="hidden" id="category_quantitative_aptitude_score_input" name="category_quantitative_aptitude_score" value="0">
+<input type="hidden" id="category_analytical_skills_score_input" name="category_analytical_skills_score" value="0">
+
+
+<h2 class="score-box">Total Score: <span id="total_score">0</span></h2>
+<p id="recommended-courses"><b>Your recommended courses are:</b></p>
+<ul id="recommended-courses-list">
+  <!-- Recommended courses will be added here -->
+</ul>
+</div>
+</main>
+</div>
+
+</div> 
+</form> 
+  <script>
+let logicalReasoningScore = 0;
+let communicationSkillsScore = 0;
+let quantitativeAptitudeScore = 0;
+let analyticalSkillsScore = 0;
+
+const maxScorePerCategory = 10;
+const marksPerQuestion = 2; 
+
+let currentCategory = '';
+
+function showQuestion(category) {
+
+  currentCategory = category;
+
+  document.getElementById("start-assessment-button").style.display = "none";
+  var sections = document.getElementsByClassName("question-section");
+  for (var i = 0; i < sections.length; i++) {
+    sections[i].style.display = "none";
+  }
+  document.getElementById(category).style.display = "block";
+}
+
+function nextQuestion(nextCategory) {
+  showQuestion(nextCategory);
+}
+
+function previousQuestion() {
+  // Hide the current category
+  document.getElementById(currentCategory).style.display = "none";
+
+  // Determine the previous category based on the current category
+  switch (currentCategory) {
+    case 'communication_skills':
+      showQuestion('logical_reasoning');
+      break;
+    case 'quantitative_aptitude':
+      showQuestion('communication_skills');
+      break;
+    case 'analytical_skills':
+      showQuestion('quantitative_aptitude');
+      break;
+    case 'stream-selection':
+      showQuestion('analytical_skills');
+      break;
+    default:
+      // If current category is 'logical_reasoning' or unknown, don't go back
+      break;
+  }
+}
+
+const logicalReasoningAnswers = ["32","48","No","Sarah","$14"];
+const communicationSkillsAnswers = ["Text Message","Handshake","Maintaining Eye Contact","Written Communication","Tone of Voice"];
+const quantitativeAptitudeAnswers = ["12","20","180 miles","$30","8 units"];
+const analyticalSkillsAnswers = ["No","8% increase","48 miles per hour","60%","5% decrease"];
+
+function checkLogicalReasoningAnswer() {
+
+  logicalReasoningScore = 0;
+
+  for (let i = 1; i <= 5; i++) {
+    const selectedOption = document.querySelector(`input[name="logical_reasoning_option_${i}"]:checked`);
+    if (selectedOption) {
+      const selectedValue = selectedOption.value;
+        if (selectedValue === logicalReasoningAnswers[i - 1]) {
+            logicalReasoningScore += marksPerQuestion;
+            document.getElementById(`logical_reasoning_result_${i}`).textContent = "Correct!";
+        } else {
+            document.getElementById(`logical_reasoning_result_${i}`).textContent = "Incorrect. Try again.";
+        }
+    }
+  }
+  
+  document.getElementById("logical_reasoning_score").textContent = "Score: " + logicalReasoningScore + " / " + (marksPerQuestion * 5);
+  document.getElementById("category_logical_reasoning_score").textContent = logicalReasoningScore;
+  updateTotalScore();
+
+}
+
+function checkCommunicationSkillsAnswer() {
+
+  communicationSkillsScore = 0;
+
+  for (let i = 1; i <= 5; i++) {
+    const selectedOption = document.querySelector(`input[name="communication_skills_option_${i}"]:checked`);
+    
+    if (selectedOption) {
+      const selectedValue = selectedOption.value;
+      if (selectedValue === communicationSkillsAnswers[i - 1]) {
+        communicationSkillsScore += marksPerQuestion; // Add 1 point for each correct answer
+        document.getElementById(`communication_skills_result_${i}`).textContent = "Correct!";
+      } else {
+        document.getElementById(`communication_skills_result_${i}`).textContent = "Incorrect. Try again.";
+      }
+    }
+  }
+  document.getElementById("communication_skills_score").textContent = "Score: " + communicationSkillsScore+ " / " + maxScorePerCategory;
+  document.getElementById("category_communication_skills_score").textContent = communicationSkillsScore;
+  updateTotalScore();
+
+}
+
+function checkQuantitativeAptitudeAnswer() {
+  
+ quantitativeAptitudeScore = 0;
+for (let i = 1; i <= 5; i++) {
+    const selectedOption = document.querySelector(`input[name="quantitative_aptitude_option_${i}"]:checked`);
+    
+    if (selectedOption) {
+        const selectedValue = selectedOption.value;
+        if (selectedValue === quantitativeAptitudeAnswers[i - 1]) {
+            quantitativeAptitudeScore += marksPerQuestion; // Add 1 point for each correct answer
+            document.getElementById(`quantitative_aptitude_result_${i}`).textContent = "Correct!";
+        } else {
+            document.getElementById(`quantitative_aptitude_result_${i}`).textContent = "Incorrect. Try again.";
+        }
+    }
+}
+  document.getElementById("quantitative_aptitude_score").textContent = "Score: " + quantitativeAptitudeScore+ " / " + maxScorePerCategory;
+  document.getElementById("category_quantitative_aptitude_score").textContent = quantitativeAptitudeScore;
+  updateTotalScore();
+}
+
+function checkAnalyticalSkillsAnswer() {
+  analyticalSkillsScore = 0;
+  for (let i = 1; i <= 5; i++) {
+    const selectedOption = document.querySelector(`input[name="analytical_skills_option_${i}"]:checked`);
+    
+    if (selectedOption) {
+        const selectedValue = selectedOption.value;
+        if (selectedValue === analyticalSkillsAnswers[i - 1]) {
+            analyticalSkillsScore += marksPerQuestion; // Add 1 point for each correct answer
+            document.getElementById(`analytical_skills_result_${i}`).textContent = "Correct!";
+        } else {
+            document.getElementById(`analytical_skills_result_${i}`).textContent = "Incorrect. Try again.";
+        }
+    }
+}
+  document.getElementById("analytical_skills_score").textContent = "Score: " + analyticalSkillsScore+ " / " + maxScorePerCategory;
+  document.getElementById("category_analytical_skills_score").textContent = analyticalSkillsScore;
+  updateTotalScore();
+}
+
+function updateTotalScore() {
+  
+  var totalScore = logicalReasoningScore + communicationSkillsScore + quantitativeAptitudeScore + analyticalSkillsScore;
+  document.getElementById("total_score").textContent = totalScore;
+
+  document.getElementById("category_logical_reasoning_score_input").value = logicalReasoningScore;
+  document.getElementById("category_communication_skills_score_input").value = communicationSkillsScore;
+  document.getElementById("category_quantitative_aptitude_score_input").value = quantitativeAptitudeScore;
+  document.getElementById("category_analytical_skills_score_input").value = analyticalSkillsScore;
+  
+  
+}
+
+
+  </script>{% endif %}
+</body>
+</html>

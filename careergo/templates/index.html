@@ -83,7 +83,7 @@
                     <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
                     <a href="" class="nav-item nav-link">About</a>
                   
-                    <a href="/courseprovider/courselist" class="nav-item nav-link">Courses</a>
+                    <a href="{% url 'courseprovider:courselist' %}" class="nav-item nav-link">Courses</a>
                     
                     <div class="nav-item dropdown">
                         <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
@@ -94,6 +94,7 @@
                             <a href="" class="dropdown-item">Testimonial</a>
                         </div>
                     </div>
+                    <a href="{% url 'courseprovider:studash' %}" class="nav-item nav-link">Dashboard</a>
                     <div class="nav-item dropdown">
                     <a href="{% url 'index' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
                     <div class="dropdown-menu m-0">

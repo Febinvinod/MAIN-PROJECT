@@ -1,0 +1,636 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% csrf_token %}
+<head>
+    <meta charset="utf-8">
+    <title>Edukate</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="careergo/static/css/animate.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  
+
+
+    <script>
+
+
+        document.getElementById('thumbnail').addEventListener('change', function() {
+            const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+            const input = this;
+    
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+    
+                if (!allowedExtensions.includes('.' + fileExtension)) {
+                    alert('Invalid file format. Please select a JPG, JPEG, or PNG file.');
+                    input.value = ''; // Clear the input field
+                }
+            }
+        });
+
+
+           
+
+    </script>
+    <script>
+        // JavaScript validation functions
+    
+        function validateFirst_Name(inputField) {
+            const namePattern = /^[A-Za-z ]+/;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            if (!namePattern.test(inputField.value)) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Invalid input. Only alphabets and spaces are allowed.';
+                return false;
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+        function validateDescription(inputField) {
+            const descriptionValue = inputField.value.trim();
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            if (descriptionValue === '') {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Description is required.';
+                return false;
+            }
+    
+            const words = descriptionValue.split(/\s+/); // Split by spaces
+            const wordCount = words.length;
+    
+            if (wordCount < 20 || wordCount > 60) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Description should be between 20 and 60 words.';
+                return false;
+            }
+    
+            inputField.classList.remove('is-invalid');
+            inputField.classList.add('is-valid');
+            errorDiv.textContent = '';
+            return true;
+        }
+    
+        function validateDuration(inputField) {
+            const durationValue = inputField.value;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+        
+            if (isNaN(durationValue) || durationValue < 1 || durationValue > 365) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Invalid input. Duration should be in days.';
+                return false;
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+        
+    
+        function validatePrice(inputField) {
+            const priceValue = inputField.value;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            const pricePattern = /^\d{1,5}$/; // Allows positive numbers with up to 5 digits
+    
+            if (!pricePattern.test(priceValue)) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Invalid input. Please enter a valid price (up to 5 digits).';
+                return false;
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+        // Add validation functions for other form fields similarly
+        function checkall() {
+            const isCourseTitleValid = validateText(document.getElementById('course_title'));
+            const isDescriptionValid = validateDescription(document.getElementById('description'));
+            const isDurationValid = validateDuration(document.getElementById('duration'));
+            const isInstructorValid = validateText(document.getElementById('instructor'));
+            const isPriceValid = validatePrice(document.getElementById('price'));
+    
+            // Add validations for other fields here
+            
+            if (
+                isCourseTitleValid &&
+                isDescriptionValid &&
+                isDurationValid &&
+                isInstructorValid &&
+                isPriceValid 
+                // Add other validations here
+            ) {
+                return true; // Form will be submitted
+            } else {
+                return false; // Form submission will be prevented
+            }
+        }
+    </script>
+    
+    <style>
+        .error-message{
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+   
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>info@example.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% url 'index' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CAREERGO</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    {% comment %} {% if user.is_staff %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                  
+                    <a href="{% url 'courseprovider:addprovider' %}" class="nav-item nav-link">Add Courseprovider</a>
+                    <div class="nav-item dropdown">
+                    <a href="{% url 'index' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
+                    </div>
+                </div>
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active"> Logout </a> {% endcomment %}
+
+                    
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'providerpage' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                  
+                    
+                    <div class="nav-item dropdown">
+                        <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="" class="dropdown-item">Course Detail</a>
+                            <a href="" class="dropdown-item">Our Features</a>
+                            <a href="" class="dropdown-item">Instructors</a>
+                            <a href="" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                    <a href="{% url 'index' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
+                    </div>
+                </div>
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active"> Logout </a>
+
+
+                    {% else %}
+                    <a href="{% url 'providerpage' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                    <a href="" class="nav-item nav-link">Contact</a>
+                    <a href="{% url 'login' %}" class="nav-item nav-link">Login/Signup</a>
+                    {% endif %}
+                </div>
+               
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+
+    <!-- Header Start -->
+   
+    <form method="POST" enctype="multipart/form-data" onsubmit="return checkall();">
+        {% csrf_token %}
+        <section class="gray pt-5 pb-5">
+            <div class="container-fluid">
+    
+                <div class="row justify-content-center">
+    
+                    <div class="col-lg-9 col-md-8">
+                        <div class="dashboard-body">
+    
+                            <div class="dashboard-wraper">
+                                <div class="row">
+    
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="submit-page px-0">
+    
+                                            <!-- Basic Information -->
+                                            <div class="frm_submit_block  mb-5">
+                                                <h3>Internship Information</h3>
+                                                <div class="frm_submit_wrap">
+                                                    <div class="row">
+    
+    
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Internship Title</label>
+                                                            <input type="text" name="course_title" class="form-control" onkeyup="validateFirst_Name(this)"  required>
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                       
+                                                        
+    
+                                                        
+                                                        <div class="form-group col-md-12">
+                                                            <label class="mt-2 mb-1">Description</label>
+                                                            <textarea class="form-control h-120" name="description" id="description" onkeyup="validateDescription(this)" required></textarea>
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Duration</label>
+                                                            <input type="number" name="duration" class="form-control" id="duration" onkeyup="validateDuration(this)" required>
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Instructor</label>
+                                                            <input type="text" name="instructor" value="{{ user.username }}" id="instructor" class="form-control" onkeyup="validateFirst_Name(this)">
+                                                            
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        <div class="form-group col-md-6 pd-20" id="priceField" >
+                                                            <label class="mt-2 mb-1">Price</label>
+                                                            <input type="number" name="price" id="price" class="form-control" onkeyup="validatePrice(this)" placeholder="Rupees">
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Start Date</label>
+                                                            <input type="date" name="start_date" class="form-control" required id="startDate">
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">End Date</label>
+                                                            <input type="date" name="end_date" class="form-control" required id="endDate">
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        
+
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Number of Positions</label>
+                                                            <input type="number" name="positions" class="form-control" required>
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Internship Type</label>
+                                                            <select name="internship_type" class="form-control">
+                                                        <option value="unpaid">Unpaid</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Mode of Internship</label>
+                                                            <select name="internship_mode" class="form-control">
+                                                                <option value="online">Online</option>
+                                                            </select>
+                                                        </div>
+                                                        
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Application Deadline</label>
+                                                            <input type="date" name="application_deadline" class="form-control" required id="applicationDeadline">
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Company Name</label>
+                                                            <input type="text" name="company_name" class="form-control">
+                                                            <div class="error-message"></div>
+                                                        </div>
+                                                        
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Company Website</label>
+                                                            <input type="url" name="company_website" class="form-control">
+                                                        </div>
+
+
+                                                        <div class="form-group col-md-6 pd-20">
+                                                            <label class="mt-2 mb-1">Category</label>
+                                                            <select name="category" id="categorySelect" class="form-control" required>
+                                                                <option value="">Select a category</option>
+                                                                {% for category_value, category_label in category %}
+                                                                    <option value="{{ category_value }}">{{ category_label }}</option>
+                                                                {% endfor %}
+                                                                <option value="other">Other</option> <!-- Add the "Other" option here -->
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group col-md-6 pd-20" id="otherCategoryInput" style="display: none;">
+                                                            <label class="mt-2 mb-1">Other Category</label>
+                                                            <input type="text" name="other_category" class="form-control">
+                                                        </div>
+                                              
+                                                    </div>
+                                                </div>
+                                            </div>
+    
+                                            <!-- Gallery -->
+                                            <div class="frm_submit_block mb-5">
+                                                <h3 class="mb-3">Gallery</h3>
+                                                <div class="frm_submit_wrap">
+                                                    <div class="row">
+                                                        <div class="form-group col-md-3 pd-10">
+                                                            <label class="mt-2 mb-1">Thumbnail Image</label>
+                                                            <input type="file" name="thumbnail" class="form-control"  accept=".jpg, .jpeg, .png" required>
+                                                            <small class="text-muted">Accepted formats: JPG, JPEG, PNG</small>
+                                                        </div>
+                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+           
+                                                    </div>
+                                                </div>
+                                            </div>
+            
+                                            <div class="form-group col-lg-12 col-md-12 text-center">
+                                                <button class="btn btn-success" type="submit">Submit</button>
+                                            </div>
+    
+                                        </div>
+                                    </div>
+    
+                                </div>
+    
+                            </div>
+                            <!-- row -->
+    
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+        </section>
+    </form>
+
+    <!-- Footer Start -->
+    <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
+        <div class="container mt-5 pt-5">
+            <div class="row">
+                <div class="col-md-6 mb-5">
+                    <a href="{% url 'index' %}" class="navbar-brand">
+                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Edukate</h1>
+                    </a>
+                    <p class="m-0">Accusam nonumy clita sed rebum kasd eirmod elitr. Ipsum ea lorem at et diam est, tempor rebum ipsum sit ea tempor stet et consetetur dolores. Justo stet diam ipsum lorem vero clita diam</p>
+                </div>
+                <div class="col-md-6 mb-5">
+                    <h3 class="text-white mb-4">Newsletter</h3>
+                    <div class="w-100">
+                        <div class="input-group">
+                            <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary px-4">Sign Up</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Get In Touch</h3>
+                    <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
+                    <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
+                    <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                    <div class="d-flex justify-content-start mt-4">
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-twitter"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-facebook-f"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-linkedin-in"></i></a>
+                        <a class="text-white" href="#"><i class="fab fa-2x fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Our Courses</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Web Design</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Apps Design</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Research</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>SEO</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Quick Links</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-white-50 border-top py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                    <p class="m-0">Copyright &copy; <a class="text-white" href="#">Your Site Name</a>. All Rights Reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-right">
+                    <p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <script>
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySelect = document.getElementById('categorySelect');
+        const otherCategoryField = document.getElementById('otherCategoryInput');
+
+        categorySelect.addEventListener('change', function () {
+            if (categorySelect.value === 'other') {
+                otherCategoryField.style.display = 'block'; // Show the field when "Other" is selected
+            } else {
+                otherCategoryField.style.display = 'none'; // Hide the field for other options
+            }
+        });
+    });
+        
+
+    function validateDates() {
+        const startDateInput = document.getElementsByName('start_date')[0];
+        const endDateInput = document.getElementsByName('end_date')[0];
+        const applicationDeadlineInput = document.getElementById('applicationDeadline');
+        const today = new Date();
+        
+        // Parse the entered dates as Date objects in the format "day month year"
+        const startDateParts = startDateInput.value.split(' ');
+        const endDateParts = endDateInput.value.split(' ');
+        const applicationDeadlineParts = applicationDeadlineInput.value.split(' ');
+        
+        const startDate = new Date(`${startDateParts[2]}-${getMonthNumber(startDateParts[1])}-${startDateParts[0]}`);
+        const endDate = new Date(`${endDateParts[2]}-${getMonthNumber(endDateParts[1])}-${endDateParts[0]}`);
+        const applicationDeadline = new Date(`${applicationDeadlineParts[2]}-${getMonthNumber(applicationDeadlineParts[1])}-${applicationDeadlineParts[0]}`);
+        
+        const errorDivStartDate = startDateInput.nextElementSibling;
+        const errorDivEndDate = endDateInput.nextElementSibling;
+        const errorDivApplicationDeadline = applicationDeadlineInput.nextElementSibling;
+        
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || isNaN(applicationDeadline.getTime())) {
+            // Invalid date format
+            errorDivStartDate.textContent = 'Invalid date format. Please use "day month year" (e.g., 01 January 2023).';
+            errorDivEndDate.textContent = '';
+            errorDivApplicationDeadline.textContent = '';
+            return false;
+        }
+        
+        if (startDate < today || endDate < today || applicationDeadline < today) {
+            // Dates are in the past
+            errorDivStartDate.textContent = 'Dates cannot be in the past.';
+            errorDivEndDate.textContent = '';
+            errorDivApplicationDeadline.textContent = 'Application deadline cannot be in the past.';
+            return false;
+        }
+        
+        if (startDate > endDate) {
+            // Start date is after end date
+            errorDivStartDate.textContent = 'Start date cannot be after end date.';
+            errorDivEndDate.textContent = 'End date cannot be before start date.';
+            errorDivApplicationDeadline.textContent = '';
+            return false;
+        }
+        
+        if (applicationDeadline > endDate) {
+            // Application deadline is after end date
+            errorDivStartDate.textContent = 'Start date cannot be after end date.';
+            errorDivEndDate.textContent = 'End date cannot be before start date.';
+            errorDivApplicationDeadline.textContent = 'Application deadline cannot be after end date.';
+            return false;
+        }
+        
+        // Dates are valid
+        errorDivStartDate.textContent = '';
+        errorDivEndDate.textContent = '';
+        errorDivApplicationDeadline.textContent = '';
+        return true;
+    }
+    
+    // Helper function to get the month number from its name
+    function getMonthNumber(monthName) {
+        const months = {
+            'January': '01',
+            'February': '02',
+            'March': '03',
+            'April': '04',
+            'May': '05',
+            'June': '06',
+            'July': '07',
+            'August': '08',
+            'September': '09',
+            'October': '10',
+            'November': '11',
+            'December': '12',
+        };
+        return months[monthName];
+    }
+    
+    // Add event listeners to perform validation when the dates are changed
+    const startDateInput = document.getElementsByName('start_date')[0];
+    const endDateInput = document.getElementsByName('end_date')[0];
+    const applicationDeadlineInput = document.getElementById('applicationDeadline');
+    
+    startDateInput.addEventListener('change', validateDates);
+    endDateInput.addEventListener('change', validateDates);
+    applicationDeadlineInput.addEventListener('change', validateDates);
+    
+    
+    </script>
+    <script>
+        // Get today's date in the format YYYY-MM-DD
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Set the min attribute for start date and end date inputs
+        document.getElementById('startDate').setAttribute('min', today);
+        document.getElementById('endDate').setAttribute('min', today);
+        document.getElementById('applicationDeadline').setAttribute('min', today);
+    </script>
+</body>
+
+</html>

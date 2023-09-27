@@ -4,46 +4,109 @@
     {% csrf_token %}
 <head>
     <style>
+        .search{
+            background-color:blue;
+            width:50px;
+        }
         :root {
             --gradient: linear-gradient(to left top, #DD2476 10%, #FF512F 90%) !important;
-          }
-          
-          body {
+        }
+        
+        body {
             background: #ffffff !important;
-          }
-          
-          .card {
+        }
+        
+        .card {
             background: #ffffff;
             border: 1px solid #dd2476;
             color: rgba(250, 250, 250, 0.8);
             margin-bottom: 2rem;
-          }
+        }
 
-          .hover-card:hover {
-    background-color: #f0f0f0; /* Change to your desired background color */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add box shadow for elevation */
-    /* Add any other hover styles you prefer */
-}
-          
-          .btn {
+        .hover-card:hover {
+            background-color: #f0f0f0; /* Change to your desired background color */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add box shadow for elevation */
+            /* Add any other hover styles you prefer */
+        }
+
+        .btn {
             border: 5px solid;
             border-image-slice: 1;
             background: var(--gradient) !important;
             -webkit-background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
+            -webkit-text-fill-color: blue !important;
             border-image-source:  var(--gradient) !important; 
             text-decoration: none;
             transition: all .4s ease;
-          }
-          
-          .btn:hover, .btn:focus {
-                background: var(--gradient) !important;
+        }
+
+        .btn:hover, .btn:focus {
+            background: var(--gradient) !important;
             -webkit-background-clip: none !important;
             -webkit-text-fill-color: #fff !important;
             border: 5px solid #fff !important; 
             box-shadow: #222 1px 0 10px;
             text-decoration: underline;
-          }
+        }
+
+        .courses-item img {
+            height: 370px; /* Adjust the height as needed */
+            width: 200px; /* Allow the width to adjust proportionally */
+        }
+
+        .subcategory {
+            font-size: 16px; /* Adjust the font size as needed */
+            font-weight: bold; /* Make the text bold */
+            color: #333; /* Set the text color to a suitable color */
+            /* Add any other styles you want to apply */
+        }
+
+        /* Search Bar Styling */
+       
+
+        /* Category Headings */
+        .category-heading {
+            font-size: 28px;
+            color: #007bff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* Free Courses Heading */
+        .free-courses-heading {
+            font-size: 28px;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            background-color: #007bff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+   
+        .subcategory {
+            font-size: 16px; /* Adjust the font size as needed */
+            font-weight: bold; /* Make the text bold */
+            color: #333; /* Set the text color to a suitable color */
+            /* Add any other styles you want to apply */
+        }
+
+        /* Style for category links in the side panel */
+        .category-link {
+            display: block;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Highlight active category link */
+        .category-link.active {
+            color: #007bff;
+        }
+       
     </style>
     <meta charset="utf-8">
     <title>Edukate - Online Education Website Template</title>
@@ -73,7 +136,6 @@
 </head>
 
 <body>
-   
     <!-- Topbar Start -->
     <div class="container-fluid bg-dark">
         <div class="row py-2 px-lg-5">
@@ -122,6 +184,15 @@
                     {% if user.role == user.COURSE_PROVIDER %}
                     <a href="{% url 'providerpage' %}" class="nav-item nav-link active">Home</a>
                     <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="categoryDropdown" data-toggle="dropdown" onclick="return false;">Categories</a>
+
+                        <div class="dropdown-menu m-0" aria-labelledby="categoryDropdown">
+                            {% for category, courses in courses_by_category.items %}
+                                <a class="dropdown-item" href="#{{ category|slugify }}">{{ category }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
                         <a href="{% url 'providerpage' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
                         <div class="dropdown-menu m-0">
                             <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
@@ -139,6 +210,14 @@
                         <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
                     </div>
                 </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="categoryDropdown" data-toggle="dropdown">Categories</a>
+                    <div class="dropdown-menu m-0" aria-labelledby="categoryDropdown">
+                        {% for category, courses in courses_by_category.items %}
+                            <a class="dropdown-item" href="#{{ category|slugify }}">{{ category }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
                     <a href="{% url 'logout' %}" class="nav-item nav-link active"> Logout </a> 
 
                     {% else %}
@@ -154,65 +233,137 @@
     </div>
     <!-- Navbar End -->
 
+  <!--  <div style="background-color:#ADD8E6;" class="col-md-3 pt-5">
+        <div class="">
+            <h3>Categories</h3>
+            <ul class="category-list">
+                {% for category, courses in courses_by_category.items %}
+                    <li>
+                        <a href="#{{ category|slugify }}" class="category-link">{{ category }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>-->
+   
+    
+<!-- ======= Property Grid ======= -->
+
+<div class="container-fluid">
+    <div class="row ">
+            <div class="search-bar">
+                <div class="mx-auto mb-5" style="width: 100%; max-width: 400px;">
+                    <form method="GET" action="{% url 'courseprovider:courselist' %}">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control border-dark" style="padding: 20px 20px;" placeholder="Keyword" value="{{ query }}">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn-primary px-4 px-lg-5" id="search">Search</button>
+            
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="container mx-auto mt-4">
+                {% for category, courses in courses_by_category.items %}
+                   <br>  <h2 id="{{ category|slugify }}" style="font-size: 28px; color: #007bff;">{{ category }}</h2>
+                    <div class="row">
+                        {% for i in courses %}
+                            {% if forloop.counter0|divisibleby:4 %}<div class="w-100"></div>{% endif %}
+                            <div class="col-md-4">
+                                <!-- Your course card HTML here -->
+                                <div class="card hover-card" style="width: 18rem;">
+                                    <img src="{{ i.thumbnail.url }}" style="width: 18rem; height:200px" class="card-img-top" alt="...">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ i.course_title }} | {{ i.duration }} <b>hrs</b></h5>
+                                        <h6 class="card-subtitle mb-2 text-muted"><b>Price</b> {{ i.price }}</h6>
+                                        <p class="card-text"><b>Instructor:</b>{{ i.instructor }}</p>
+                                        <a href="http://127.0.0.1:8000/courseprovider/coursedetail/{{i.id}}" class="btn mr-2"><i class=""></i>View Course</a>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            
+        
+        
+        
+            <div class="container-fluid px-0 py-5">
+                <div class="row mx-0 justify-content-center pt-5">
+                    <div class="col-lg-6">
+                        <div class="section-title text-center position-relative mb-4">
+                            <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Our Courses</h6>
+                            
+                        </div>
+                    </div>
+                </div>
+                {% if show_carousel %}
+                <div class="owl-carousel courses-carousel">
+                    {% for category, courses in courses_by_category.items %}
+                        {% for course in courses %}
+                            <div class="courses-item position-relative">
+                                <img class="img-fluid" src="{{ course.thumbnail.url }}" alt="">
+                                <div class="courses-text">
+                                    <h4 class="text-center text-white px-3">{{ course.course_title }}</h4>
+                                    <div class="border-top w-100 mt-3">
+                                        <div class="d-flex justify-content-between p-4">
+                                            <span class="text-white"><i class="fa fa-user mr-2"></i>{{ course.instructor }}</span>
+                                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
+                                        </div>
+                                    </div>
+                                    <div class="w-100 bg-white text-center p-4">
+                                        <a class="btn btn-primary" href="http://127.0.0.1:8000/courseprovider/coursedetail/{{course.id}}">Course Detail</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        
+        
+        
+        
+           
+            <div class="container mx-auto mt-5">
+               <h2 style="background-color: #007bff; color: #fff; padding: 10px; text-align: center; border-radius: 5px;">Free Courses</h2>
+        
+                {% for course in free_courses %}
+                <br>
+                <h2 style="font-size: 28px; color: #007bff;">{{ course.category }}</h2>
+                    <div class="row">
+                       
+                        {% if forloop.counter0|divisibleby:4 %}<div class="w-100"></div>{% endif %}
+                        <div class="col-md-4">
+                            <div class="card hover-card" style="width: 18rem;">
+                                <img src="{{  course.thumbnail.url }}" style="width: 18rem; height: 200px" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{  course.course_title }} | {{  course.duration }} <b>hrs</b></h5>
+                                    <h6 class="card-subtitle mb-2 text-muted"><b>Price</b> {{  course.price }}</h6>
+                                    <p class="card-text"><b>Instructor:</b> {{  course.instructor }}</p>
+                                    <a href="{% url 'courseprovider:coursedetail'  course.id %}" class="btn mr-2"><i class=""></i>View Course</a>
+                                    <!-- Add other actions or details here -->
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+               
+            </div>
+        
+    </div>
+
+</div>
 
 
     <!-- Header Start -->
-        {% comment %} <div class="container mx-auto mt-4">
-            <div class="row">
-                {% for i in single_course %}
-                {% if forloop.counter0|divisibleby:4 %}<div class="w-100"></div>{% endif %}
-                <div class="col-md-4">
-                    <div class="card hover-card" style="width: 18rem;">
-                        <img src="{{ i.thumbnail.url }}" style="width: 18rem; height:200px" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ i.course_title }} | {{ i.duration }} <b>hrs</b></h5>
-                            <h6 class="card-subtitle mb-2 text-muted"><b>Price</b> {{ i.price }}</h6>
-                            <p class="card-text"><b>Instructor:</b>{{ i.instructor }}</p>
-                            <a href="http://127.0.0.1:8000/courseprovider/coursedetail/{{i.id}}" class="btn mr-2"><i class=""></i>View Course</a>
-                            
-                        </div>
-                        {% if user.role == user.COURSE_PROVIDER %}
-                        <a href="{% url 'courseprovider:edit_course' i.id %}" class="btn mr-2"><i class=""></i>Edit Course</a>
-                        <a href="{% url 'courseprovider:delete_course' i.id %}" class="btn btn-danger"><i class=""></i>Delete Course</a>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-     {% endcomment %}
+        
 
-     <div class="container mx-auto mt-4">
-        {% for category, courses in courses_by_category.items %}
-           <br> <h2>{{ category }}</h2>
-            <div class="row">
-                {% for i in courses %}
-                    {% if forloop.counter0|divisibleby:4 %}<div class="w-100"></div>{% endif %}
-                    <div class="col-md-4">
-                        <!-- Your course card HTML here -->
-                        <div class="card hover-card" style="width: 18rem;">
-                            <img src="{{ i.thumbnail.url }}" style="width: 18rem; height:200px" class="card-img-top" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ i.course_title }} | {{ i.duration }} <b>hrs</b></h5>
-                                <h6 class="card-subtitle mb-2 text-muted"><b>Price</b> {{ i.price }}</h6>
-                                <p class="card-text"><b>Instructor:</b>{{ i.instructor }}</p>
-                                <a href="http://127.0.0.1:8000/courseprovider/coursedetail/{{i.id}}" class="btn mr-2"><i class=""></i>View Course</a>
-                                
-                            </div>
-                            {% if user.role == user.COURSE_PROVIDER %}
-                            <a href="{% url 'courseprovider:edit_course' i.id %}" class="btn mr-2"><i class=""></i>Edit Course</a>
-                            <a href="{% url 'courseprovider:delete_course' i.id %}" class="btn btn-danger"><i class=""></i>Delete Course</a>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endfor %}
-    </div>
     
-   
-     <!-- ======= Property Grid ======= -->
-     
 
   
    
@@ -307,7 +458,8 @@
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}">  </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
-  
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

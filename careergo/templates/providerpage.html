@@ -82,7 +82,10 @@
                     
                   
                     <a href="/courseprovider" class="nav-item nav-link">Add Courses</a>
-                    <a href="/courseprovider/courselist" class="nav-item nav-link">View Added Courses</a>
+                    <a href="{% url 'courseprovider:intern' %}" class="nav-item nav-link">Add Internships</a>
+                    <a href="/courseprovider/courselist" class="nav-item nav-link">View Courses</a>
+                    <a href="{% url 'courseprovider:providerdash' %}" class="nav-item nav-link">Dashboard</a>
+
                     <div class="nav-item dropdown">
                     <a href="{% url 'index' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
                     <div class="dropdown-menu m-0">

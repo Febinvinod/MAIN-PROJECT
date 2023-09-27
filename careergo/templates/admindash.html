@@ -107,6 +107,7 @@
                 hiddenContent.style.display = "none";
             }
         }
+        
     </script>
     <!-- admin_panel/templates/admin_panel/user_list.html -->
 
@@ -240,6 +241,7 @@
             <th>Analytical Skills</th>
             <th>Stream</th>
             <th>Plus Two CGPA</th>
+            <th>Assessment Status</th>
         
         </tr>
     </thead>
@@ -257,6 +259,13 @@
                             <td>{{ assessment.analytical_skills_score }}</td>
                             <td>{{ assessment.get_stream_display }}</td>
                             <td>{{ assessment.plus_two_cgpa }}</td>
+                            <td>
+                                <form method="post" action="{% url 'courseprovider:update_assessment_status' assessment.id %}">
+                                    {% csrf_token %}
+                                    <input type="checkbox" name="assessment_status" {% if assessment.assessment_status %}checked{% endif %}>
+                                    <button type="submit">Save</button>
+                                </form>
+                            </td>
                         {% endif %}
                     {% endfor %}
                 </tr>

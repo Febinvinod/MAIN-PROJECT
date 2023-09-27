@@ -26,43 +26,152 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  
 
 
     <script>
-        function validateAlphabets(input) {
-            var inputValue = input.value.trim(); // Remove leading and trailing spaces
-            var pattern = /^[a-zA-Z\s]+$/;
-            var errorElement = input.nextElementSibling; // Get the next sibling element (assumes it's the error message element)
-        
-            if (inputValue.length >= 4 && pattern.test(inputValue)) {
-                input.classList.remove('is-invalid');
-                if (errorElement) {
-                    errorElement.textContent = ''; // Clear the error message
-                }
-            } else {
-                input.classList.add('is-invalid');
-                if (errorElement) {
-                    errorElement.textContent = 'Please enter at least 4 alphabetic characters.'; // Set the error message
-                }
-            }
-        }
-        function validateDesp(input) {
-            var inputValue = input.value.trim(); // Remove leading and trailing spaces
-            var pattern = /^[a-zA-Z\s]+$/;
-            var errorElement = input.nextElementSibling; // Get the next sibling element (assumes it's the error message element)
-        
-            if (inputValue.length >= 10 && pattern.test(inputValue)) {
-                input.classList.remove('is-invalid');
-                if (errorElement) {
-                    errorElement.textContent = ''; // Clear the error message
-                }
-            } else {
-                input.classList.add('is-invalid');
-                if (errorElement) {
-                    errorElement.textContent = 'Please enter at least 10 alphabetic characters.'; // Set the error message
+
+
+        document.getElementById('thumbnail').addEventListener('change', function() {
+            const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+            const input = this;
+    
+            if (input.files && input.files[0]) {
+                const fileName = input.files[0].name;
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+    
+                if (!allowedExtensions.includes('.' + fileExtension)) {
+                    alert('Invalid file format. Please select a JPG, JPEG, or PNG file.');
+                    input.value = ''; // Clear the input field
                 }
             }
+        });
+
+
+           
+
+    </script>
+    <script>
+        // JavaScript validation functions
+    
+        function validateFirst_Name(inputField) {
+            const namePattern = /^[A-Za-z ]+/;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            if (!namePattern.test(inputField.value)) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Invalid input. Only alphabets and spaces are allowed.';
+                return false;
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+                return true;
+            }
         }
+        function validateDescription(inputField) {
+            const descriptionValue = inputField.value.trim();
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            if (descriptionValue === '') {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Description is required.';
+                return false;
+            }
+    
+            const words = descriptionValue.split(/\s+/); // Split by spaces
+            const wordCount = words.length;
+    
+            if (wordCount < 20 || wordCount > 60) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Description should be between 20 and 60 words.';
+                return false;
+            }
+    
+            inputField.classList.remove('is-invalid');
+            inputField.classList.add('is-valid');
+            errorDiv.textContent = '';
+            return true;
+        }
+    
+        function validateDuration(inputField) {
+            const durationValue = inputField.value;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            if (isNaN(durationValue) || durationValue < 1 || durationValue > 12) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Invalid input. Duration should be between 1 and 12 hrs.';
+                return false;
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+    
+        function validatePrice(inputField) {
+            const priceValue = inputField.value;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            const pricePattern = /^\d{1,5}$/; // Allows positive numbers with up to 5 digits
+    
+            if (!pricePattern.test(priceValue)) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Invalid input. Please enter a valid price (up to 5 digits).';
+                return false;
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+        // Add validation functions for other form fields similarly
+        function checkall() {
+            const isCourseTitleValid = validateText(document.getElementById('course_title'));
+            const isDescriptionValid = validateDescription(document.getElementById('description'));
+            const isDurationValid = validateDuration(document.getElementById('duration'));
+            const isInstructorValid = validateText(document.getElementById('instructor'));
+            const isPriceValid = validatePrice(document.getElementById('price'));
+    
+            // Add validations for other fields here
+            
+            if (
+                isCourseTitleValid &&
+                isDescriptionValid &&
+                isDurationValid &&
+                isInstructorValid &&
+                isPriceValid 
+                // Add other validations here
+            ) {
+                return true; // Form will be submitted
+            } else {
+                return false; // Form submission will be prevented
+            }
+        }
+    </script>
+    <script>
+        function togglePriceField() {
+            var isFreeCheckbox = document.getElementById("isFreeCheckbox");
+            var priceField = document.getElementById("priceField");
+    
+            if (isFreeCheckbox.checked) {
+                priceField.style.display = "none";
+            } else {
+                priceField.style.display = "block";
+            }
+        }
+    
+        // Call togglePriceField initially to set the initial state
+        togglePriceField();
     </script>
     <style>
         .error-message{
@@ -171,7 +280,7 @@
 
     <!-- Header Start -->
    
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" action="{% url 'courseprovider:addcourses' %}" onsubmit="return checkall();">
         {% csrf_token %}
         <section class="gray pt-5 pb-5">
             <div class="container-fluid">
@@ -196,43 +305,55 @@
     
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">Course Title</label>
-                                                            <input type="text" name="course_title" class="form-control" onkeyup="validateAlphabets(this)" required>
+                                                            <input type="text" name="course_title" class="form-control" onkeyup="validateFirst_Name(this)"  required>
                                                             <div class="error-message"></div>
                                                         </div>
+                                                        <div class="form-check">
+                                                            <input type="checkbox" class="form-check-input" name="is_free" id="isFreeCheckbox" onchange="togglePriceField()">
+                                                            <label class="form-check-label" for="isFreeCheckbox">Is this course free?</label>
+                                                        </div>
+                                                        
     
                                                         
                                                         <div class="form-group col-md-12">
                                                             <label class="mt-2 mb-1">Description</label>
-                                                            <textarea class="form-control h-120" name="description" onkeyup="validateDesp(this)" required></textarea>
+                                                            <textarea class="form-control h-120" name="description" id="description" onkeyup="validateDescription(this)" required></textarea>
                                                             <div class="error-message"></div>
                                                         </div>
                                                         
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">Duration</label>
-                                                            <input type="number" name="duration" class="form-control" required>
-                                                        </div>
-                                                        <div class="form-group col-md-6 pd-20">
-                                                            <label class="mt-2 mb-1">Instructor</label>
-                                                            <input type="text" name="instructor" class="form-control" onkeyup="validateAlphabets(this)" required>
+                                                            <input type="number" name="duration" class="form-control" id="duration" onkeyup="validateDuration(this)" required>
                                                             <div class="error-message"></div>
                                                         </div>
                                                         <div class="form-group col-md-6 pd-20">
-                                                            <label class="mt-2 mb-1">Price</label>
-                                                            <input type="number" name="price"  class="form-control" placeholder="Rupees" required>
+                                                            <label class="mt-2 mb-1">Instructor</label>
+                                                            <input type="text" name="instructor" value="{{ user.username }}" id="instructor" class="form-control" onkeyup="validateFirst_Name(this)">
+                                                            
+                                                            <div class="error-message"></div>
                                                         </div>
+                                                        <div class="form-group col-md-6 pd-20" id="priceField" >
+                                                            <label class="mt-2 mb-1">Price</label>
+                                                            <input type="number" name="price" id="price" class="form-control" onkeyup="validatePrice(this)" placeholder="Rupees">
+                                                            <div class="error-message"></div>
+                                                        </div>
+
+
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">Category</label>
-                                                            <select name="category" class="form-control" required>
+                                                            <select name="category" id="categorySelect" class="form-control" required>
                                                                 <option value="">Select a category</option>
                                                                 {% for category_value, category_label in category %}
                                                                     <option value="{{ category_value }}">{{ category_label }}</option>
                                                                 {% endfor %}
+                                                                <option value="other">Other</option> <!-- Add the "Other" option here -->
                                                             </select>
                                                         </div>
-                                                        
-                                                       
-                                                      
-    
+                                                        <div class="form-group col-md-6 pd-20" id="otherCategoryInput" style="display: none;">
+                                                            <label class="mt-2 mb-1">Other Category</label>
+                                                            <input type="text" name="other_category" class="form-control">
+                                                        </div>
+                                              
                                                     </div>
                                                 </div>
                                             </div>
@@ -242,14 +363,25 @@
                                                 <h3 class="mb-3">Gallery</h3>
                                                 <div class="frm_submit_wrap">
                                                     <div class="row">
-                              <div class="form-group col-md-3 pd-10">
+                                                        <div class="form-group col-md-3 pd-10">
                                                             <label class="mt-2 mb-1">Thumbnail Image</label>
-                                                            <input type="file" name="thumbnail" class="form-control" required>
+                                                            <input type="file" name="thumbnail" class="form-control"  accept=".jpg, .jpeg, .png" required>
+                                                            <small class="text-muted">Accepted formats: JPG, JPEG, PNG</small>
                                                         </div>
-                             
-                                                            <label class="mt-2 mb-1">Course Video</label>
-                                <input type="file" name="video" class="form-control" >
-                                                        </div>
+                                                        
+                                                            
+                                                            <div class="form-group col-md-3 pd-10 video-input-container">
+                                                                <div class="section-input">
+                                                                    <label>Section Name:</label>
+                                                                    <input type="text" name="section_name[]" class="form-control" required>
+                                                                    <label class="mt-2 mb-1">Course Video:</label>
+                                                                    <input type="file" name="videos[]" class="form-control" accept="video/*" multiple required>
+                                                                    <small class="text-muted">Accepted formats: video</small><br><br>
+                                                                </div>
+                                                            </div>
+                                                        
+                                                            <button type="button" id="addVideoButton" class="btn btn-primary mt-3">Add More Videos</button>
+                                                                                                           
                              
                                                     </div>
                                                 </div>
@@ -260,9 +392,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
-                                            
-    
+            
                                             <div class="form-group col-lg-12 col-md-12 text-center">
                                                 <button class="btn btn-success" type="submit">Submit</button>
                                             </div>
@@ -363,8 +493,7 @@
 
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    
     <script src="{% static 'lib/easing/easing.min.js' %}"></script>
     <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
     <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
@@ -372,6 +501,59 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
+    <script>
+
+
+        $(document).ready(function () {
+        const addVideoButton = $('#addVideoButton');
+        const videoInputContainer = $('.video-input-container');
+
+        addVideoButton.click(function () {
+            const newVideoContainer = $('<div>').addClass('form-group col-md-20 pd-10 video-input-container');
+            const sectionInput = $('<div>').addClass('section-input');
+            const sectionNameInput = $('<input>').attr({
+                type: 'text',
+                name: 'section_name[]',
+                class: 'form-control',
+                required: 'required',
+                placeholder: 'Section Name',
+            });
+            const videoInput = $('<input>').attr({
+                type: 'file',
+                name: 'videos[]',
+                class: 'form-control',
+                accept: 'video/*',
+                multiple: 'multiple',
+                required: 'required',
+            });
+            const smallText = $('<small>').addClass('text-muted').text('Accepted formats: video');
+
+            sectionInput.append(sectionNameInput);
+            sectionInput.append('<label class="mt-2 mb-1">Course Video:</label>');
+            sectionInput.append(videoInput);
+            sectionInput.append(smallText);
+
+            newVideoContainer.append(sectionInput);
+            videoInputContainer.append(newVideoContainer);
+        });
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySelect = document.getElementById('categorySelect');
+        const otherCategoryField = document.getElementById('otherCategoryInput');
+
+        categorySelect.addEventListener('change', function () {
+            if (categorySelect.value === 'other') {
+                otherCategoryField.style.display = 'block'; // Show the field when "Other" is selected
+            } else {
+                otherCategoryField.style.display = 'none'; // Hide the field for other options
+            }
+        });
+    });
+        
+    </script>
 </body>
 
 </html>

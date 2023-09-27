@@ -32,6 +32,11 @@ SITE_ID = 2
 SOCIALACCOUNT_LOGIN_ON_GET=True
 # Application definition
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# Set SESSION_COOKIE_SECURE to True if using HTTPS
+SESSION_COOKIE_SECURE = True
+
 INSTALLED_APPS = [
     'jazzmin',
     'home',
@@ -68,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'careergo.urls'
@@ -164,3 +170,9 @@ EMAIL_HOST_PASSWORD = 'qtwpnirvgsxzhtdo'
 DEFAULT_FROM_EMAIL = 'mailtoshowvalidationok@gmail.com'
 
 AUTH_USER_MODEL = 'home.CustomUser'
+
+RAZOR_KEY_ID = 'rzp_test_iQQnR1IqGjP7Lu'
+
+RAZOR_KEY_SECRET = '02mcbXYkEiAfusiPn5Ib0tev'
+
+

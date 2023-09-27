@@ -118,11 +118,14 @@ def profile(request):
         new_profile_pic = request.FILES.get('profile_pic')
         if new_profile_pic:
             user_profile.profile = new_profile_pic
-        user_profile.country = request.POST.get('country')
-        user_profile.state = request.POST.get('state')
+        user_profile.country = request.POST.get('selected_country')
+        user_profile.state = request.POST.get('selected_state')
         user_profile.city = request.POST.get('city')
         user_profile.pin_code = request.POST.get('pin_code')
         user_profile.save()
+
+        print("Selected State:", request.POST.get('selected_state'))
+        print("Selected counter:", request.POST.get('selected_country'))
 
         return redirect('profile') 
     context = {

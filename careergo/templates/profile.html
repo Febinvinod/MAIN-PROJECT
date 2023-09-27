@@ -69,7 +69,7 @@
             var phoneNumber = input.value.replace(/\D/g, ''); // Remove non-numeric characters
             var errorElement = input.nextElementSibling; // Get the next sibling element (assumes it's the error message element)
         
-            if (phoneNumber.length === 10) {
+            if (phoneNumber.length === 10 && !/^0+$/.test(phoneNumber) && !/^0/.test(phoneNumber)) {
                 input.classList.remove('is-invalid');
                 if (errorElement) {
                     errorElement.textContent = ''; // Clear the error message
@@ -77,7 +77,7 @@
             } else {
                 input.classList.add('is-invalid');
                 if (errorElement) {
-                    errorElement.textContent = 'Phone number must be exactly 10 digits.'; // Set the error message
+                    errorElement.textContent = 'Phone number must be exactly 10 digits, not full zeros, and should not start with zero.'; // Set the error message
                 }
             }
         }
@@ -107,7 +107,7 @@
             var pattern = /^\d{6}$/;
             var errorElement = input.nextElementSibling; // Get the next sibling element (assumes it's the error message element)
         
-            if (pattern.test(pincode)) {
+            if (pattern.test(pincode) && !/^0+$/.test(pincode)) {
                 input.classList.remove('is-invalid');
                 if (errorElement) {
                     errorElement.textContent = ''; // Clear the error message
@@ -115,11 +115,14 @@
             } else {
                 input.classList.add('is-invalid');
                 if (errorElement) {
-                    errorElement.textContent = 'Enter valid 6 digit pincode.'; // Set the error message
+                    if (/^0+$/.test(pincode)) {
+                        errorElement.textContent = 'Enter a valid 6 digit pincode.';
+                    } else {
+                        errorElement.textContent = 'Enter a valid 6 digit pincode.';
+                    }
                 }
             }
         }
-
         function validatePassword(input) {
           var password = input.value;
           var minLength = 5;
@@ -271,16 +274,43 @@
                                       <input type="text" id="phone_no" name="phone_no" class="form-control" value="{{ user.phone_no }}" onkeyup="validatePhoneNumber(this)">
                                       <div class="error-message"></div>
                                     </div>
+
+
                                     <div class="form-group col-md-6 pd-20">
-                                      <label class="mt-2 mb-1">country</label>
-                                      <input type="text" name="country" class="form-control" value="{{ user_profile.country }}" onkeyup="validateAlphabets(this)" >
-                                      <div class="error-message"></div>
-                                    </div>
-                                    <div class="form-group col-md-6 pd-20">
+                                      <label class="mt-2 mb-1">Country</label>
+                                      <select name="country" id="countryDropdown" class="form-control">
+                                          <option value="">Select a country</option>
+                                          <option value="USA" {% if user_profile.country == 'USA' %}selected{% endif %}>United States</option>
+                                          <option value="Canada" {% if user_profile.country == 'Canada' %}selected{% endif %}>Canada</option>
+                                          <option value="India" {% if user_profile.country == 'India' %}selected{% endif %}>India</option>
+                                          <option value="Australia" {% if user_profile.country == 'Australia' %}selected{% endif %}>Australia</option>
+                                          <option value="UK" {% if user_profile.country == 'UK' %}selected{% endif %}>UK</option>
+                                          <option value="Germany" {% if user_profile.country == 'Germany' %}selected{% endif %}>Germany</option>
+                                          <option value="France" {% if user_profile.country == 'France' %}selected{% endif %}>France</option>
+                                          <option value="Brazil" {% if user_profile.country == 'Brazil' %}selected{% endif %}>Brazil</option>
+                                          <option value="Japan" {% if user_profile.country == 'Japan' %}selected{% endif %}>Japan</option>
+                                          <option value="China" {% if user_profile.country == 'China' %}selected{% endif %}>China</option>
+                                          <option value="Russia" {% if user_profile.country == 'Russia' %}selected{% endif %}>Russia</option>
+                                          <option value="Mexico" {% if user_profile.country == 'Mexico' %}selected{% endif %}>Mexico</option>
+                                          
+                                          <!-- Add more countries as needed -->
+                                      </select>
+                                      <input type="hidden" name="selected_country" id="selectedCountry">
+                                  </div>
+                                  <div class="form-group col-md-6 pd-20">
+                                      <!-- Update the name attribute to "selected_state" -->
+                                      <input type="hidden" name="selected_state" value="{{ user_profile.state }}" id="selectedState">
                                       <label class="mt-2 mb-1">State</label>
-                                      <input type="text" name="state" class="form-control" value="{{ user_profile.state }}" onkeyup="validateAlphabets(this)">
-                                      <div class="error-message"></div>
-                                    </div>
+                                      <select name="state" id="stateDropdown" class="form-control">
+                                          <option value="">Select a state</option>
+                                          <!-- Options for states should be dynamically populated via JavaScript -->
+                                      </select>
+                                  </div>
+                                  
+
+
+
+                                  
                                     <div class="form-group col-md-6 pd-20">
                                       <label class="mt-2 mb-1">City</label>
                                       <input type="text" name="city" class="form-control" value="{{ user_profile.city }}" onkeyup="validateAlphabets(this)">
@@ -337,4 +367,67 @@
             </form>
   
 </body>
+<script>
+    const countryToStates = {
+        USA: ["New York", "California", "Texas", "Florida", "Illinois", "Pennsylvania", "Ohio", "Michigan", "Georgia", "North Carolina"],
+        Canada: ["Ontario", "Quebec", "British Columbia", "Alberta", "Manitoba", "Saskatchewan", "New Brunswick", "Nova Scotia", "Prince Edward Island", "Newfoundland and Labrador"],
+        India: ["Maharashtra", "Tamil Nadu", "Uttar Pradesh", "Karnataka", "Gujarat", "Kerala", "Andhra Pradesh", "Rajasthan", "Madhya Pradesh", "Telangana"],
+        Australia: ["New South Wales", "Victoria", "Queensland", "Western Australia", "South Australia", "Tasmania", "Northern Territory", "Australian Capital Territory", "Jervis Bay Territory", "Christmas Island"],
+        UK: ["England", "Scotland", "Wales", "Northern Ireland", "London", "Yorkshire", "Merseyside", "Highlands", "Belfast", "Cardiff"],
+        Germany: ["Berlin", "Bavaria", "North Rhine-Westphalia", "Baden-Württemberg", "Lower Saxony", "Hesse", "Rhineland-Palatinate", "Saxony", "Brandenburg", "Saxony-Anhalt"],
+        France: ["Île-de-France", "Provence-Alpes-Côte d'Azur", "Auvergne-Rhône-Alpes", "Occitanie", "Nouvelle-Aquitaine", "Hauts-de-France", "Grand Est", "Brittany", "Normandy", "Pays de la Loire"],
+        Brazil: ["São Paulo", "Rio de Janeiro", "Minas Gerais", "Bahia", "Rio Grande do Sul", "Paraná", "Ceará", "Pernambuco", "Santa Catarina", "Goiás"],
+        Japan: ["Tokyo", "Osaka", "Kanagawa", "Aichi", "Hokkaido", "Chiba", "Saitama", "Hyogo", "Fukuoka", "Shizuoka"],
+        China: ["Beijing", "Shanghai", "Guangdong", "Jiangsu", "Zhejiang", "Shandong", "Henan", "Sichuan", "Hubei", "Hebei"],
+        Russia: ["Moscow", "Saint Petersburg", "Novosibirsk", "Yekaterinburg", "Nizhny Novgorod", "Kazan", "Chelyabinsk", "Omsk", "Samara", "Rostov-on-Don"],
+        Mexico: ["Mexico City", "Jalisco", "Nuevo León", "Guanajuato", "Puebla", "Veracruz", "Baja California", "Sinaloa", "Sonora", "Michoacán"],
+       
+        // Add more countries and their states as needed
+    };
+    
+
+    // Function to update the state dropdown options based on the selected country
+    function updateStateDropdown() {
+        const countryDropdown = document.getElementById("countryDropdown");
+        const stateDropdown = document.getElementById("stateDropdown");
+        const selectedCountry = countryDropdown.value;
+
+        // Clear existing options in the "State" dropdown
+        stateDropdown.innerHTML = '<option value="">Select a state</option>';
+
+        // Populate the "State" dropdown based on the selected country
+        if (selectedCountry && countryToStates[selectedCountry]) {
+            const states = countryToStates[selectedCountry];
+            for (const state of states) {
+                const option = document.createElement("option");
+                option.value = state;
+                option.textContent = state;
+                stateDropdown.appendChild(option);
+            }
+        }
+
+        // Set the value of the hidden input field for selected country
+        document.getElementById("selectedCountry").value = selectedCountry;
+    }
+
+    // Add an event listener to the "State" dropdown to update selectedState
+    const stateDropdown = document.getElementById("stateDropdown");
+    const selectedStateInput = document.getElementById("selectedState");
+
+    stateDropdown.addEventListener("change", function () {
+        const selectedState = stateDropdown.value;
+        selectedStateInput.value = selectedState; // Update the hidden input field
+        console.log("Selected State:", selectedState);
+    });
+
+    // Ensure that the updateStateDropdown function is called when the country changes.
+    const countryDropdown = document.getElementById("countryDropdown");
+    if (countryDropdown) {
+        countryDropdown.addEventListener("change", updateStateDropdown);
+    }
+
+    // Initial population of the state dropdown
+    updateStateDropdown();
+</script>
+
   </html>

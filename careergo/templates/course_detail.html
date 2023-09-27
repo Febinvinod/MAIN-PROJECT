@@ -24,6 +24,30 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        .section-title {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 10px;
+            margin: 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .section-title:hover {
+            background-color: #ddd;
+        }
+
+        /* Styling for video containers */
+        .video-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+        }
+        .video-container.active {
+            max-height: 1000px; /* Adjust to your preferred max height */
+        }
+    </style>
+    
 </head>
 
 <body>
@@ -119,15 +143,48 @@
                        
                     </div>
 
-                    {% if oncourse.video %}
+                    {% comment %} {% if oncourse.video %}
                     <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
                     <source src="{{ oncourse.video.url }}" type="video/mp4">
                     </video>
                   {% else %}
                     <p>No video available for this course.</p>
-                  {% endif %}
-                    
-               </div>
+                  {% endif %} {% endcomment %}
+
+                  {% comment %} {% if oncourse.video_set.all %}
+                  {% for video in oncourse.video_set.all %}
+                      <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
+                          <source src="{{ video.video_file.url }}" type="video/mp4">
+                      </video>
+                  {% endfor %}
+              {% else %}
+                  <p>No videos available for this course.</p>
+              {% endif %} {% endcomment %}
+
+              {% comment %} {% for section, videos in videos_by_section.items %}
+              <h3>{{ section }}</h3>
+              <div class="video-container">
+                  {% for video in videos %}
+                      <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
+                          <source src="{{ video.video_file.url }}" type="video/mp4">
+                      </video>
+                  {% endfor %}
+              </div>
+          {% endfor %} {% endcomment %}
+          <div class="lesson-list">
+            {% for section, videos in videos_by_section.items %}
+                <h3 class="section-title" data-section="{{ section }}">{{ section }}</h3>
+                <div class="video-container">
+                    {% for video in videos %}
+                        <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
+                            <source src="{{ video.video_file.url }}" type="video/mp4">
+                        </video>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
 
                 <div class="col-lg-4 mt-5 mt-lg-0">
                     <div class="bg-primary mb-5 py-3">
@@ -143,7 +200,7 @@
                         </div>
                         <div class="d-flex justify-content-between border-bottom px-4">
                             <h6 class="text-white my-3">Duration</h6>
-                            <h6 class="text-white my-3">{{ oncourse.duration }}</h6>
+                            <h6 class="text-white my-3">{{ oncourse.duration }}hrs</h6>
                         </div>
                         <div class="d-flex justify-content-between border-bottom px-4">
                             <h6 class="text-white my-3">Skill level</h6>
@@ -153,9 +210,10 @@
                             <h6 class="text-white my-3">Language</h6>
                             <h6 class="text-white my-3">English</h6>
                         </div>
-                        <h5 class="text-white py-3 px-4 m-0">Course Price: ${{ oncourse.price }}</h5>
+                        <h5 class="text-white py-3 px-4 m-0">Course Price: ₹{{ oncourse.price }}</h5>
                         <div class="py-3 px-4">
-                            <a class="btn btn-block btn-secondary py-3 px-5" href="">Enroll Now</a>
+                            <a href="{% url 'courseprovider:confirm' course_id=oncourse.id %}"> <button class="btn btn-block btn-secondary py-3 px-5" id="pay-btn" >Enroll Now</button>
+                            </a>  
                         </div>
                     </div>
 
@@ -189,7 +247,11 @@
                 </div>
             </div>
         </div>
-    </div>
+    
+
+
+
+    
     <!-- Detail End -->
 
 
@@ -278,7 +340,28 @@
 <script>
   // Initialize Video.js on the video element with an ID of "videoPlayer"
   var player = videojs('videoPlayer');
+  
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sectionTitles = document.querySelectorAll('.section-title');
+
+        sectionTitles.forEach((title) => {
+            title.addEventListener('click', function () {
+                const container = this.nextElementSibling; // Get the next sibling (video container)
+                container.classList.toggle('active'); // Toggle the 'active' class for animation
+            });
+        });
+    });
+</script>
+ {% comment %} <script>
+    function redirectToConfirmation() {
+        // Replace 'confirmation_page_url' with the actual URL of your confirmation page
+        var confirmationPageUrl = "{% url 'courseprovider:confirm' oncourse.id %}";
+        window.location.href = confirmationPageUrl;
+    }
+</script> {% endcomment %}
 </body>
 
 </html>
