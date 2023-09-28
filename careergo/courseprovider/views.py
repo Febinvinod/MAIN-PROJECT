@@ -17,7 +17,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
-from .models import Oncourse, Video,Payment
+from .models import Oncourse, Video,Payment,Internship
 from django.views.generic.edit import UpdateView, DeleteView
 from collections import defaultdict
 from django.db.models import Q
@@ -193,7 +193,9 @@ def courselist(request):
      
 #      return render(request,'course_detail.html', context)
 def coursedetail(request, course_id):
-    course = Oncourse.objects.get(id=course_id)
+    #course = Oncourse.objects.get(id=course_id)
+    course = get_object_or_404(Oncourse, pk=course_id)
+    payment = Payment.objects.filter(user=request.user, course=course, payment_status=Payment.PaymentStatusChoices.SUCCESSFUL)
     sections = Video.objects.filter(course=course).values_list('section_name', flat=True).distinct()
     videos_by_section = {}
     for section in sections:
@@ -203,6 +205,7 @@ def coursedetail(request, course_id):
         'oncourse': course,
         'sections': sections,
         'videos_by_section': videos_by_section,
+        'payment' : payment
     }
 
     # Create a Razorpay Order
@@ -327,25 +330,64 @@ def update_assessment_status(request, assessment_id):
 @login_required
 def studash(request):
     user = request.user
+    enrolled_courses = Payment.objects.filter(user=request.user, payment_status=Payment.PaymentStatusChoices.SUCCESSFUL)
     if user.role == CustomUser.STUDENT:
         assessments = StudentAssessment.objects.filter(student=user)
-        return render(request, 'studash.html', {'user': user, 'assessments': assessments})
+        return render(request, 'studash.html', {'user': user, 'assessments': assessments, 'enrolled_courses': enrolled_courses,})
 
     return render(request, 'studash')
 
+
+
 def intern(request):
-    return render(request, 'addintern.html')
+    category = Oncourse.CATEGORY_CHOICES
+    context = {'category': category} 
+    if request.method == 'POST':
+      
+      new_intern = Internship()
+      user = request.user
+      internship_title = request.POST['course_title']
+      description = request.POST['description']
+      duration = request.POST['duration']
+      price = request.POST.get('price', '')
+      instructor= request.POST.get('instructor')
+      start_date = request.POST['start_date']
+      end_date = request.POST['end_date']
+      positions = request.POST.get('positions')
+      internship_type = request.POST['internship_type']
+      internship_mode = request.POST['internship_mode']
+      application_deadline = request.POST['application_deadline']
+      company_name = request.POST['company_name']
+      company_website = request.POST['company_website']
+
+      thumbnail = request.FILES['thumbnail']
+      category = request.POST['category']
+
+      if category == 'other':
+            
+            category = request.POST.get('other_category')
+
+      new_intern = Internship(user=user, internship_title = internship_title ,price=price, 
+                            description=description,duration=duration, thumbnail=thumbnail ,category=category, instructor=instructor,start_date=start_date,end_date=end_date,positions=positions,internship_type=internship_type,internship_mode=internship_mode,application_deadline=application_deadline,company_name=company_name,company_website=company_website)
+                                
+      new_intern.save()
+      return redirect('courseprovider:courselist')
+    
+    return render(request, 'addintern.html',context)
+     
+   
+
+
 
 
 razorpay_client = razorpay.Client(
     auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
-
-
-
 @csrf_exempt
 def paymenthandler(request):
+    #course = get_object_or_404(Oncourse, id=course_id)
     # Only accept POST requests.
+    
     if request.method == "POST":
         # Get the required parameters from the POST request.
         payment_id = request.POST.get('razorpay_payment_id', '')
@@ -369,13 +411,15 @@ def paymenthandler(request):
             razorpay_client.payment.capture(payment_id, amount)
             payment = Payment.objects.get(razorpay_order_id=razorpay_order_id)
 
-            # Update the order with payment ID and change status to "Successful"
+           
+     # Update the order with payment ID and change status to "Successful"
             payment.payment_id = payment_id
             payment.payment_status = Payment.PaymentStatusChoices.SUCCESSFUL
             payment.save()
 
+            
             # Render success page on successful capture of payment
-            return render(request, 'courselist.html')
+            return redirect('courseprovider:courselist')
         else:
             # If signature verification fails, render the payment failure page
             return render(request, 'paymentfail.html')
@@ -397,54 +441,108 @@ def providerdash(request):
     return render(request, 'providerdash.html', context)
 
 
-def confirm(request,course_id):
+# def confirm(request,course_id):
     
-    
-    course = Oncourse.objects.get(pk=course_id)
+#     course = Oncourse.objects.get(id=course_id)
 
 
-    # For Razorpay integration
+#     # For Razorpay integration
+#     currency = 'INR'
+#     amount = course.price  # Get the subscription price
+#     amount_in_paise = int(amount * 100)  # Convert to paise
+#     
+    
+
+#     # Create a Razorpay Order
+#     razorpay_order = razorpay_client.order.create(dict(
+#         amount=amount_in_paise,
+#         currency=currency,
+#         payment_capture='0'
+#     ))
+
+#     # Order ID of the newly created order
+#     razorpay_order_id = razorpay_order['id']
+#     callback_url = '/courseprovider/paymenthandler/'  # Define your callback URL here
+
+
+#     payment = Payment.objects.create(
+#         user=request.user,
+#         razorpay_order_id=razorpay_order_id,
+#         course=course,  
+#         payment_id="",
+#         amount=amount,
+#         currency=currency,
+#         payment_status=Payment.PaymentStatusChoices.PENDING,
+#     )
+#    
+#     payment.save()
+
+#     # Prepare the context data
+#     context = {
+#         'user': request.user,
+#         'oncourse':course,
+#         'razorpay_order_id': razorpay_order_id,
+#         'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+#         'razorpay_amount': amount_in_paise,
+#         'currency': currency,
+#         'amount': amount_in_paise / 100,
+#         'callback_url': callback_url,
+        
+#     }
+
+#     return render(request, 'confirm.html', context)
+
+def confirm(request, course_id):
+    course = get_object_or_404(Oncourse, pk=course_id)
+    
+    # Check if the user is already enrolled in the course
+    existing_payment = Payment.objects.filter(user=request.user, course=course, payment_status=Payment.PaymentStatusChoices.SUCCESSFUL).first()
+    
+    if existing_payment:
+        # User is already enrolled, redirect to a page indicating this
+        return render(request, 'already_enrolled.html')
+    
+    # Continue with payment confirmation logic
     currency = 'INR'
     amount = course.price  # Get the subscription price
     amount_in_paise = int(amount * 100)  # Convert to paise
-    #course_title = course.course_title
-    
-
-    # Create a Razorpay Order
     razorpay_order = razorpay_client.order.create(dict(
         amount=amount_in_paise,
         currency=currency,
         payment_capture='0'
     ))
-
-    # Order ID of the newly created order
     razorpay_order_id = razorpay_order['id']
     callback_url = '/courseprovider/paymenthandler/'  # Define your callback URL here
 
-
     payment = Payment.objects.create(
         user=request.user,
+        course=course,
         razorpay_order_id=razorpay_order_id,
-        
         payment_id="",
         amount=amount,
         currency=currency,
         payment_status=Payment.PaymentStatusChoices.PENDING,
     )
-   # payment.course_title.add(course_title)
     payment.save()
 
-    # Prepare the context data
     context = {
         'user': request.user,
-        'oncourse':course,
+        'oncourse': course,
         'razorpay_order_id': razorpay_order_id,
         'razorpay_merchant_key': settings.RAZOR_KEY_ID,
         'razorpay_amount': amount_in_paise,
         'currency': currency,
         'amount': amount_in_paise / 100,
         'callback_url': callback_url,
-        
     }
 
     return render(request, 'confirm.html', context)
+
+
+def enroll(request, course_id):
+    course = get_object_or_404(Oncourse, id=course_id)
+    context = {
+        'course' : course,
+    }
+
+    return render(request,'already_enrolled.html', context)

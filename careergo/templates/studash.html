@@ -185,16 +185,27 @@
         <!-- Enrolled Courses Card -->
         <div class="card">
             <div class="card-header">
-                Enrolled Courses
+                <h5 class="mb-0">Enrolled Courses</h5>
             </div>
             <div class="card-body">
-                <ul>
-                    <li>Course 1:</li>
-                    <li>Course 2: </li>
-                    <li>Course 3: </li>
+                <ul class="list-group">
+                    {% for course in enrolled_courses %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><strong>Course ID:</strong> {{ course.course.id }}</span>
+                            <span><strong>Course Name:</strong> {{ course.course.course_title }}</span>
+                            <span><strong>Price:</strong> {{ course.amount }} INR</span>
+                            <span><strong>Status:</strong> {{ course.payment_status }}</span>
+                            <a href="http://127.0.0.1:8000/courseprovider/coursedetail/{{course.course.id}}" class="btn btn-primary">View Course</a>
+                            
+                        </div>
+                    </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
+        
+        
     </div>
 
     <!-- Add Bootstrap and jQuery scripts here -->

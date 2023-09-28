@@ -20,5 +20,6 @@ urlpatterns = [
    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
    path('providerdash/', views.providerdash, name='providerdash'),
    path('confirm/<int:course_id>/', views.confirm, name='confirm'),
+   path('enroll/', views.enroll, name='enroll'),
    
 ]

@@ -143,35 +143,42 @@
                        
                     </div>
 
-                    {% comment %} {% if oncourse.video %}
-                    <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
-                    <source src="{{ oncourse.video.url }}" type="video/mp4">
-                    </video>
-                  {% else %}
-                    <p>No video available for this course.</p>
-                  {% endif %} {% endcomment %}
 
-                  {% comment %} {% if oncourse.video_set.all %}
-                  {% for video in oncourse.video_set.all %}
-                      <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
-                          <source src="{{ video.video_file.url }}" type="video/mp4">
-                      </video>
-                  {% endfor %}
-              {% else %}
-                  <p>No videos available for this course.</p>
-              {% endif %} {% endcomment %}
 
-              {% comment %} {% for section, videos in videos_by_section.items %}
-              <h3>{{ section }}</h3>
-              <div class="video-container">
-                  {% for video in videos %}
-                      <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
-                          <source src="{{ video.video_file.url }}" type="video/mp4">
-                      </video>
-                  {% endfor %}
-              </div>
-          {% endfor %} {% endcomment %}
-          <div class="lesson-list">
+
+                    <div class="mb-5">
+                        <h2 class="mb-3">Course Includes</h2>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Certificate of Completion</span>
+                                {% comment %} <span class="badge badge-primary badge-pill">{{ oncourse.certificate_of_completion }}</span> {% endcomment %}
+                            </li>
+                           
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Coding Exercises</span>
+                                {% comment %} <span class="badge badge-primary badge-pill">{{ oncourse.coding_exercises }}</span> {% endcomment %}
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Articles</span>
+                                {% comment %} <span class="badge badge-primary badge-pill">{{ oncourse.articles }}</span> {% endcomment %}
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Course Materials</span>
+                                {% comment %} <span class="badge badge-primary badge-pill">{{ oncourse.articles }}</span> {% endcomment %}
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Duration (in hours):</span>
+                                <span class="badge badge-primary badge-pill">{{ oncourse.duration }}</span>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    
+    
+
+
+                 
+          {% comment %} <div class="lesson-list">
             {% for section, videos in videos_by_section.items %}
                 <h3 class="section-title" data-section="{{ section }}">{{ section }}</h3>
                 <div class="video-container">
@@ -182,7 +189,30 @@
                     {% endfor %}
                 </div>
             {% endfor %}
-        </div>
+        </div> {% endcomment %}
+
+        <div class="lesson-list">
+            {% for payment_item in payment %}
+                {% if payment_item.payment_status == 'successful' %}
+                    {% for section, videos in videos_by_section.items %}
+                        <h3 class="section-title" data-section="{{ section }}">{{ section }}</h3>
+                        <div class="video-container">
+                            {% for video in videos %}
+                                <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
+                                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                                </video>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>This course is not accessible at the moment. Please ensure your payment is successful.</p>
+                {% endif %}
+            {% endfor %}
+        </div> 
+        
+        
+        
+        
     </div>
     
 

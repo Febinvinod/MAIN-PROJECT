@@ -61,7 +61,7 @@ class Payment(models.Model):
         FAILED = 'failed', 'Failed'
         
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)  # Link the payment to a user
-    # course_title = models.ForeignKey(Oncourse, on_delete=models.CASCADE,null=True)
+    course = models.ForeignKey(Oncourse, on_delete=models.CASCADE,null=True)
     razorpay_order_id = models.CharField(max_length=255)  # Razorpay order ID
     payment_id = models.CharField(max_length=255)  # Razorpay payment ID
     amount = models.DecimalField(max_digits=8, decimal_places=2)  # Amount paid
@@ -76,6 +76,7 @@ class Payment(models.Model):
 
     class Meta:
         ordering = ['-payment_date']
+        unique_together = ['user', 'course']
 
 #Update Status not implemented
     def update_status(self):
@@ -87,24 +88,38 @@ class Payment(models.Model):
             self.payment_status = self.PaymentStatusChoices.FAILED
             self.save()
 
-# class Internship(models.Model):
-#     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
-#     internship_title = models.CharField(max_length=255)
-#     description = models.TextField()
-#     duration = models.IntegerField()
-#     instructor = models.CharField(max_length=100)
-#     price = models.DecimalField(max_digits=5, decimal_places=2,default=0)
-#     start_date = models.DateField()
-#     end_date = models.DateField()
-#     positions = models.PositiveIntegerField()
-#     internship_type = models.CharField(max_length=20, default='unpaid', choices=[("unpaid", "Unpaid")])
-#     internship_mode = models.CharField(max_length=20, default='online',choices=[("online", "Online")])
-#     application_deadline = models.DateField()
-#     company_name = models.CharField(max_length=255, blank=True, null=True)
-#     company_website = models.URLField(max_length=200, blank=True, null=True)
-#     category = models.CharField(max_length=255, choices=[("Category 1", "Category 1"), ("Category 2", "Category 2")])
-#     other_category = models.CharField(max_length=255, blank=True, null=True)
-#     thumbnail = models.ImageField(upload_to='internship_thumbnails', blank=True, null=True)
+
+class Internship(models.Model):
+
+    CATEGORY_CHOICES = (
+        ('Programming', 'Programming'),
+        ('Web_Development', 'Web_Development'),
+        ('Cybersecurity', 'Cybersecurity'),
+        ('Cloud_Computing', 'Cloud_Computing'),
+        ('Machine_Learning', 'Machine_Learning'),
+        ('Data_Science', 'Data_Science'),
+        ('DevOps', 'DevOps'),
+    )
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
+    internship_title = models.CharField(max_length=255)
+    description = models.TextField()
+    duration = models.IntegerField()
+    instructor = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=5, decimal_places=2,default=0)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    positions = models.PositiveIntegerField()
+    internship_type = models.CharField(max_length=20, default='unpaid', choices=[("unpaid", "Unpaid")])
+    internship_mode = models.CharField(max_length=20, default='online',choices=[("online", "Online")])
+    application_deadline = models.DateField()
+    company_name = models.CharField(max_length=255, blank=True, null=True)
+    company_website = models.URLField(max_length=200, blank=True, null=True)
+    category = models.CharField(
+        max_length=100,
+        choices=CATEGORY_CHOICES,
+        default='Programming',  # You can set a default category if needed
+    ) 
+    thumbnail = models.ImageField(upload_to='internship_thumbnails', blank=True, null=True)
     
-#     def __str__(self):
-#         return self.internship_title
+    def __str__(self):
+        return self.internship_title

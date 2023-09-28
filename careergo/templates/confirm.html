@@ -19,6 +19,57 @@
 
     <!-- Include Razorpay's JavaScript SDK -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <style>
+        /* Apply styles to the container */
+.container {
+    margin-top: 50px;
+}
+
+/* Style the card */
+.card {
+    border: none;
+}
+
+/* Style the card header */
+.card-header {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Style the card body */
+.card-body {
+    text-align: center;
+}
+
+/* Style the form */
+#payment-form {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Style the form labels */
+.form-label {
+    font-weight: bold;
+}
+
+/* Style the buttons */
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* Add spacing between buttons */
+.mb-3.text-center button {
+    margin-right: 10px;
+}
+    </style>
 </head>
 <body>
 
@@ -36,6 +87,14 @@
                             <p class="form-label text-center text-success">You are about to enroll in the course: "{{ oncourse.course_title }}"<br> Please confirm and make the payment to complete your enrollment.
 
                             </p>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Course Name:</label>
+                                <input type="text" id="name" name="name" value="{{oncourse.course_title }}" disabled required class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Course Price:</label>
+                            <input type="text" id="amount" name="amount" disabled value="{{ oncourse.price }}" required class="form-control">
+                        </div>
 
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name:</label>
@@ -48,18 +107,15 @@
                             </div>
     
                            
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Course Price:</label>
-                            <input type="text" id="amount" name="amount" disabled value="{{ oncourse.price }}" required class="form-control">
-                        </div>
+                            
                        <div class="mb-3">
                                 <label for="name" class="form-label">Order Id:</label>
                             <input type="text" id="order-id" name="order_id" disabled value="{{ razorpay_order_id }}" required class="form-control">
                         </div>
     
                             <div class="mb-3 text-center">
-                                <button class="btn btn-danger mt-3 mr-2" type="button">Cancel Enrollment</button>
-                                <button class="btn btn-success mt-3" id="pay-btn" type="button" >Confirm & Pay Now</button>
+                                <a href="{% url 'courseprovider:coursedetail' course_id=oncourse.id %}"> <button class="btn btn-danger mt-3 mr-2" type="button" >Cancel Enrollment</button></a>
+                               <button class="btn btn-success mt-3" id="pay-btn" type="button" >Confirm & Pay Now</button>
                             </div>
                         </form>
                     </div>
