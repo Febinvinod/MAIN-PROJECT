@@ -12,6 +12,7 @@
     <!-- Favicon -->
     <link href="{% static 'img/favicon.ico' %}" rel="icon">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
@@ -177,21 +178,9 @@
     
 
 
-                 
-          {% comment %} <div class="lesson-list">
-            {% for section, videos in videos_by_section.items %}
-                <h3 class="section-title" data-section="{{ section }}">{{ section }}</h3>
-                <div class="video-container">
-                    {% for video in videos %}
-                        <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'>
-                            <source src="{{ video.video_file.url }}" type="video/mp4">
-                        </video>
-                    {% endfor %}
-                </div>
-            {% endfor %}
-        </div> {% endcomment %}
+       
 
-        <div class="lesson-list">
+         {% comment %} <div class="lesson-list">
             {% for payment_item in payment %}
                 {% if payment_item.payment_status == 'successful' %}
                     {% for section, videos in videos_by_section.items %}
@@ -208,9 +197,37 @@
                     <p>This course is not accessible at the moment. Please ensure your payment is successful.</p>
                 {% endif %}
             {% endfor %}
-        </div> 
+        </div>  
+        {% endcomment %}
+        <div class="lesson-list">
+            {% for payment_item in payment %}
+                {% if payment_item.payment_status == 'successful' %}
+                    {% for section, videos in videos_by_section.items %}
+                        {% for video in videos %}
+                            <h3 class="section-title" data-video-id="{{ video.id }}" data-section="{{ section }}">{{ section }}</h3>
+                            <div class="video-container" id="video_container_{{ video.id }}">
+                                <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'
+                                    data-video-id="{{ video.id }}" data-course-id="{{ video.course.id }}">
+                                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                                </video>
+                                <!-- Add a checkbox with a unique ID -->
+                                <input type="checkbox" id="checkbox_{{ forloop.parentloop.counter }}_{{ forloop.counter }}" class="video-checkbox">
+                                <button type="button" class="play-button" data-video-id="{{ video.id }}" data-course-id="{{ video.course.id }}">Next</button>
+
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <p>This course is not accessible at the moment. Please ensure your payment is successful.</p>
+                {% endif %}
+            {% endfor %}
+        </div>
         
         
+        
+
+     
+    
         
         
     </div>
@@ -372,26 +389,137 @@
   var player = videojs('videoPlayer');
   
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% comment %} <script>
 
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the current user's ID if available
+            const currentUserId = '{{ request.user.id|default:"" }}';
+    
+            // Add an event listener to all buttons
+            const buttons = document.querySelectorAll('button[data-video-id][data-course-id]');
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Get the data attributes from the clicked button
+                    const videoId = button.getAttribute('data-video-id');
+                    const courseId = button.getAttribute('data-course-id');
+    
+                    // You can now use videoId and courseId in your code
+                    console.log("Video ID:", videoId);
+                    console.log("Course ID:", courseId);
+                    
+                    // Make an AJAX request or perform any desired action here
+                    $.ajax({
+                        url: "{% url 'courseprovider:mark_video_as_checked' 0 %}".replace("0",videoId),
+                        type: 'GET',
+                        dataType: 'json',
+                        
+                    });
+                });
+            });
+        });
+    
+</script> {% endcomment %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const sectionTitles = document.querySelectorAll('.section-title');
-
+    
         sectionTitles.forEach((title) => {
             title.addEventListener('click', function () {
-                const container = this.nextElementSibling; // Get the next sibling (video container)
-                container.classList.toggle('active'); // Toggle the 'active' class for animation
+                // Get the data attributes from the clicked title
+                const videoId = title.getAttribute('data-video-id');
+                const videoContainer = document.getElementById(`video_container_${videoId}`);
+    
+                // Toggle the visibility of the video container
+                if (videoContainer) {
+                    videoContainer.classList.toggle('active');
+                }
             });
         });
     });
+    
 </script>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.play-button');
+    
+        buttons.forEach((button) => {
+            button.addEventListener('click', function () {
+                // Get the data attributes from the clicked button
+                const videoId = button.getAttribute('data-video-id');
+                const courseId = button.getAttribute('data-course-id');
+    
+                // Make an AJAX request to mark the video as checked
+                $.ajax({
+                    url: `/mark_video_as_checked/${videoId}/${courseId}/`, // Update with your actual URL
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success === 'success') {
+                            // Update the UI or provide feedback to the user as needed
+                            console.log("Video marked as checked successfully.");
+                        } else {
+                            console.error("Failed to mark video as checked.");
+                        }
+                    },
+                    error: function () {
+                        console.error("Error marking video as checked.");
+                    }
+                });
+            });
+        });
+    });
+    
+</script>
+
  {% comment %} <script>
-    function redirectToConfirmation() {
-        // Replace 'confirmation_page_url' with the actual URL of your confirmation page
-        var confirmationPageUrl = "{% url 'courseprovider:confirm' oncourse.id %}";
-        window.location.href = confirmationPageUrl;
-    }
-</script> {% endcomment %}
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the current user's ID if available
+        const currentUserId = '{{ request.user.id|default:"" }}';
+
+        // Get all video elements and checkboxes
+        const videos = document.querySelectorAll('.video-js');
+        const checkboxes = document.querySelectorAll('.video-checkbox');
+
+        // Add an event listener for each video
+        videos.forEach((video, index) => {
+            video.addEventListener('ended', function () {
+                // When the video ends, check the corresponding checkbox
+                checkboxes[index].checked = true;
+
+                // Get the video ID and course ID from the data attributes
+                const videoId = checkboxes[index].getAttribute('data-video-id');
+                const courseId = checkboxes[index].getAttribute('data-course-id');
+
+                // Store the checked state in localStorage using the unique ID
+                const localStorageKey = `video_${currentUserId}_${videoId}`;
+                localStorage.setItem(localStorageKey, 'checked');
+
+                // Make an AJAX request to update the 'checked' field in the database
+                fetch(`http://127.0.0.1:8000/mark_video_as_checked/${videoId}/${courseId}/`)
+                    .then(response => {
+                        if (response.ok) {
+                            console.log("Video marked as checked successfully.");
+                        } else {
+                            console.error("Failed to mark video as checked.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+            });
+        });
+    });
+</script>  {% endcomment %}
+
+
+
+
 </body>
 
 </html>

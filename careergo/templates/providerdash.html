@@ -84,6 +84,7 @@
 
 
     <h1 style="background-color: #007bff; color: #fff; padding: 10px; text-align: center; border-radius: 5px;">Your Courses</h1>
+    
     <div class="container">
         <div class="row">
             {% for course in user_courses %}
@@ -105,12 +106,51 @@
                             {% if user.role == user.COURSE_PROVIDER %}
                             <a href="{% url 'courseprovider:edit_course' course.id %}" class="btn mr-2"><i class=""></i>Edit Course</a>
                             <a href="{% url 'courseprovider:delete_course' course.id %}" class="btn btn-danger"><i class=""></i>Delete Course</a>
+                            <br><br><a href="{% url 'courseprovider:enrollment_details' course.id %}" class="btn btn-primary">View Enrollments</a>
                             {% endif %}
                         </div>
+                        
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
+
+    
+        <!-- ... Your existing course details ... -->
+        <h1 style="background-color: #007bff; color: #fff; padding: 10px; text-align: center; border-radius: 5px; margin-top: 20px;">Your Internships</h1>
+        <div class="container">
+            <div class="row">
+                {% for internship in user_internships %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card d-flex flex-column h-100">
+                            <!-- Internship image -->
+                            <img style="height: 250px; width: 350px;" src="{{ internship.thumbnail.url }}" class="card-img-top" alt="{{ internship.internship_title }}">
+                            <div class="card-body flex-grow-1">
+                                <!-- Internship details -->
+                                <h5 class="card-title">{{ internship.internship_title }}</h5>
+                                <p class="card-text">Duration: {{ internship.duration }} days</p>
+                                <p class="card-text">Instructor: {{ internship.instructor }}</p>
+                                <p class="card-text">Price: {{ internship.price }}</p>
+                                <p class="card-text">Id: {{ internship.id }}</p>
+                                <p class="card-text">Start: {{ internship.start_date }}</p>
+                                <p class="card-text">End: {{ internship.end_date }}</p>
+                                <p class="card-text">Category: {{ internship.get_category_display }}</p>
+                                
+                                <!-- Add any additional details you want to display -->
+                                
+                                <!-- Edit and Delete buttons (if applicable) -->
+                                 {% if user.role == user.COURSE_PROVIDER %}
+                                   <a href="{% url 'courseprovider:edit_internship' internship.id %}" class="btn mr-2"><i class=""></i>Edit Internship</a>
+                                   <a href="{% url 'courseprovider:delete_internship' internship.id %}" class="btn btn-danger"><i class=""></i>Delete Internship</a>
+                                   <br><br><a href="{% url 'courseprovider:internenroll'  internship.id %}" class="btn btn-primary">View Enrollments</a>
+                                   {% endif %} 
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>    
+    
 </body>
 </html>

@@ -20,6 +20,17 @@ urlpatterns = [
    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
    path('providerdash/', views.providerdash, name='providerdash'),
    path('confirm/<int:course_id>/', views.confirm, name='confirm'),
+   path('confirmintern/<int:internship_id>/', views.confirmintern, name='confirmintern'),
    path('enroll/', views.enroll, name='enroll'),
-   
+   path('course/<int:course_id>/enrollments/', views.enrollment_details, name='enrollment_details'),
+   path('internship/<int:internship_id>/enrollments/', views.internenroll, name='internenroll'),
+   path('internlist/', views.internlist, name='internlist'),
+   path('edit_internship/<int:internship_id>/', views.edit_internship, name='edit_internship'),
+   path('delete_internship/<int:internship_id>/', views.delete_internship, name='delete_internship'),
+   path('success/', views.success, name='success'),
+   path('dead/', views.dead, name='dead'),
+   #path('mark_video_as_checked/<int:video_id>/<int:course_id>/', views.mark_video_as_checked, name='mark_video_as_checked'),
+   #path('videoshow/<int:video_id>/', views.videoshow, name='videoshow'),
+   # path('generate_certificate/', views.generate_certificate, name='generate_certificate'),
+   # path('certificate_download/<int:certificate_id>/', views.certificate_download, name='certificate_download'),
 ]

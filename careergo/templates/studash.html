@@ -189,22 +189,49 @@
             </div>
             <div class="card-body">
                 <ul class="list-group">
-                    {% for course in enrolled_courses %}
+                    {% for course_payment in enrolled_courses %}
                     <li class="list-group-item">
+                        {% if course_payment.course %}
+                        <!-- Display course details -->
                         <div class="d-flex justify-content-between align-items-center">
-                            <span><strong>Course ID:</strong> {{ course.course.id }}</span>
-                            <span><strong>Course Name:</strong> {{ course.course.course_title }}</span>
-                            <span><strong>Price:</strong> {{ course.amount }} INR</span>
-                            <span><strong>Status:</strong> {{ course.payment_status }}</span>
-                            <a href="http://127.0.0.1:8000/courseprovider/coursedetail/{{course.course.id}}" class="btn btn-primary">View Course</a>
-                            
+                            <span><strong>Course ID:</strong> {{ course_payment.course.id }}</span>
+                            <span><strong>Course Name:</strong> {{ course_payment.course.course_title }}</span>
+                            <span><strong>Price:</strong> {{ course_payment.amount }} INR</span>
+                            <span><strong>Status:</strong> {{ course_payment.payment_status }}</span>
+                            <a href="http://127.0.0.1:8000/courseprovider/coursedetail/{{ course_payment.course.id }}" class="btn btn-primary">View Course</a>
                         </div>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
         
+        <!-- Separately display enrolled internships -->
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Enrolled Internships</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for internship_payment in enrolled_internships %}
+                    <li class="list-group-item">
+                        {% if internship_payment.internship %}
+                        <!-- Display internship details -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><strong>ID:</strong> {{ internship_payment.internship.id }}</span>
+                            <span><strong>Internship Name:</strong> {{ internship_payment.internship.internship_title }}</span>
+                            <span><strong>Price:</strong> {{ internship_payment.amount }} INR</span>
+                            <span><strong>Status:</strong> {{ internship_payment.payment_status }}</span>
+                            <span><strong>Start Date:</strong> {{ internship_payment.internship.start_date }}</span>
+                            <span><strong>End Date:</strong> {{ internship_payment.internship.end_date }}</span>
+                        </div>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
         
     </div>
 

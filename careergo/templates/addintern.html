@@ -57,9 +57,9 @@
         // JavaScript validation functions
     
         function validateFirst_Name(inputField) {
-            const namePattern = /^[A-Za-z ]+/;
+            const namePattern = /^[A-Za-z\s]+$/; // Updated pattern to allow only alphabets and spaces
             const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
-    
+        
             if (!namePattern.test(inputField.value)) {
                 inputField.classList.add('is-invalid');
                 inputField.classList.remove('is-valid');
@@ -72,6 +72,7 @@
                 return true;
             }
         }
+        
         function validateDescription(inputField) {
             const descriptionValue = inputField.value.trim();
             const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
@@ -103,10 +104,11 @@
             const durationValue = inputField.value;
             const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
         
-            if (isNaN(durationValue) || durationValue < 1 || durationValue > 365) {
+            // Check if the duration is a valid integer
+            if (!Number.isInteger(Number(durationValue)) || durationValue < 1 || durationValue > 365) {
                 inputField.classList.add('is-invalid');
                 inputField.classList.remove('is-valid');
-                errorDiv.textContent = 'Invalid input. Duration should be in days.';
+                errorDiv.textContent = 'Invalid input. Duration should be a whole number in days.';
                 return false;
             } else {
                 inputField.classList.remove('is-invalid');
@@ -120,13 +122,14 @@
         function validatePrice(inputField) {
             const priceValue = inputField.value;
             const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
-    
-            const pricePattern = /^\d{1,5}$/; // Allows positive numbers with up to 5 digits
-    
+        
+            // Price pattern that allows up to 5 digits and up to 2 decimal points
+            const pricePattern = /^\d{1,5}(\.\d{1,2})?$/;
+        
             if (!pricePattern.test(priceValue)) {
                 inputField.classList.add('is-invalid');
                 inputField.classList.remove('is-valid');
-                errorDiv.textContent = 'Invalid input. Please enter a valid price (up to 5 digits).';
+                errorDiv.textContent = 'Invalid input. Please enter a valid price (up to 5 digits and up to 2 decimal points).';
                 return false;
             } else {
                 inputField.classList.remove('is-invalid');
@@ -156,6 +159,108 @@
                 return true; // Form will be submitted
             } else {
                 return false; // Form submission will be prevented
+            }
+        }
+
+        function validateStartDate(inputField) {
+            const startDateValue = inputField.value;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+        
+            const currentDate = new Date();
+            const selectedDate = new Date(startDateValue);
+        
+            if (selectedDate < currentDate) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Start date cannot be in the past.';
+                return false;
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+        
+        function validateEndDate(inputField) {
+            const endDateValue = inputField.value;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+        
+            const startDateInput = document.getElementById('startDate');
+            const startDateValue = startDateInput.value;
+            const startDate = new Date(startDateValue);
+            const endDate = new Date(endDateValue);
+        
+            if (endDate <= startDate) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'End date must be after the start date.';
+                return false;
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+        
+        function validateDeadlineDate(inputField) {
+            const deadlineDateValue = inputField.value;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+        
+            const currentDate = new Date();
+            const selectedDate = new Date(deadlineDateValue);
+        
+            if (selectedDate < currentDate) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Deadline date cannot be in the past.';
+                return false;
+            } else {
+                // Check if the deadline is before the start date
+                const startDateInput = document.getElementById('startDate');
+                const startDateValue = startDateInput.value;
+                const startDate = new Date(startDateValue);
+        
+                if (selectedDate >= startDate) {
+                    inputField.classList.add('is-invalid');
+                    inputField.classList.remove('is-valid');
+                    errorDiv.textContent = 'Deadline date must be before the start date.';
+                    return false;
+                } else {
+                    inputField.classList.remove('is-invalid');
+                    inputField.classList.add('is-valid');
+                    errorDiv.textContent = '';
+                    return true;
+                }
+            }
+        }
+        function validatePositions(inputField) {
+            const maxPositions = 59;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            if (inputField.value > maxPositions) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Number of positions cannot exceed ' + maxPositions + '.';
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
+            }
+        }
+        function validateCompanyWebsite(inputField) {
+            const urlPattern = /^(https?:\/\/)?([A-Za-z0-9\-]+\.){1,2}[A-Za-z]{2,6}(\/[A-Za-z0-9\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
+            const errorDiv = inputField.nextElementSibling; // Get the next sibling element for displaying errors
+    
+            if (!urlPattern.test(inputField.value)) {
+                inputField.classList.add('is-invalid');
+                inputField.classList.remove('is-valid');
+                errorDiv.textContent = 'Invalid URL format. Please enter a valid website URL.';
+            } else {
+                inputField.classList.remove('is-invalid');
+                inputField.classList.add('is-valid');
+                errorDiv.textContent = '';
             }
         }
     </script>
@@ -301,7 +406,7 @@
                                                         
                                                         <div class="form-group col-md-12">
                                                             <label class="mt-2 mb-1">Description</label>
-                                                            <textarea class="form-control h-120" name="description" id="description" onkeyup="validateDescription(this)" required></textarea>
+                                                            <textarea class="form-control h-120" name="description" id="description" onkeyup="validateDescription(this)"></textarea>
                                                             <div class="error-message"></div>
                                                         </div>
                                                         
@@ -318,26 +423,26 @@
                                                         </div>
                                                         <div class="form-group col-md-6 pd-20" id="priceField" >
                                                             <label class="mt-2 mb-1">Price</label>
-                                                            <input type="number" name="price" id="price" class="form-control" onkeyup="validatePrice(this)" placeholder="Rupees">
+                                                            <input type="text" name="price" id="price" class="form-control" onkeyup="validatePrice(this)" placeholder="Rupees">
                                                             <div class="error-message"></div>
                                                         </div>
                                                         
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">Start Date</label>
-                                                            <input type="date" name="start_date" class="form-control" required id="startDate">
+                                                            <input type="date" name="start_date" class="form-control" required id="startDate" onchange="validateStartDate(this)">
                                                             <div class="error-message"></div>
                                                         </div>
                                                         
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">End Date</label>
-                                                            <input type="date" name="end_date" class="form-control" required id="endDate">
+                                                            <input type="date" name="end_date" class="form-control" required id="endDate" onchange="validateEndDate(this)">
                                                             <div class="error-message"></div>
                                                         </div>
                                                         
 
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">Number of Positions</label>
-                                                            <input type="number" name="positions" class="form-control" required>
+                                                            <input type="number" name="positions" class="form-control" required max="59" oninput="validatePositions(this)">
                                                             <div class="error-message"></div>
                                                         </div>
                                                         <div class="form-group col-md-6 pd-20">
@@ -355,18 +460,19 @@
                                                         
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">Application Deadline</label>
-                                                            <input type="date" name="application_deadline" class="form-control" required id="applicationDeadline">
+                                                            <input type="date" name="application_deadline" class="form-control" required id="applicationDeadline" onchange="validateDeadlineDate(this)">
                                                             <div class="error-message"></div>
                                                         </div>
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">Company Name</label>
-                                                            <input type="text" name="company_name" class="form-control">
+                                                            <input type="text" name="company_name" class="form-control"  onkeyup="validateFirst_Name(this)">
                                                             <div class="error-message"></div>
                                                         </div>
                                                         
                                                         <div class="form-group col-md-6 pd-20">
                                                             <label class="mt-2 mb-1">Company Website</label>
-                                                            <input type="url" name="company_website" class="form-control">
+                                                            <input type="url" name="company_website" class="form-control" onblur="validateCompanyWebsite(this)">
+                                                            <div class="error-message"></div>
                                                         </div>
 
 
@@ -382,7 +488,8 @@
                                                         </div>
                                                         <div class="form-group col-md-6 pd-20" id="otherCategoryInput" style="display: none;">
                                                             <label class="mt-2 mb-1">Other Category</label>
-                                                            <input type="text" name="other_category" class="form-control">
+                                                            <input type="text" name="other_category" class="form-control"  onkeyup="validateFirst_Name(this)">
+                                                            <div class="error-message"></div>
                                                         </div>
                                               
                                                     </div>
@@ -516,10 +623,26 @@
 
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
+    
     <script>
-
-
-
+        // Disable manual input for date fields
+        const dateInputs = document.querySelectorAll('input[type="date"]');
+        dateInputs.forEach(function (input) {
+            input.addEventListener('keydown', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+    <script>
+        // Get today's date in the format YYYY-MM-DD
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Set the min attribute for start date and end date inputs
+        document.getElementById('startDate').setAttribute('min', today);
+        document.getElementById('endDate').setAttribute('min', today);
+        document.getElementById('applicationDeadline').setAttribute('min', today);
+    </script>
+   <script>
     document.addEventListener('DOMContentLoaded', function () {
         const categorySelect = document.getElementById('categorySelect');
         const otherCategoryField = document.getElementById('otherCategoryInput');
@@ -532,105 +655,8 @@
             }
         });
     });
-        
-
-    function validateDates() {
-        const startDateInput = document.getElementsByName('start_date')[0];
-        const endDateInput = document.getElementsByName('end_date')[0];
-        const applicationDeadlineInput = document.getElementById('applicationDeadline');
-        const today = new Date();
-        
-        // Parse the entered dates as Date objects in the format "day month year"
-        const startDateParts = startDateInput.value.split(' ');
-        const endDateParts = endDateInput.value.split(' ');
-        const applicationDeadlineParts = applicationDeadlineInput.value.split(' ');
-        
-        const startDate = new Date(`${startDateParts[2]}-${getMonthNumber(startDateParts[1])}-${startDateParts[0]}`);
-        const endDate = new Date(`${endDateParts[2]}-${getMonthNumber(endDateParts[1])}-${endDateParts[0]}`);
-        const applicationDeadline = new Date(`${applicationDeadlineParts[2]}-${getMonthNumber(applicationDeadlineParts[1])}-${applicationDeadlineParts[0]}`);
-        
-        const errorDivStartDate = startDateInput.nextElementSibling;
-        const errorDivEndDate = endDateInput.nextElementSibling;
-        const errorDivApplicationDeadline = applicationDeadlineInput.nextElementSibling;
-        
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime()) || isNaN(applicationDeadline.getTime())) {
-            // Invalid date format
-            errorDivStartDate.textContent = 'Invalid date format. Please use "day month year" (e.g., 01 January 2023).';
-            errorDivEndDate.textContent = '';
-            errorDivApplicationDeadline.textContent = '';
-            return false;
-        }
-        
-        if (startDate < today || endDate < today || applicationDeadline < today) {
-            // Dates are in the past
-            errorDivStartDate.textContent = 'Dates cannot be in the past.';
-            errorDivEndDate.textContent = '';
-            errorDivApplicationDeadline.textContent = 'Application deadline cannot be in the past.';
-            return false;
-        }
-        
-        if (startDate > endDate) {
-            // Start date is after end date
-            errorDivStartDate.textContent = 'Start date cannot be after end date.';
-            errorDivEndDate.textContent = 'End date cannot be before start date.';
-            errorDivApplicationDeadline.textContent = '';
-            return false;
-        }
-        
-        if (applicationDeadline > endDate) {
-            // Application deadline is after end date
-            errorDivStartDate.textContent = 'Start date cannot be after end date.';
-            errorDivEndDate.textContent = 'End date cannot be before start date.';
-            errorDivApplicationDeadline.textContent = 'Application deadline cannot be after end date.';
-            return false;
-        }
-        
-        // Dates are valid
-        errorDivStartDate.textContent = '';
-        errorDivEndDate.textContent = '';
-        errorDivApplicationDeadline.textContent = '';
-        return true;
-    }
+   </script>
     
-    // Helper function to get the month number from its name
-    function getMonthNumber(monthName) {
-        const months = {
-            'January': '01',
-            'February': '02',
-            'March': '03',
-            'April': '04',
-            'May': '05',
-            'June': '06',
-            'July': '07',
-            'August': '08',
-            'September': '09',
-            'October': '10',
-            'November': '11',
-            'December': '12',
-        };
-        return months[monthName];
-    }
-    
-    // Add event listeners to perform validation when the dates are changed
-    const startDateInput = document.getElementsByName('start_date')[0];
-    const endDateInput = document.getElementsByName('end_date')[0];
-    const applicationDeadlineInput = document.getElementById('applicationDeadline');
-    
-    startDateInput.addEventListener('change', validateDates);
-    endDateInput.addEventListener('change', validateDates);
-    applicationDeadlineInput.addEventListener('change', validateDates);
-    
-    
-    </script>
-    <script>
-        // Get today's date in the format YYYY-MM-DD
-        const today = new Date().toISOString().split('T')[0];
-        
-        // Set the min attribute for start date and end date inputs
-        document.getElementById('startDate').setAttribute('min', today);
-        document.getElementById('endDate').setAttribute('min', today);
-        document.getElementById('applicationDeadline').setAttribute('min', today);
-    </script>
 </body>
 
 </html>

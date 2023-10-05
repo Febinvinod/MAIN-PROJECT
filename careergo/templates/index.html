@@ -81,11 +81,12 @@
 
                     {% if user.is_authenticated %}
                     <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
-                    <a href="" class="nav-item nav-link">About</a>
+                    <a href="#" class="nav-item nav-link">About</a>
                   
                     <a href="{% url 'courseprovider:courselist' %}" class="nav-item nav-link">Courses</a>
+                    <a href="{% url 'courseprovider:internlist' %}" class="nav-item nav-link">Internships</a>
                     
-                    <div class="nav-item dropdown">
+                    {% comment %} <div class="nav-item dropdown">
                         <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
                         <div class="dropdown-menu m-0">
                             <a href="" class="dropdown-item">Course Detail</a>
@@ -93,7 +94,7 @@
                             <a href="" class="dropdown-item">Instructors</a>
                             <a href="" class="dropdown-item">Testimonial</a>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                     <a href="{% url 'courseprovider:studash' %}" class="nav-item nav-link">Dashboard</a>
                     <div class="nav-item dropdown">
                     <a href="{% url 'index' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
@@ -102,7 +103,7 @@
                     </div>
                 </div>
                 {% comment %} <a href="{% url '' %}" class="nav-item nav-link active"> Enrolled Courses </a> {% endcomment %}
-                    <a href="{% url 'logout' %}" class="nav-item nav-link active"> Logout </a>
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active" id="logout_sidebar_link"> Logout </a>
 
 
                     {% else %}
