@@ -47,6 +47,50 @@
         .video-container.active {
             max-height: 1000px; /* Adjust to your preferred max height */
         }
+
+        .video-checkbox {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            appearance: none;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+        }
+        
+        /* Style the tick mark when the checkbox is checked */
+        .video-checkbox:checked::before {
+            content: "\2713"; /* Unicode checkmark symbol */
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #007bff; /* Change to your desired color */
+        }
+
+        .play-button {
+            background-color: #007bff; /* Button background color */
+            color: #fff; /* Text color */
+            padding: 10px 20px; /* Padding around the text */
+            border: none; /* Remove button border */
+            border-radius: 4px; /* Rounded corners */
+            cursor: pointer;
+            font-size: 16px; /* Font size */
+            transition: background-color 0.3s ease; /* Smooth background color transition */
+        }
+        
+        /* Change button background color on hover */
+        .play-button:hover {
+            background-color: #0056b3; /* Hover background color */
+        }
+        
+        /* Change button background color when clicked */
+        .play-button:active {
+            background-color: #003d80; /* Active background color */
+        }
     </style>
     
 </head>
@@ -207,13 +251,12 @@
                             <h3 class="section-title" data-video-id="{{ video.id }}" data-section="{{ section }}">{{ section }}</h3>
                             <div class="video-container" id="video_container_{{ video.id }}">
                                 <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'
-                                    data-video-id="{{ video.id }}" data-course-id="{{ video.course.id }}">
+                                    data-video-id="{{ video.id }}" data-course-id="{{ video.course.id }}" data-checkbox-id="checkbox_{{ video.id }}">
                                     <source src="{{ video.video_file.url }}" type="video/mp4">
                                 </video>
                                 <!-- Add a checkbox with a unique ID -->
-                                <input type="checkbox" id="checkbox_{{ forloop.parentloop.counter }}_{{ forloop.counter }}" class="video-checkbox">
-                                <button type="button" class="play-button" data-video-id="{{ video.id }}" data-course-id="{{ video.course.id }}">Next</button>
-
+                                <input type="checkbox" id="checkbox_{{ video.id }}" class="video-checkbox">
+                                <button type="button" class="play-button" data-video-id="{{ video.id }}" data-course-id="{{ video.course.id }}" data-video-container-id="video_container_{{ video.id }}">Next</button>
                             </div>
                         {% endfor %}
                     {% endfor %}
@@ -223,12 +266,90 @@
             {% endfor %}
         </div>
         
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const nextButtons = document.querySelectorAll('.play-button');
+                const videoContainers = document.querySelectorAll('.video-container');
         
+                // Initially disable all "Next" buttons
+                nextButtons.forEach(button => {
+                    button.disabled = true;
+                });
+        
+                nextButtons.forEach((button, index) => {
+                    button.addEventListener('click', function () {
+                        // Hide the currently active video container
+                        videoContainers.forEach(container => {
+                            container.classList.remove('active');
+                        });
+        
+                        // Show the next video container
+                        const nextIndex = index + 1;
+                        if (nextIndex < videoContainers.length) {
+                            videoContainers[nextIndex].classList.add('active');
+                        }
+        
+                        // Disable the current button
+                        button.disabled = true;
+                    });
+                });
+        
+                // Add event listener to enable "Next" button when video ends
+                videoContainers.forEach((container, index) => {
+                    const video = container.querySelector('video');
+                    video.addEventListener('ended', function () {
+                        const nextButton = nextButtons[index];
+                        if (nextButton) {
+                            nextButton.disabled = false;
+                        }
+                    });
+                });
+            });
+        </script>
+        
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const nextButtons = document.querySelectorAll('.play-button');
+                const videoContainers = document.querySelectorAll('.video-container');
+        
+                nextButtons.forEach((button, index) => {
+                    button.addEventListener('click', function () {
+                        // Hide the currently active video container
+                        videoContainers.forEach(container => {
+                            container.classList.remove('active');
+                        });
+        
+                        // Show the next video container
+                        const nextIndex = index + 1;
+                        if (nextIndex < videoContainers.length) {
+                            videoContainers[nextIndex].classList.add('active');
+                        }
+                    });
+                });
+            });
+        </script>
+        
+        
+        
+        <script>
+            var videoElements = document.querySelectorAll('.video-js');
+videoElements.forEach(function(video) {
+    video.addEventListener('ended', function() {
+        // Get the associated checkbox ID from the data attribute
+        var checkboxId = video.getAttribute('data-checkbox-id');
+        
+        // Check the corresponding checkbox
+        var checkbox = document.getElementById(checkboxId);
+        if (checkbox) {
+            checkbox.checked = true;
+        }
+    });
+});
+        </script>
         
 
-     
-    
-        
+
         
     </div>
     
@@ -390,37 +511,8 @@
   
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-{% comment %} <script>
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get the current user's ID if available
-            const currentUserId = '{{ request.user.id|default:"" }}';
-    
-            // Add an event listener to all buttons
-            const buttons = document.querySelectorAll('button[data-video-id][data-course-id]');
-            buttons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // Get the data attributes from the clicked button
-                    const videoId = button.getAttribute('data-video-id');
-                    const courseId = button.getAttribute('data-course-id');
-    
-                    // You can now use videoId and courseId in your code
-                    console.log("Video ID:", videoId);
-                    console.log("Course ID:", courseId);
-                    
-                    // Make an AJAX request or perform any desired action here
-                    $.ajax({
-                        url: "{% url 'courseprovider:mark_video_as_checked' 0 %}".replace("0",videoId),
-                        type: 'GET',
-                        dataType: 'json',
-                        
-                    });
-                });
-            });
-        });
-    
-</script> {% endcomment %}
-<script>
+ <script>
     document.addEventListener('DOMContentLoaded', function () {
         const sectionTitles = document.querySelectorAll('.section-title');
     
@@ -456,7 +548,7 @@
     
                 // Make an AJAX request to mark the video as checked
                 $.ajax({
-                    url: `/mark_video_as_checked/${videoId}/${courseId}/`, // Update with your actual URL
+                    url: `http://127.0.0.1:8000/courseprovider/mark_video_as_checked/${videoId}/${courseId}/`, // Update with your actual URL
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {
@@ -477,45 +569,7 @@
     
 </script>
 
- {% comment %} <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get the current user's ID if available
-        const currentUserId = '{{ request.user.id|default:"" }}';
 
-        // Get all video elements and checkboxes
-        const videos = document.querySelectorAll('.video-js');
-        const checkboxes = document.querySelectorAll('.video-checkbox');
-
-        // Add an event listener for each video
-        videos.forEach((video, index) => {
-            video.addEventListener('ended', function () {
-                // When the video ends, check the corresponding checkbox
-                checkboxes[index].checked = true;
-
-                // Get the video ID and course ID from the data attributes
-                const videoId = checkboxes[index].getAttribute('data-video-id');
-                const courseId = checkboxes[index].getAttribute('data-course-id');
-
-                // Store the checked state in localStorage using the unique ID
-                const localStorageKey = `video_${currentUserId}_${videoId}`;
-                localStorage.setItem(localStorageKey, 'checked');
-
-                // Make an AJAX request to update the 'checked' field in the database
-                fetch(`http://127.0.0.1:8000/mark_video_as_checked/${videoId}/${courseId}/`)
-                    .then(response => {
-                        if (response.ok) {
-                            console.log("Video marked as checked successfully.");
-                        } else {
-                            console.error("Failed to mark video as checked.");
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error:", error);
-                    });
-            });
-        });
-    });
-</script>  {% endcomment %}
 
 
 

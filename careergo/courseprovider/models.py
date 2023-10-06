@@ -58,6 +58,7 @@ class Video(models.Model):
     checked = models.BooleanField(default=False)
 class UserVideo(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,null=True)
+    course = models.ForeignKey(Oncourse, on_delete=models.CASCADE,null=True)
     video=models.ForeignKey(Video,on_delete=models.CASCADE,null=True)
     checked=models.BooleanField(default=False)
 

@@ -807,13 +807,15 @@ def dead(request):
 from .models import UserVideo
 @csrf_exempt
 def mark_video_as_checked(request, video_id, course_id):
+    print(video_id)
     try:
         # Assuming you have a way to authenticate the user, for example, using request.user
         user = request.user
-        video = Video.objects.get(id=video_id, course_id=course_id)
+        # video = Video.objects.get(id=video_id, course_id=course_id)
+
 
         # Check if the UserVideo record exists, and if not, create one
-        user_video, created = UserVideo.objects.get_or_create(user=user, video=video)
+        user_video, created = UserVideo.objects.get_or_create(user=user, video_id=video_id,course_id=course_id)
 
         # Set the checked field to True
         user_video.checked = True
@@ -824,14 +826,4 @@ def mark_video_as_checked(request, video_id, course_id):
         return JsonResponse({"error": str(e)}, status=500)
     
 
-def videoshow(request, video_id):
-    print("Hello")
-    print(video_id)
-    videoCheck=UserVideo.objects.filter(user_id=request.user.id,video_id=video_id).exists()
-    if videoCheck is False:
-        video=UserVideo(
-            user_id=request.user.id,
-            video_id=video_id,
-        )
-        video.save()
-    return JsonResponse({"success":"success"})
+
