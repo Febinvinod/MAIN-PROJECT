@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assessment Results</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/results.css' %}">
+
+    <style>
+        /* styles for results_template.html */
+.results-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.result-item {
+    margin: 10px 0;
+}
+
+strong {
+    font-weight: bold;
+    margin-right: 10px;
+    display: inline-block;
+    min-width: 200px;
+    font-size: 18px;
+}
+
+span {
+    font-size: 18px;
+}
+.styled-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .styled-table th, .styled-table td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .styled-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        <h1>Assessment Results</h1>
+        <div class="result-item">
+            <strong>Logical Reasoning Score:</strong>
+            <span>{{ assessment.logical_reasoning_score }}</span>
+        </div>
+        <div class="result-item">
+            <strong>Communication Skills Score:</strong>
+            <span>{{ assessment.communication_skills_score }}</span>
+        </div>
+        <div class="result-item">
+            <strong>Quantitative Aptitude Score:</strong>
+            <span>{{ assessment.quantitative_aptitude_score }}</span>
+        </div>
+        <div class="result-item">
+            <strong>Analytical Skills Score:</strong>
+            <span>{{ assessment.analytical_skills_score }}</span>
+        </div>
+        <div class="result-item">
+            <strong>Stream:</strong>
+            <span>{{ assessment.stream }}</span>
+        </div>
+        <div class="result-item">
+            <strong>Plus Two CGPA:</strong>
+            <span>{{ assessment.plus_two_cgpa }}</span>
+        </div>
+        <div class="result-item">
+            <strong>Total Score:</strong>
+            <span><b>{{ assessment.total_score }}</b></span>
+        </div>
+        <a href="{% url 'index' %}" style="text-decoration: none; color: blue; font-weight: bold;">Go Back</a><br><br>
+    </div>
+
+
+    <div class="results-container">
+        <h1>Recommended Courses</h1>
+        <div class="result-item">
+            <strong>
+                {% for course in recommended_course %}
+                    {{ course }}<br>
+                {% endfor %}
+            </strong>
+        </div>
+    </div>
+    <div class="results-container">
+        <h2>Top Colleges Available:</h2>
+{% for course, colleges in top_five_colleges.items %}
+    <h3>Top 5 Colleges for {{ course }}</h3>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>College</th>
+                <th>NIRF Ranking 2023</th>  <!-- Update the column name here -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for college in colleges %}
+                <tr>
+                    <td>{{ college.College }}</td>
+                    <td>{{ college.NIRF_Ranking_2023 }}</td>  <!-- Update the column name here -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+    
+
+    </div>
+    
+    
+
+</body>
+</html>

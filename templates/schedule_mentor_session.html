@@ -1,0 +1,352 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Mentor Support Session</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="careergo/static/css/animate.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .mentor-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        select,
+        input {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .mentor-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .mentor-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .student-details {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin-top: 15px;
+        }
+
+        .date-container {
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .date-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .time-slots-container {
+            display: none;
+            flex-wrap: wrap;
+        }
+
+        .time-slot {
+            width: 30%;
+            background-color: #e0e0e0;
+            padding: 15px;
+            margin: 0 0 15px 15px;
+            border-radius: 6px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .time-slot:hover {
+            background-color: #d3d3d3;
+        }
+
+        .submit-button {
+            background-color: #4caf50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .submit-button:hover {
+            background-color: #45a049;
+        }
+        .date-container {
+            display: inline-block;
+            margin-right: 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .date-container:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .selected-time-slot {
+            background-color: #4caf50; /* Change the background color as desired */
+            color: white;
+        }
+        .time-slot.readonly {
+            background-color: #B8B8B8;  /* Change the background color for readonly slots */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>info@example.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% url 'index' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CAREERGO</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    
+
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="#" class="nav-item nav-link">About</a>
+                  
+                    <a href="{% url 'courseprovider:courselist' %}" class="nav-item nav-link" id="course">Courses</a>
+                    <a href="{% url 'courseprovider:internlist' %}" class="nav-item nav-link">Internships</a>
+                    
+                    
+                    {% comment %} <div class="nav-item dropdown">
+                        <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="" class="dropdown-item">Course Detail</a>
+                            <a href="" class="dropdown-item">Our Features</a>
+                            <a href="" class="dropdown-item">Instructors</a>
+                            <a href="" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div> {% endcomment %}
+                    <a href="{% url 'courseprovider:studash' %}" class="nav-item nav-link">Dashboard</a>
+                    <div class="nav-item dropdown">
+                    <a href="{% url 'index' %}" id="ProfileDropdown" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{% url 'profile' %}" id="profile" class="dropdown-item">Profile</a>
+                    </div>
+                </div>
+                {% comment %} <a href="{% url '' %}" class="nav-item nav-link active"> Enrolled Courses </a> {% endcomment %}
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active" id="logout_sidebar_link"> Logout </a>
+
+
+                    {% else %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                    <a href="" class="nav-item nav-link">Contact</a>
+                    <a href="{% url 'login' %}" class="nav-item nav-link">Login/Signup</a>
+                    {% endif %}
+                </div>
+               
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+    <div class="container">
+        <h2>Schedule Mentor Support Session</h2>
+        <form method="post" class="mentor-form" onsubmit="return validateForm()">
+            {% csrf_token %}
+            <label for="mentor">Mentor Details:</label>
+            <select name="mentor" required hidden>
+                {% for mentor in mentors %}
+                <option value="{{ mentor.username }}"></option>
+                {% endfor %}
+            </select>
+
+            <div class="mentor-details">
+                {% for mentor in mentors %}
+                <div class="mentor-info">
+                    <p><strong>Mentor Name:</strong> Dr. {{ mentor.username }}</p>
+                    <p><strong>Email:</strong> {{ mentor.email }}</p>
+                    <p><strong>Phone:</strong> {{ mentor.phone_no }}</p>
+                    <p name="price"><strong>Reg Fees:</strong> Rs. 1500/-</p>
+                    <!-- Add more details as needed -->
+                </div>
+                {% endfor %}
+            </div>
+
+            <label for="student">Student:</label>
+            <input type="text" name="student" value="{{ request.user.username }}" readonly hidden>
+
+            <div class="student-details">
+                <p><strong>Student Name:</strong> {{ request.user.username }}</p>
+                <p><strong>Email:</strong> {{ request.user.email }}</p>
+                <!-- Add more details as needed -->
+            </div>
+
+            <label for="selected_time">Select Time Slot:</label>
+            {% for date, time_slots in time_slots_by_date.items %}
+    <div class="date-container" onclick="toggleTimeSlots(this)">
+        <p class="date-header">{{ date }}</p>
+        <div class="time-slots-container">
+            {% for time_slot_data in time_slots %}
+    <div class="time-slot {% if time_slot_data.readonly %}readonly{% endif %}" onclick="selectTimeSlot('{{ time_slot_data.formatted_time }}')" {% if time_slot_data.readonly %}readonly{% endif %}>
+        {{ time_slot_data.formatted_time }}
+    </div>
+{% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+            <input type="hidden" name="selected_time" id="selected_time_input" required>
+            
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
+    </div>
+
+    
+    <script>
+        function validateForm() {
+            const selectedTimeInput = document.getElementById('selected_time_input');
+            const selectedTime = selectedTimeInput.value;
+    
+            if (!selectedTime) {
+                alert('Please select a time slot.');  // You can customize this alert or show an error message in your preferred way
+                return false;  // Prevent form submission
+            }
+            return true;  // Allow form submission
+    }
+        function toggleTimeSlots(element) {
+            const allDateContainers = document.querySelectorAll('.date-container');
+            allDateContainers.forEach(container => {
+                const timeSlotsContainer = container.querySelector('.time-slots-container');
+                if (container !== element) {
+                    timeSlotsContainer.style.display = 'none';
+                }
+            });
+    
+            const timeSlotsContainer = element.querySelector('.time-slots-container');
+            timeSlotsContainer.style.display = timeSlotsContainer.style.display === 'none' ? 'flex' : 'none';
+        }
+    
+        function selectTimeSlot(selectedTime, event) {
+            event = event || window.event;  // Handle different browsers
+            if (event.stopPropagation) {
+                event.stopPropagation();  // Standard browsers
+            } else {
+                event.cancelBubble = true;  // IE
+            }
+    
+            // Remove the 'selected-time-slot' class from all time slots
+            const allTimeSlots = document.querySelectorAll('.time-slot');
+            allTimeSlots.forEach(timeSlot => {
+                timeSlot.classList.remove('selected-time-slot');
+            });
+    
+            // Add the 'selected-time-slot' class to the clicked time slot
+            const clickedTimeSlot = event.target;
+            clickedTimeSlot.classList.add('selected-time-slot');
+    
+            document.getElementById('selected_time_input').value = selectedTime;
+            // Add styling or other interactivity if needed
+        }
+    </script>
+    
+</body>
+
+</html>

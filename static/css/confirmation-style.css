@@ -1,0 +1,48 @@
+/* Apply styles to the container */
+.container {
+    margin-top: 50px;
+}
+
+/* Style the card */
+.card {
+    border: none;
+}
+
+/* Style the card header */
+.card-header {
+    background-color: #f8f9fa;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Style the card body */
+.card-body {
+    text-align: center;
+}
+
+/* Style the form */
+#payment-form {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* Style the form labels */
+.form-label {
+    font-weight: bold;
+}
+
+/* Style the buttons */
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* Add spacing between buttons */
+.mb-3.text-center button {
+    margin-right: 10px;
+}

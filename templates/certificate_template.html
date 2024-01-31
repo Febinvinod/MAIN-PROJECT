@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate</title>
+    <!-- Add your certificate styles here -->
+</head>
+<body>
+    <h1>Certificate of Completion</h1>
+    <p>This is to certify that</p>
+    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+    <p>has successfully completed the course</p>
+    <h3>{{ course.course_title }}</h3>
+    <p>Issued on: {{ issue_date }}</p>
+</body>
+</html>

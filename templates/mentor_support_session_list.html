@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Support Sessions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .mentor-section,
+        .student-section,
+        .session-details {
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+        }
+
+        .mentor-section h3,
+        .student-section h3,
+        .session-details h3 {
+            margin-bottom: 10px;
+        }
+
+        .details {
+            margin-top: 10px;
+        }
+
+        .details a {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .details a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Mentor Support Sessions</h2>
+
+        {% if mentor_sessions %}
+            <div class="mentor-section">
+                <h3>Mentor Details</h3>
+                <p><strong>Mentor Name:</strong> {{ mentor_sessions.0.mentor.username }}</p>
+                <p><strong>Email:</strong> {{ mentor_sessions.0.mentor.email }}</p>
+                <p><strong>Phone:</strong> {{ mentor_sessions.0.mentor.phone_no }}</p>
+                <!-- Add more mentor details as needed -->
+            </div>
+
+
+            <div class="session-details">
+                <h3>Session Details</h3>
+                <p><strong>Session details will be also available on your dashboard</strong></p>
+                <p><strong>Scheduled Date and Time:</strong> {{ mentor_sessions.0.scheduled_date_time }}</p>
+                Zoom Link: <a href="{{ mentor_sessions.0.zoom_link }}" target="_blank">{{ mentor_sessions.0.zoom_link }}</a>
+                <p><strong>Passcode: {{ mentor_sessions.0.passcode }}</strong></p>
+            </div>
+        {% else %}
+            <p>No mentor sessions available</p>
+        {% endif %}
+        <a href="{% url 'courseprovider:schedule_mentor_session' %}" class="btn btn-secondary mt-3">Back</a>
+    </div>
+</body>
+
+</html>

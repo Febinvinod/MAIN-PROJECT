@@ -1,0 +1,68 @@
+{% load static %}
+<!-- certificate.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificate</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom styles for the certificate */
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center; /* Horizontally center the container */
+            align-items: center; /* Vertically center the container */
+            height: 100vh; /* Make the body take up the full viewport height */
+        }
+        .container {
+            max-width: 800px;
+            background-color: #fff;
+            padding: 20px; /* Add padding to all sides */
+        }
+        .certificate {
+            text-align: center;
+        }
+        h1.display-4 {
+            font-family: 'Brush Script MT', cursive;
+            font-size: 36px;
+        }
+        h2, h3 {
+            font-family: 'Times New Roman', serif;
+        }
+        p {
+            font-family: 'Times New Roman', serif;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a class="navbar-brand ml-lg-3">
+            <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CAREERGO</h1>
+        </a>
+        <div class="row">
+            <div class="col-md-12 text-center">
+               
+                <div class="certificate">
+                   
+                    <h1 class="display-4">Certificate of Completion</h1>
+                    <p class="lead">This is to certify that</p>
+                    <h2>{{ user.username }}</h2>
+                    <p class="lead">has successfully completed the course:</p>
+                    <h3 style="color:blue">{{ course.course_title }}</h3>
+                    <p>Duration: {{ course.duration }} hours</p>
+                    <p>Issued Date: {{ current_date }}</p>
+                    <a href="{% url 'courseprovider:download_certificate' certificate_id=certificate_id %}" class="btn btn-primary">Download Certificate (PDF)</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Bootstrap JS and jQuery (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

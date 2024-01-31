@@ -1,0 +1,119 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Provider Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <!-- Add Bootstrap CSS link here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="careergo/static/css/animate.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- Add your custom CSS styles here -->
+</head>
+<body>
+
+
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% url 'index' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CAREERGO</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    
+
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'providerpage' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                  
+                    <a href="{% url 'courseprovider:courselist' %}" class="nav-item nav-link">Courses</a>
+                    
+                    <div class="nav-item dropdown">
+                        <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="" class="dropdown-item">Course Detail</a>
+                            <a href="" class="dropdown-item">Our Features</a>
+                            <a href="" class="dropdown-item">Instructors</a>
+                            <a href="" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div>
+                    <a href="{% url 'courseprovider:providerdash' %}" class="nav-item nav-link">Dashboard</a>
+                    <div class="nav-item dropdown">
+                    <a href="{% url 'providerpage' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
+                    </div>
+                </div>
+                {% comment %} <a href="{% url '' %}" class="nav-item nav-link active"> Enrolled Courses </a> {% endcomment %}
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active"> Logout </a>
+
+
+                    {% else %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                    <a href="" class="nav-item nav-link">Contact</a>
+                    <a href="{% url 'login' %}" class="nav-item nav-link">Login/Signup</a>
+                    {% endif %}
+                </div>
+               
+            </div>
+        </nav>
+    </div>
+    <div class="container mt-5">
+        <h1>Enrollment Details for {{ course.course_title }}</h1>
+        <div class="card">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Payment ID</th>
+                            <th>Amount</th>
+                            <th>Payment Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for enrollment in enrollments %}
+                            <tr>
+                                <td>{{ enrollment.user.username }}</td>
+                                <td>{{ enrollment.user.email }}</td>
+                                <td>{{ enrollment.payment_id }}</td>
+                                <td>{{ enrollment.amount }}</td>
+                                <td>{{ enrollment.payment_date }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">No enrollments for this course.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,633 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>CareerGo- Online Education Website</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+        }
+    
+        /* Section Title Styling */
+        .section-title {
+            background-color: #3498db;
+            color: #fff;
+            padding: 15px;
+            margin: 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+    
+        .section-title:hover {
+            background-color: #2980b9;
+        }
+    
+        /* Video Container Styling */
+        .video-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-in-out;
+            margin-bottom: 20px;
+        }
+    
+        .video-container.active {
+            max-height: 600px; /* Adjust to your preferred max height */
+        }
+    
+        /* Checkbox Styling */
+        .video-checkbox {
+            position: relative;
+            width: 24px;
+            height: 24px;
+            appearance: none;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+    
+        /* Style the tick mark when the checkbox is checked */
+        .video-checkbox:checked::before {
+            content: "\2713"; /* Unicode checkmark symbol */
+            display: block;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #3498db; /* Checkmark color */
+        }
+    
+        /* Play Button Styling */
+        .play-button {
+            background-color: #3498db; /* Button background color */
+            color: #fff; /* Text color */
+            padding: 12px 24px; /* Padding around the text */
+            border: none; /* Remove button border */
+            border-radius: 4px; /* Rounded corners */
+            cursor: pointer;
+            font-size: 16px; /* Font size */
+            transition: background-color 0.3s ease; /* Smooth background color transition */
+        }
+    
+        /* Change button background color on hover */
+        .play-button:hover {
+            background-color: #2980b9; /* Hover background color */
+        }
+    
+        /* Change button background color when clicked */
+        .play-button:active {
+            background-color: #1f6692; /* Active background color */
+        }
+    
+        /* Dimmed Button Styling */
+        .dimmed-button {
+            opacity: 0.7; /* Adjust the opacity value as needed */
+            cursor: not-allowed; /* Change cursor to indicate the button is disabled */
+        }
+    
+        /* Style the associated checkbox when the button is disabled */
+        .dimmed-button[disabled] + .video-checkbox {
+            opacity: 0.7; /* Dim the checkbox when the button is disabled */
+            cursor: not-allowed; /* Change cursor for the checkbox when the button is disabled */
+            pointer-events: none; /* Disable mouse events on the checkbox when dimmed */
+        }
+    
+        /* Certificate Button Styling */
+        .certificate-button {
+            background-color: #4caf50; /* Green button color */
+            color: #fff; /* Text color */
+            padding: 15px 30px; /* Padding around the text */
+            border: none; /* Remove button border */
+            border-radius: 4px; /* Rounded corners */
+            text-decoration: none; /* Remove underlines from the link */
+            display: inline-block; /* Make it inline block to respect padding */
+            margin-top: 20px; /* Add some space at the top */
+        }
+    
+        /* Certificate Button Hover Effect */
+        .certificate-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+
+
+        h1{
+            color: white;
+        }
+        
+    </style>
+    
+    
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>info@example.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% static 'index.html' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CareerGo</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                    <a href="/courseprovider/courselist" class="nav-item nav-link">Courses</a>
+                    <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Pages</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="detail.html" class="dropdown-item active">Course Detail</a>
+                            <a href="feature.html" class="dropdown-item">Our Features</a>
+                            <a href="team.html" class="dropdown-item">Instructors</a>
+                            <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div>
+                   
+                </div>
+                
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+
+    <!-- Header Start -->
+    <div class="jumbotron jumbotron-fluid page-header position-relative overlay-bottom" style="margin-bottom: 90px;">
+        <div class="container text-center py-5">
+            <h1 class="text-white display-1">Course Detail</h1>
+           
+        </div>
+    </div>
+    <!-- Header End -->
+
+
+    <!-- Detail Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="mb-5">
+                        <div class="section-title position-relative mb-5">
+                            <h6 class="d-inline-block position-relative text-secondary text-uppercase pb-2">Course Detail</h6>
+                            <h1 class="display-4">{{ oncourse.course_title }}</h1>
+                        </div>
+                        <img class="img-fluid rounded w-70 mb-4" style="height:300px" src="{{ oncourse.thumbnail.url }}" alt="Image">
+                        
+                        <p><h6>{{ oncourse.description }}</h6></p>
+                       
+                    </div>
+
+
+
+
+                    <div class="mb-5">
+                        <h2 class="mb-3">Course Includes</h2>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Certificate of Completion</span>
+                                {% comment %} <span class="badge badge-primary badge-pill">{{ oncourse.certificate_of_completion }}</span> {% endcomment %}
+                            </li>
+                           
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Coding Exercises</span>
+                                {% comment %} <span class="badge badge-primary badge-pill">{{ oncourse.coding_exercises }}</span> {% endcomment %}
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Articles</span>
+                                {% comment %} <span class="badge badge-primary badge-pill">{{ oncourse.articles }}</span> {% endcomment %}
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Course Materials</span>
+                                {% comment %} <span class="badge badge-primary badge-pill">{{ oncourse.articles }}</span> {% endcomment %}
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span class="d-inline-block text-truncate" style="max-width: 50%;">Duration (in hours):</span>
+                                <span class="badge badge-primary badge-pill">{{ oncourse.duration }}</span>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    
+    
+
+
+        <div class="lesson-list">
+            {% for payment_item in payment %}
+                {% if payment_item.payment_status == 'successful' %}
+                    {% for section, videos in videos_by_section.items %}
+                        {% for video in videos %}
+                            <h3 class="section-title" data-video-id="{{ video.id }}" data-section="{{ section }}">{{ section }}</h3>
+                            <div class="video-container" id="video_container_{{ video.id }}">
+                                <video class="video-js vjs-default-skin" controls preload="auto" width="600" height="460" data-setup='{}'
+                                data-video-id="{{ video.id }}" data-course-id="{{ video.course.id }}" data-checkbox-id="checkbox_{{ video.id }}">
+                                <source src="{{ video.video_file.url }}" type="video/mp4">
+                            </video>
+                        
+                        
+                             <div class="button-checkbox-container">
+                                <!-- Add a checkbox with a unique ID -->
+                                {% for video in videos %}
+                                <input type="checkbox" id="checkbox_{{ video.id }}" class="video-checkbox" data-video-id="{{ video.id }}"
+                                       {% if video.id in checked_video_ids %}checked{% endif %}>
+                                <!-- Other video-related HTML here -->
+                            {% endfor %}
+                                <button type="button" class="play-button dimmed-button" data-video-id="{{ video.id }}" data-course-id="{{ video.course.id }}" data-video-container-id="video_container_{{ video.id }}">Next</button>
+                             </div>  
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <p>This course is not accessible at the moment. Please ensure your payment is successful.</p>
+                {% endif %}
+            {% endfor %}<br><br>
+            {% if all_videos_completed %}
+    <a href="{% url 'courseprovider:view_certificate' course_id=oncourse.id %}" class="certificate-button">Download Certificate</a>
+{% endif %}
+        </div>
+        
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const nextButtons = document.querySelectorAll('.play-button');
+                const videoContainers = document.querySelectorAll('.video-container');
+            
+                // Initially disable all "Next" buttons and apply the dimmed-button class
+                nextButtons.forEach(button => {
+                    button.disabled = true;
+                    button.classList.add('dimmed-button'); // Apply the dimmed-button class
+                });
+            
+                nextButtons.forEach((button, index) => {
+                    button.addEventListener('click', function () {
+                        // Hide the currently active video container
+                        videoContainers.forEach(container => {
+                            container.classList.remove('active');
+                        });
+            
+                        // Show the next video container
+                        const nextIndex = index + 1;
+                        if (nextIndex < videoContainers.length) {
+                            videoContainers[nextIndex].classList.add('active');
+                        }
+            
+                        // Disable the current button and the associated checkbox
+                        button.disabled = true;
+                        button.classList.add('dimmed-button'); // Apply the dimmed-button class
+                        const checkbox = document.querySelector(`#checkbox_${button.getAttribute('data-video-id')}`);
+                        if (checkbox) {
+                            checkbox.disabled = true;
+                            checkbox.classList.add('dimmed-button'); // Apply the dimmed-button class to the checkbox container
+                        }
+                    });
+                });
+            
+                // Add event listener to enable "Next" button when video ends and remove the dimmed-button class
+                videoContainers.forEach((container, index) => {
+                    const video = container.querySelector('video');
+                    video.addEventListener('ended', function () {
+                        const nextButton = nextButtons[index];
+                        if (nextButton) {
+                            nextButton.disabled = false;
+                            nextButton.classList.remove('dimmed-button'); // Remove the dimmed-button class
+                            const checkbox = document.querySelector(`#checkbox_${nextButton.getAttribute('data-video-id')}`);
+                            if (checkbox) {
+                                checkbox.disabled = false;
+                                checkbox.classList.remove('dimmed-button'); // Remove the dimmed-button class from the checkbox container
+                            }
+                        }
+                    });
+                });
+            });
+            
+        </script>
+        
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const nextButtons = document.querySelectorAll('.play-button');
+                const videoContainers = document.querySelectorAll('.video-container');
+        
+                nextButtons.forEach((button, index) => {
+                    button.addEventListener('click', function () {
+                        // Hide the currently active video container
+                        videoContainers.forEach(container => {
+                            container.classList.remove('active');
+                        });
+        
+                        // Show the next video container
+                        const nextIndex = index + 1;
+                        if (nextIndex < videoContainers.length) {
+                            videoContainers[nextIndex].classList.add('active');
+                        }
+                    });
+                });
+            });
+        </script>
+        
+        
+        
+        <script>
+            var videoElements = document.querySelectorAll('.video-js');
+videoElements.forEach(function(video) {
+    video.addEventListener('ended', function() {
+        // Get the associated checkbox ID from the data attribute
+        var checkboxId = video.getAttribute('data-checkbox-id');
+        
+        // Check the corresponding checkbox
+        var checkbox = document.getElementById(checkboxId);
+        if (checkbox) {
+            checkbox.checked = true;
+        }
+    });
+});
+        </script>
+        
+
+
+        
+    </div>
+    
+
+                <div class="col-lg-4 mt-5 mt-lg-0">
+                    <div class="bg-primary mb-5 py-3">
+                        <h3 class="text-white py-3 px-4 m-0">Course Features</h3>
+                        <div class="d-flex justify-content-between border-bottom px-4">
+                            <h6 class="text-white my-3">Instructor</h6>
+                            <h6 class="text-white my-3" >{{ oncourse.instructor }}</h6>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between border-bottom px-4">
+                            <h6 class="text-white my-3">Title</h6>
+                            <h6 class="text-white my-3">{{ oncourse.course_title }}</h6>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom px-4">
+                            <h6 class="text-white my-3">Duration</h6>
+                            <h6 class="text-white my-3">{{ oncourse.duration }}hrs</h6>
+                        </div>
+                        <div class="d-flex justify-content-between border-bottom px-4">
+                            <h6 class="text-white my-3">Skill level</h6>
+                            <h6 class="text-white my-3">All Level</h6>
+                        </div>
+                        <div class="d-flex justify-content-between px-4">
+                            <h6 class="text-white my-3">Language</h6>
+                            <h6 class="text-white my-3">English</h6>
+                        </div>
+                        <h5 class="text-white py-3 px-4 m-0">Course Price: ₹{{ oncourse.price }}</h5>
+                        <div class="py-3 px-4">
+                            <a href="{% url 'courseprovider:confirm' course_id=oncourse.id %}"> <button class="btn btn-block btn-secondary py-3 px-5" id="pay-btn" >Enroll Now</button>
+                            </a>  
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h2 class="mb-3">Categories</h2>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <a href="" class="text-decoration-none h6 m-0">Web Design</a>
+                                <span class="badge badge-primary badge-pill">150</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <a href="" class="text-decoration-none h6 m-0">Web Development</a>
+                                <span class="badge badge-primary badge-pill">131</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <a href="" class="text-decoration-none h6 m-0">Online Marketing</a>
+                                <span class="badge badge-primary badge-pill">78</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <a href="" class="text-decoration-none h6 m-0">Keyword Research</a>
+                                <span class="badge badge-primary badge-pill">56</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <a href="" class="text-decoration-none h6 m-0">Email Marketing</a>
+                                <span class="badge badge-primary badge-pill">98</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+    
+
+
+
+    
+    <!-- Detail End -->
+
+
+    <!-- Footer Start -->
+    <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
+        <div class="container mt-5 pt-5">
+            <div class="row">
+                <div class="col-md-6 mb-5">
+                    <a href="{% static 'index.html' %}" class="navbar-brand">
+                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Edukate</h1>
+                    </a>
+                    <p class="m-0">Accusam nonumy clita sed rebum kasd eirmod elitr. Ipsum ea lorem at et diam est, tempor rebum ipsum sit ea tempor stet et consetetur dolores. Justo stet diam ipsum lorem vero clita diam</p>
+                </div>
+                <div class="col-md-6 mb-5">
+                    <h3 class="text-white mb-4">Newsletter</h3>
+                    <div class="w-100">
+                        <div class="input-group">
+                            <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary px-4">Sign Up</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Get In Touch</h3>
+                    <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
+                    <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
+                    <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                    <div class="d-flex justify-content-start mt-4">
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-twitter"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-facebook-f"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-linkedin-in"></i></a>
+                        <a class="text-white" href="#"><i class="fab fa-2x fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Quick Links</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-white-50 border-top py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                    <p class="m-0">Copyright &copy; <a class="text-white" href="#">Your Site Name</a>. All Rights Reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-right">
+                    <p class="m-0">Designed by <a class="text-white" href="{% static 'https://htmlcodex.com' %}">HTML Codex</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    <link href="https://vjs.zencdn.net/7.15.4/video-js.css" rel="stylesheet">
+<script src="https://vjs.zencdn.net/7.15.4/video.js"></script>
+<script>
+  // Initialize Video.js on the video element with an ID of "videoPlayer"
+  var player = videojs('videoPlayer');
+  
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sectionTitles = document.querySelectorAll('.section-title');
+    
+        sectionTitles.forEach((title) => {
+            title.addEventListener('click', function () {
+                // Get the data attributes from the clicked title
+                const videoId = title.getAttribute('data-video-id');
+                const videoContainer = document.getElementById(`video_container_${videoId}`);
+    
+                // Toggle the visibility of the video container
+                if (videoContainer) {
+                    videoContainer.classList.toggle('active');
+                }
+            });
+        });
+    });
+    
+</script>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.play-button');
+    
+        buttons.forEach((button) => {
+            button.addEventListener('click', function () {
+                // Get the data attributes from the clicked button
+                const videoId = button.getAttribute('data-video-id');
+                const courseId = button.getAttribute('data-course-id');
+    
+                // Make an AJAX request to mark the video as checked
+                $.ajax({
+                    url: `http://127.0.0.1:8000/courseprovider/mark_video_as_checked/${videoId}/${courseId}/`, // Update with your actual URL
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.success === 'success') {
+                            // Update the UI or provide feedback to the user as needed
+                            console.log("Video marked as checked successfully.");
+                        } else {
+                            console.error("Failed to mark video as checked.");
+                        }
+                    },
+                    error: function () {
+                        console.error("Error marking video as checked.");
+                    }
+                });
+            });
+        });
+    });
+    
+</script>
+
+
+
+
+
+</body>
+
+</html>

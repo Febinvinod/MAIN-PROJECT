@@ -1,0 +1,149 @@
+{% load static %}
+{% csrf_token %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mentor Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Add Bootstrap CSS link here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="careergo/static/css/animate.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- Add your custom CSS styles here -->
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    
+        .session-details {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+    
+        .session-details p {
+            margin: 5px 0;
+        }
+    
+        .session-details hr {
+            margin: 10px 0;
+            border: 0;
+            border-top: 1px solid #ddd;
+        }
+        .host-zoom-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    
+</head>
+<body>
+
+
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% url 'index' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CAREERGO</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    
+
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'mentorpage' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                  
+                    <a href="{% url 'courseprovider:courselist' %}" class="nav-item nav-link">Courses</a>
+                    
+              
+                   
+                    <div class="nav-item dropdown">
+                    <a href="{% url 'providerpage' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
+                    </div>
+                </div>
+                {% comment %} <a href="{% url '' %}" class="nav-item nav-link active"> Enrolled Courses </a> {% endcomment %}
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active"> Logout </a>
+
+
+                    {% else %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                    <a href="" class="nav-item nav-link">Contact</a>
+                    <a href="{% url 'login' %}" class="nav-item nav-link">Login/Signup</a>
+                    {% endif %}
+                </div>
+               
+            </div>
+        </nav>
+    </div>
+
+
+
+
+    
+        <!-- ... Your existing course details ... -->
+       
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Your Mentor Support Sessions</h5>
+            </div>
+            <div class="card-body">
+                {% if mentor_sessions %}
+                    <div class="container">
+                        {% for session in mentor_sessions %}
+                            <div class="session-details">
+                                <p><strong>Student:</strong> {{ session.student.username }}</p>
+                                <p><strong>Email:</strong> {{ session.student.email }}</p>
+                                <p><strong>Phone:</strong> {{ session.student.phone_no }}</p>
+                                <p><strong>Scheduled Date and Time:</strong> {{ session.scheduled_date_time }}</p>
+                                <p><strong>Zoom Link:</strong> <a href="{{ session.zoom_link }}" target="_blank">{{ session.zoom_link }}</a></p>
+                                <button class="btn btn-primary" onclick="hostMeeting('https://zoom.us/')">Host Meeting</button>
+            
+                                <hr>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No mentor support sessions available</p>
+                {% endif %}
+            </div>
+        </div>
+        <script>
+            // JavaScript function to open Zoom meeting
+            function hostMeeting(zoomLink) {
+                // Open Zoom link in a new tab
+                window.open(zoomLink, '_blank');
+            }
+        </script>
+</body>
+</html>
