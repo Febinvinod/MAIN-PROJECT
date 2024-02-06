@@ -1,0 +1,330 @@
+{% load static %}
+{% csrf_token %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course Provider Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <!-- Add Bootstrap CSS link here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="careergo/static/css/animate.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- Add your custom CSS styles here -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha384-9aQ8NYLl78c+RJoK8CI6mTP6a6pKLHlYTIjLb+BDO/sGBCvKH1LjK1hH+KZ5+4w3" crossorigin="anonymous">
+
+    <style>
+        /* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    padding-top: 56px; /* Adjust as needed based on your navbar height */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 56px; /* Adjust as needed based on your navbar height */
+    height: calc(100vh - 56px); /* Adjust the height of the sidebar */
+    padding-top: 20px; /* Add some top padding */
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* Active link styling */
+.sidebar .nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Sidebar link styling */
+.sidebar .nav-link {
+    padding: 10px 15px;
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #f8f9fa; /* Add a subtle hover effect */
+}
+
+/* Dropdown styling */
+.sidebar .dropdown-menu {
+    border: none;
+    border-radius: 0;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .dropdown-item {
+    color: #333;
+    padding: 10px 20px;
+}
+
+.sidebar .dropdown-item:hover {
+    background-color: #f8f9fa; /* Add a subtle hover effect */
+}
+
+/* Content Styles */
+.main-content {
+    margin-left: 250px; /* Adjust the margin based on your sidebar width */
+}
+
+/* Add a subtle box shadow to the content */
+.main-content {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.card {
+    height: 400px; /* Adjust the height as needed */
+}
+
+/* Adjust the height and padding of card body */
+.card-body {
+    height: 100%;
+    padding: 10px;
+}
+
+/* Adjust the height of the card image */
+.card-img-top {
+    height: 150px; /* Adjust the height as needed */
+}
+
+/* Adjust the font size of card title and text */
+.card-title,
+.card-text {
+    font-size: 14px; /* Adjust the font size as needed */
+}
+
+/* Add a subtle box shadow to the cards for depth */
+.card {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+    </style>
+</head>
+<body>
+
+
+        <div class="container-fluid p-0">
+            <div class="row">
+                <!-- Sidebar -->
+                <nav class="col-md-3 col-lg-2 bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column">
+                            {% if user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{% url 'providerpage' %}">
+                                        <i class="fa fa-home mr-2"></i> Home
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="fa fa-info-circle mr-2"></i> About
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#course">
+                                        <i class="fa fa-book mr-2"></i> Your Courses
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#intrn">
+                                        <i class="fa fa-book mr-2"></i> Your Internships
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#web">
+                                        <i class="fa fa-book mr-2"></i> Your Webinars
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/courseprovider" id="edit">
+                                        <i class="fa fa-plus mr-2"></i> Add Courses
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'courseprovider:intern' %}">
+                                        <i class="fa fa-briefcase mr-2"></i> Add Internships
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'courseprovider:addwebinar' %}">
+                                        <i class="fas fa-calendar-plus mr-2"></i> Add Webinar
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                        <i class="fa fa-user mr-2"></i> Welcome, {{user.username}}
+                                    </a>
+                                    <div class="dropdown-menu m-0">
+                                        <a class="dropdown-item" href="{% url 'profile' %}"><i class="fa fa-user-circle mr-2"></i> Profile</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}">
+                                        <i class="fa fa-sign-out-alt mr-2"></i> Logout
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="{% url 'index' %}">
+                                        <i class="fa fa-home mr-2"></i> Home
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="fa fa-info-circle mr-2"></i> About
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="fa fa-envelope mr-2"></i> Contact
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'login' %}">
+                                        <i class="fa fa-sign-in-alt mr-2"></i> Login/Signup
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+        
+                <!-- Content -->
+                <main role="main" class="main-content col-md-9 ml-sm-auto col-lg-10 px-4">
+                    <!-- Your main content goes here -->
+                    <!-- For example: -->
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Dashboard</h1>
+                    </div>
+                    <div class="row">
+                        <h1 style="background-color: #007bff; color: #fff; padding: 10px; text-align: center; border-radius: 5px;" id="course">Your Courses</h1>
+    
+    <div class="container">
+        <div class="row">
+            {% for course in user_courses %}
+                <div class="col-md-4 mb-4">
+                    <div class="card d-flex flex-column h-100">
+                        <img style="height:250px; width:350px;" src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.course_title }}">
+                        <div class="card-body flex-grow-1">
+                            <h5 class="card-title">{{ course.course_title }}</h5>  
+                            <p class="card-text">Duration: {{ course.duration }}</p>
+                            <p class="card-text">Instructor: {{ course.instructor }}</p>
+                            <p class="card-text">Price: {{ course.price }}</p>
+                            <p class="card-text">Id: {{ course.id }}</p>
+                            <p class="card-text">Category: {{ course.get_category_display }}</p>
+                            {% if course.is_free %}
+                                <p class="card-text text-success">Free</p>
+                            {% else %}
+                                <p class="card-text text-danger">Paid</p>
+                            {% endif %}
+                            {% if user.role == user.COURSE_PROVIDER %}
+                            <a href="{% url 'courseprovider:edit_course' course.id %}" class="btn mr-2"><i class=""></i>Edit Course</a>
+                            <a href="{% url 'courseprovider:delete_course' course.id %}" class="btn btn-danger"><i class=""></i>Delete Course</a>
+                            <br><br><a href="{% url 'courseprovider:enrollment_details' course.id %}" class="btn btn-primary">View Enrollments</a>
+                            {% endif %}
+                        </div>
+                        
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    
+        <!-- ... Your existing course details ... -->
+        <h1 style="background-color: #007bff; color: #fff; padding: 10px; text-align: center; border-radius: 5px; margin-top: 20px;" id="intrn">Your Internships</h1>
+        <div class="container">
+            <div class="row">
+                {% for internship in user_internships %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card d-flex flex-column h-100">
+                            <!-- Internship image -->
+                            <img style="height: 250px; width: 350px;" src="{{ internship.thumbnail.url }}" class="card-img-top" alt="{{ internship.internship_title }}">
+                            <div class="card-body flex-grow-1">
+                                <!-- Internship details -->
+                                <h5 class="card-title">{{ internship.internship_title }}</h5>
+                                <p class="card-text">Duration: {{ internship.duration }} days</p>
+                                <p class="card-text">Instructor: {{ internship.instructor }}</p>
+                                <p class="card-text">Price: {{ internship.price }}</p>
+                                <p class="card-text">Id: {{ internship.id }}</p>
+                                <p class="card-text">Start: {{ internship.start_date }}</p>
+                                <p class="card-text">End: {{ internship.end_date }}</p>
+                                <p class="card-text">Category: {{ internship.get_category_display }}</p>
+                                
+                                <!-- Add any additional details you want to display -->
+                                
+                                <!-- Edit and Delete buttons (if applicable) -->
+                                 {% if user.role == user.COURSE_PROVIDER %}
+                                   <a href="{% url 'courseprovider:edit_internship' internship.id %}" class="btn mr-2"><i class=""></i>Edit Internship</a>
+                                   <a href="{% url 'courseprovider:delete_internship' internship.id %}" class="btn btn-danger"><i class=""></i>Delete Internship</a>
+                                   <br><br><a href="{% url 'courseprovider:internenroll'  internship.id %}" class="btn btn-primary">View Enrollments</a>
+                                   {% endif %} 
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>    
+
+        <h1 style="background-color: #007bff; color: #fff; padding: 10px; text-align: center; border-radius: 5px; margin-top: 20px;" id="web">Your Webinars</h1>
+        <div class="container">
+            <div class="row">
+                {% for webinar in user_webinars %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card d-flex flex-column h-100">
+                            <!-- Internship image -->
+                            <img style="height: 250px; width: 350px;" src="{{ webinar.thumbnail.url }}" class="card-img-top" alt="{{ webinar.webinar_title }}">
+                            <div class="card-body flex-grow-1">
+                                <!-- Internship details -->
+                                <h5 class="card-title">{{ webinar.webinar_title }}</h5>
+                                <p class="card-text">Duration: {{ webinar.duration }} hours</p>
+                                <p class="card-text">Speaker: {{ webinar.speaker }}</p>
+                                <p class="card-text">Price: {{ webinar.price }}</p>
+                                <p class="card-text">Id: {{ webinar.id }}</p>
+                                <p class="card-text">Date: {{ webinar.date_time }}</p>
+                                
+                                
+                                <!-- Add any additional details you want to display -->
+                                
+                                <!-- Edit and Delete buttons (if applicable) -->
+                                   {% if user.role == user.COURSE_PROVIDER %}
+                                   <a href="{% url 'courseprovider:edit_webinar' webinar.id %}" class="btn mr-2"><i class=""></i>Edit Webinar</a>
+                                   <a href="{% url 'courseprovider:delete_webinar' webinar.id %}" class="btn btn-danger"><i class=""></i>Delete Webinar</a>
+                                   <br><br><a href="{% url 'courseprovider:webinarenroll'  webinar.id %}" class="btn btn-primary">View Enrollments</a>
+                                   {% endif %} 
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+                        <!-- Add your dashboard content here -->
+                    </div>
+                </main>
+            </div>
+        </div>
+        
+</body>
+</html>
