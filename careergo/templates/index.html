@@ -148,8 +148,19 @@
     </div>
     <!-- Header End -->
 
-
+    <script type="text/javascript">
+        (function(d, m){
+            var kommunicateSettings = 
+                {"appId":"d16b83f7b340ca8b71f789aa9ffa48ce","popupWidget":true,"automaticChatOpenOnNavigation":true};
+            var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+            s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+            var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+            window.kommunicate = m; m._globals = kommunicateSettings;
+        })(document, window.kommunicate || {});
+    /* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
+    </script>
     <!-- About Start -->
+    {% if user.is_authenticated %}
     <div class="container-xxl py-5">
         <div class="container">
             <div class="row g-4">
@@ -164,7 +175,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
+                {% comment %} <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="service-item text-center pt-3">
                         <div class="p-4">
                             
@@ -175,18 +186,34 @@
                            
                         </div>
                     </div>
-                </div>
+                </div> {% endcomment %}
                 <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="service-item text-center pt-3">
                         <div class="p-4">
-                            <a href="{% url 'test:course' %}" style="text-decoration: none">
-                            <i class="fa fa-3x fa-home text-primary mb-4"></i>
-                            <h5 class="mb-3">Colleges</h5>
-                            <p>Details of variety of courses and colleges available</p>
-                        </a>
+                            <a href="{% url 'courseprovider:chatroom' %}" style="text-decoration: none">
+                                <!-- Replace the existing icon with the new one -->
+                                <i class="fa fa-3x fa-users text-primary mb-4"></i>
+                                <!-- Adjust the size and color of the new icon -->
+                                <h5 class="mb-3">Group Chat</h5>
+                                <p>Allow students to chat with a group.</p>
+                            </a>
                         </div>
                     </div>
                 </div>
+                
+                <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="service-item text-center pt-3">
+                        <div class="p-4">
+                            <a href="{% url 'courseprovider:runcode' %}" style="text-decoration: none">
+                                <i class="fa fa-3x fa-code text-primary mb-4"></i> <!-- Changed the icon class to represent a code icon -->
+                                <h5 class="mb-3">Virtual Lab</h5>
+                                <p>Provides resources to compile and run Python programs</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                
                 <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
                     <div class="service-item text-center pt-3">
                         <div class="p-4">
@@ -201,6 +228,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
 
     <div class="container-fluid py-5">
         <div class="container py-5">

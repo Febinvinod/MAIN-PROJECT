@@ -70,6 +70,16 @@
         .card-body {
             padding: 20px;
         }
+        .cancel-session-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+      
     </style>
 </head>
 <body>
@@ -350,16 +360,44 @@
     <div class="card-body">
         {% if mentor_sessions %}
             {% for session in mentor_sessions %}
-                <p><strong>Mentor:</strong> {{ session.mentor.username }}</p>
-                <p><strong>Scheduled Date and Time:</strong> {{ session.scheduled_date_time }}</p>
-                <p><strong>Zoom Link:</strong> <a href="{{ session.zoom_link }}" target="_blank">{{ session.zoom_link }}</a></p>
-                <p><strong>Passcode:</strong> {{ session.passcode }}</p>
-                <hr>
+                <div class="session-details">
+                    <p><strong>Mentor:</strong> {{ session.mentor.username }}</p>
+                    <p><strong>Scheduled Date and Time:</strong> {{ session.scheduled_date_time }}</p>
+                    <p><strong>Zoom Link:</strong> <a href="{{ session.zoom_link }}" target="_blank">{{ session.zoom_link }}</a></p>
+                    <p><strong>Passcode:</strong> {{ session.passcode }}</p>
+                    
+                    <!-- Cancel Session Button -->
+                    <form class="cancel-session-form" action="{% url 'courseprovider:cancel_session' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="mentor_support_session_id" value="{{ session.id }}">
+                        <button class="cancel-session-btn" type="button">Cancel Session</button>
+                    </form>
+                </div>
+                <!-- Separator -->
+                <hr class="session-separator" style="margin-top: 20px; border: none; border-top: 4px solid black;">
+
             {% endfor %}
         {% else %}
             <p>No mentor support sessions available</p>
         {% endif %}
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cancelButtons = document.querySelectorAll('.cancel-session-btn');
+            cancelButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const confirmation = confirm('Are you sure you want to cancel this session?');
+                    if (confirmation) {
+                        const form = button.closest('.cancel-session-form');
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+    
+    
 </div>
 </div>
 </main>

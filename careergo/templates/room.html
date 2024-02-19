@@ -1,0 +1,230 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Chat</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8">
+    <title>Edukate - Online Education Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="careergo/static/css/animate.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        /* Apply styles to the body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Apply styles to the chat container */
+.chat-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #ADD8E6;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Apply styles to the form */
+.chat-form {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.chat-form input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chat-form button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Apply styles to the chat history */
+.chat-history ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.chat-history li {
+    margin-bottom: 10px;
+}
+
+/* Apply styles to the clear chat button */
+.clear-chat-btn {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.clear-chat-btn:hover {
+    background-color: #c82333;
+}
+
+
+.chat-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.chat-history {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    height: 300px; /* Set the maximum height for the scrollable area */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+
+.messages {
+    list-style-type: none;
+    padding: 0;
+}
+
+.message {
+    margin-bottom: 10px;
+    color: black;
+}
+
+.message-content {
+    background-color: #25d366;
+    padding: 10px;
+    width: 150px;
+    border-radius: 15px;
+}
+
+.message-time {
+    font-size: 12px;
+    color: #999;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% url 'index' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CAREERGO</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    
+
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="#checkout" class="nav-item nav-link">About</a>
+                  
+                    <a href="{% url 'courseprovider:courselist' %}" class="nav-item nav-link" id="course">Courses</a>
+                    <a href="{% url 'courseprovider:internlist' %}" class="nav-item nav-link">Internships</a>
+                    <a href="{% url 'courseprovider:webinarlist' %}" class="nav-item nav-link">Webinars</a>
+                    <a href="{% url 'courseprovider:schedule_mentor_session' %}" class="nav-item nav-link">Mentor Support</a>
+                    
+                    {% comment %} <div class="nav-item dropdown">
+                        <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="" class="dropdown-item">Course Detail</a>
+                            <a href="" class="dropdown-item">Our Features</a>
+                            <a href="" class="dropdown-item">Instructors</a>
+                            <a href="" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div> {% endcomment %}
+                    <a href="{% url 'courseprovider:studash' %}" class="nav-item nav-link">Dashboard</a>
+                    <div class="nav-item dropdown">
+                    <a href="{% url 'index' %}" id="ProfileDropdown" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{% url 'profile' %}" id="profile" class="dropdown-item">Profile</a>
+                    </div>
+                </div>
+                {% comment %} <a href="{% url '' %}" class="nav-item nav-link active"> Enrolled Courses </a> {% endcomment %}
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active" id="logout_sidebar_link"> Logout </a>
+
+
+                    {% else %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                    <a href="" class="nav-item nav-link">Contact</a>
+                    <a href="{% url 'login' %}" class="nav-item nav-link">Login/Signup</a>
+                    {% endif %}
+                </div>
+               
+            </div>
+        </nav>
+    </div>
+    <div class="chat-container">
+        <h1>Group Chat</h1>
+        <div class="chat-history">
+       
+            <ul class="messages">
+                {% for message in messages reversed %}  <!-- Reverse the order of messages -->
+                <li class="message">
+                    <div class="message-content">
+                        <strong>{{ user.username }}</strong>: {{ message.content }}
+                    </div>
+                    <div class="message-time">{{ message.timestamp }}</div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <hr>
+        {% csrf_token %}
+        <form class="chat-form" method="post">
+            {% csrf_token %}
+            {% comment %} <input type="text" value="{{ user.username }}" name="username" readonly> {% endcomment %}
+
+            <input type="text" name="content" placeholder="Message">
+            <button type="submit">Send</button>
+        </form>
+        <form action="{% url 'courseprovider:clear_chat' %}" method="post">
+            {% csrf_token %}
+            <button class="clear-chat-btn" type="submit">Clear Chat</button>
+        </form>
+    </div>
+</body>
+
+</html>

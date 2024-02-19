@@ -172,7 +172,7 @@ class Payment(models.Model):
 
     class Meta:
         ordering = ['-payment_date']
-        unique_together = ['user', 'course']
+    
 
 #Update Status not implemented
     def update_status(self):
@@ -202,3 +202,11 @@ class Benefit(models.Model):
     def __str__(self):
         return self.name
 
+
+class Message(models.Model):
+    username = models.CharField(max_length=255)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.content

@@ -65,9 +65,10 @@ def predict_and_recommend(input_data):
     # Select only the college name and NIRF ranking columns
     
     # Take the top five recommended colleges
-    
+      
 
     # print(top_five_colleges)
+    
 
     return recommended_courses,  sorted_recommended_colleges
 

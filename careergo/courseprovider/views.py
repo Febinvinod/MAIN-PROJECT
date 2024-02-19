@@ -1,8 +1,12 @@
+import json
+import subprocess
+import sys
 from django.shortcuts import render,redirect
 from datetime import datetime
 from django.contrib.auth import login as auth_login ,authenticate, logout
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib  import messages,auth
+import requests
 from home.models import CustomUser,UserProfile
 from courseprovider.models import Courseprovider_profile,Mentor_profile
 # from accounts.backends import EmailBackend
@@ -1200,6 +1204,28 @@ def confirmsession(request,scheduled_time):
     return render(request, 'confirmsession.html', context)
 
 
+def cancel_session(request):
+    if request.method == 'POST':
+        mentor_support_session_id = request.POST.get('mentor_support_session_id')
+        mentor_support_session = MentorSupportSession.objects.get(id=mentor_support_session_id)
+        
+        # Delete associated payment details
+        try:
+            payment = Payment.objects.get(mentorSupportSession=mentor_support_session)
+            payment.delete()
+        except Payment.DoesNotExist:
+            pass  # If no payment associated, do nothing
+
+        # Delete the mentor support session
+        mentor_support_session.delete()
+        
+        # Optionally, you can add a confirmation message or redirect to a relevant page
+        return redirect('courseprovider:studash')
+    
+    # Handle invalid requests or provide error response
+    return redirect('courseprovider:studash')
+
+
 def addwebinar(request):
 
     if request.method == 'POST':
@@ -1452,3 +1478,54 @@ def webinarenroll(request,webinar_id):
         'enrollments': enrollments,
     }
     return render(request, 'webinarenroll.html', context)
+
+
+from .models import Message
+
+def chatroom(request):
+    user = request.user
+    if request.method == 'POST':
+        username = request.POST.get('username', 'Anonymous')
+        content = request.POST.get('content', '')
+        if content:
+            Message.objects.create(username=username, content=content)
+            return redirect('courseprovider:chatroom')
+
+    messages = Message.objects.all().order_by('-timestamp')[:50]
+    return render(request, 'room.html', {'messages': messages,'user':user})
+
+def clear_chat(request):
+    Message.objects.all().delete()
+    return redirect('courseprovider:chatroom')
+
+
+# def run(request):
+#     res = render(request,'runcode.html')
+#     return res
+
+def runcode(request):
+    if request.method == 'POST':
+        code_part = request.POST['code_area']
+        input_part = request.POST['input_area']
+        y = input_part
+        input_part = input_part.replace("\n"," ").split(" ")
+        def input():
+            a = input_part[0]
+            del input_part[0]
+            return a
+        try:
+            orig_stdout = sys.stdout
+            sys.stdout = open('file.txt', 'w')
+            exec(code_part)
+            sys.stdout.close()
+            sys.stdout=orig_stdout
+            output = open('file.txt', 'r').read()
+        except Exception as e:
+            sys.stdout.close()
+            sys.stdout=orig_stdout
+            output = e
+        print(output)
+        res = render(request,'runcode.html',{"code":code_part,"input":y,"output":output})
+        return res
+    res = render(request,'runcode.html')
+    return res
