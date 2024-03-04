@@ -85,12 +85,12 @@
 
     <div class="container-fluid">
         <div class="row" style="background-color:black;">
-          <div class="m-0 text-uppercase text-primary" style="font-family:'Comic Sans MS'; font-size: 50px; color:white; letter-spacing: 3px;">
+          <div class="m-0 text-uppercase text-primary" style=" font-size: 50px; letter-spacing: 3px;">
             <center><b>Coder</b> Area</center>
           </div>
         </div>
-      </div>
-      <div class="container-fluid">
+    </div>
+    <div class="container-fluid">
         <div class="row">
           <div class="col-sm-12 ml-5 mr-5 mt-5 mb-5">
   
@@ -103,13 +103,26 @@
                 </div>
   
                 <div class="col-sm-3">
+
+
+                    <div class="row mb-4">
+                        <label for="language"><h5>Language</h5></label>
+                        <select class="form-control" name="language">
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                            <option value="cpp">C</option>
+                            <!-- Add more options for other languages -->
+                        </select>
+                    </div>
+
                   <div class="row mb-4">
                     <label for="comment"><h5>Input</h5></label>
                     <textarea class="form-control" rows="7" name="input_area" style="border:1px solid grey;">{{input}}</textarea>
                   </div>
                   <div class="row">
                     <label for="comment"><h5>Output</h5></label>
-                    <textarea class="form-control" rows="7" name="output_area" style="border:1px solid grey;" disabled>{{output}}</textarea>
+                    <input type="text" class="form-control" rows="7" name="output_area" value="{{output}}" style="border:1px solid grey;" disabled>
                   </div>
                 </div>
               </div>

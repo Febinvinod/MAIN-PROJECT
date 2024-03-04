@@ -204,7 +204,7 @@ body {
                 {% for message in messages reversed %}  <!-- Reverse the order of messages -->
                 <li class="message">
                     <div class="message-content">
-                        <strong>{{ user.username }}</strong>: {{ message.content }}
+                        <strong>{{ message.username }}</strong>: {{ message.content }}
                     </div>
                     <div class="message-time">{{ message.timestamp }}</div>
                 </li>
@@ -215,15 +215,15 @@ body {
         {% csrf_token %}
         <form class="chat-form" method="post">
             {% csrf_token %}
-            {% comment %} <input type="text" value="{{ user.username }}" name="username" readonly> {% endcomment %}
+            <input type="hidden" value="{{ user.username }}" name="username" readonly> 
 
             <input type="text" name="content" placeholder="Message">
             <button type="submit">Send</button>
         </form>
-        <form action="{% url 'courseprovider:clear_chat' %}" method="post">
+        {% comment %} <form action="{% url 'courseprovider:clear_chat' %}" method="post">
             {% csrf_token %}
             <button class="clear-chat-btn" type="submit">Clear Chat</button>
-        </form>
+        </form> {% endcomment %}
     </div>
 </body>
 

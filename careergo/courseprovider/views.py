@@ -25,7 +25,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
-from .models import Oncourse, Video,Payment,Internship,UserVideo,Certificate
+from .models import Oncourse, QuestionPaper, Video,Payment,Internship,UserVideo,Certificate
 from django.views.generic.edit import UpdateView, DeleteView
 from collections import defaultdict
 from django.db.models import Q
@@ -533,11 +533,13 @@ def providerdash(request):
     user_courses = Oncourse.objects.filter(user=user)
     user_internships = Internship.objects.filter(user=user)
     user_webinars = Webinar.objects.filter(user=user)
-
+    question_papers = QuestionPaper.objects.filter(user = user)
+    
     context = {
         'user_courses': user_courses,
         'user_internships': user_internships,
         'user_webinars' : user_webinars,
+        'question_papers': question_papers,
     }
 
     return render(request, 'providerdash.html', context)
@@ -1503,29 +1505,194 @@ def clear_chat(request):
 #     res = render(request,'runcode.html')
 #     return res
 
-def runcode(request):
-    if request.method == 'POST':
-        code_part = request.POST['code_area']
-        input_part = request.POST['input_area']
+# def runcode(request):
+#     if request.method == 'POST':
+#         code_part = request.POST['code_area']
+#         input_part = request.POST['input_area']
+#         y = input_part
+#         input_part = input_part.replace("\n"," ").split(" ")
+#         def input(a):
+#             a = input_part[0]
+#             del input_part[0]
+#             return a
+#         try:
+#             orig_stdout = sys.stdout
+#             sys.stdout = open('file.txt', 'w')
+#             exec(code_part)
+#             sys.stdout.close()
+#             sys.stdout=orig_stdout
+#             output = open('file.txt', 'r').read()
+#         except Exception as e:
+#             sys.stdout.close()
+#             sys.stdout=orig_stdout
+#             output = e
+#         print(output)
+#         res = render(request,'runcode.html',{"code":code_part,"input":y,"output":output})
+#         return res
+#     res = render(request,'runcode.html')
+#     return res
+
+def execute_python(code_part, input_part):
+    try:
         y = input_part
         input_part = input_part.replace("\n"," ").split(" ")
-        def input():
+        def input(a):
             a = input_part[0]
             del input_part[0]
             return a
+        
+        orig_stdout = sys.stdout
         try:
-            orig_stdout = sys.stdout
-            sys.stdout = open('file.txt', 'w')
-            exec(code_part)
+            with open('file.txt', 'w') as f:
+                sys.stdout = f
+                exec(code_part)
+        finally:
             sys.stdout.close()
-            sys.stdout=orig_stdout
-            output = open('file.txt', 'r').read()
-        except Exception as e:
-            sys.stdout.close()
-            sys.stdout=orig_stdout
-            output = e
-        print(output)
-        res = render(request,'runcode.html',{"code":code_part,"input":y,"output":output})
-        return res
-    res = render(request,'runcode.html')
-    return res
+            sys.stdout = orig_stdout
+            
+        with open('file.txt', 'r') as f:
+            output = f.read()
+        return output
+    except Exception as e:
+        return str(e)
+
+def execute_java(code, input_data):
+    # Write Java code to file
+    with open('Main.java', 'w') as f:
+        f.write(code)
+    
+    # Compile Java code
+    compile_process = subprocess.Popen(['javac', 'Main.java'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    compile_output, compile_errors = compile_process.communicate()
+    
+    if compile_errors:
+        return compile_errors.decode()
+    
+    # Execute Java code
+    execution_process = subprocess.Popen(['java', 'Main'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    execution_output, execution_errors = execution_process.communicate(input=input_data.encode())
+    
+    if execution_errors:
+        return execution_errors.decode()
+    
+    return execution_output.decode()
+
+def execute_cpp(code, input_data):
+    # Write C++ code to file
+    with open('main.cpp', 'w') as f:
+        f.write(code)
+    
+    # Compile C++ code
+    compile_process = subprocess.Popen(['g++', 'main.cpp', '-o', 'main'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    compile_output, compile_errors = compile_process.communicate()
+    
+    if compile_errors:
+        return compile_errors.decode()
+    
+    # Execute C++ code
+    execution_process = subprocess.Popen(['./main'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    execution_output, execution_errors = execution_process.communicate(input=input_data.encode())
+    
+    if execution_errors:
+        return execution_errors.decode()
+    
+    return execution_output.decode()
+
+import subprocess
+
+def execute_c(code, input_data):
+    try:
+        # Write C code to file
+        with open('main.c', 'w') as f:
+            f.write(code)
+        
+        # Compile C code
+        compile_process = subprocess.Popen(['gcc', 'main.c', '-o', 'main'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        compile_output, compile_errors = compile_process.communicate()
+        
+        if compile_errors:
+            return compile_errors.decode()
+        
+        # Execute the compiled C program
+        execution_process = subprocess.Popen(['./main'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        execution_output, execution_errors = execution_process.communicate(input=input_data.encode())
+        
+        if execution_errors:
+            return execution_errors.decode()
+        
+        return execution_output.decode()
+    except Exception as e:
+        return str(e)
+
+
+def runcode(request):
+    if request.method == 'POST':
+        code_part = request.POST.get('code_area', '')
+        input_part = request.POST.get('input_area', '')
+        language = request.POST.get('language', '')
+
+        if language == 'python':
+            output = execute_python(code_part, input_part)
+        elif language == 'java':
+            output = execute_java(code_part, input_part)
+        elif language == 'cpp':
+            output = execute_cpp(code_part, input_part)
+        elif language == 'c':
+            output = execute_c(code_part, input_part)
+        else:
+            output = "Unsupported language"
+        
+        return render(request, 'runcode.html', {'code': code_part, 'input': input_part, 'output': output})
+    
+    return render(request, 'runcode.html')
+
+
+def upload_question_paper(request):
+    if request.method == 'POST':
+        exam_type = request.POST.get('exam_type')
+        year = request.POST.get('year')
+        subject = request.POST.get('subject')  # Get list of selected subjects
+        question_paper = request.FILES.get('question_paper')
+        solution = request.FILES.get('solution')
+
+        # Create a new QuestionPaper object and save it to the database
+        QuestionPaper.objects.create(
+            user = request.user,
+            exam_type=exam_type,
+            year=year,
+            subject=subject,
+            question_paper=question_paper,
+            solution=solution
+        )
+        return redirect('courseprovider:providerdash')
+    exam_type_choices = QuestionPaper.exam_type_choices  # Retrieve exam type choices from the model
+    current_year = datetime.now().year
+    start_year = current_year - 10  # Adjust the range as needed
+    end_year = current_year
+    years = range(start_year, end_year + 1)
+    
+    subjects = ['Science','Mathematics', 'Physics', 'Chemistry','Biology',]  # Example list of subjects, replace with your own data
+    context = {'exam_type_choices': exam_type_choices, 'years': years, 'subjects': subjects}
+    return render(request, 'upload_qn.html', context)
+
+
+
+def delete_question_paper(request, paper_id):
+    paper = get_object_or_404(QuestionPaper, id=paper_id)
+    if request.method == 'POST':
+        paper.delete()
+    return redirect('courseprovider:providerdash')
+
+def viewqn(request):
+    years = QuestionPaper.objects.values_list('year', flat=True).distinct()
+    subjects = QuestionPaper.objects.values_list('subject', flat=True).distinct()
+    
+    if request.method == 'POST':
+        exam_type = request.POST.get('exam_type')
+        year = request.POST.get('year')
+        subject = request.POST.get('subject')
+        
+        question_papers = QuestionPaper.objects.filter(exam_type=exam_type, year=year, subject=subject)
+        return render(request, 'viewqn.html', {'question_papers': question_papers, 'years': years, 'subjects': subjects})
+    
+    return render(request, 'viewqn.html', {'question_papers': None, 'years': years, 'subjects': subjects})

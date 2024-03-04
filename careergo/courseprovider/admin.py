@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Courseprovider_profile,Mentor_profile,Oncourse,Video,Payment,Internship,UserVideo,Certificate,MentorSupportSession,Webinar,Benefit
+from .models import Courseprovider_profile,Mentor_profile,Oncourse,Video,Payment,Internship,UserVideo,Certificate,MentorSupportSession,Webinar,Benefit,QuestionPaper
 admin.site.register(Courseprovider_profile)
 admin.site.register(Mentor_profile)
 admin.site.register(Oncourse)
@@ -11,3 +11,4 @@ admin.site.register(Certificate)
 admin.site.register(MentorSupportSession)
 admin.site.register(Webinar)
 admin.site.register(Benefit)
+admin.site.register(QuestionPaper)

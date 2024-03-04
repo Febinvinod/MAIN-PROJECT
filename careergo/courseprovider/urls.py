@@ -49,8 +49,10 @@ urlpatterns = [
    path('paymenthand/<int:webinar_id>/', views.paymenthand, name='paymenthand'),
    path('cancel_session/', views.cancel_session, name='cancel_session'),
    path('chatroom/', views.chatroom, name='chatroom'),
-   path('clear_chat/', views.clear_chat, name='clear_chat'),
-  
+   #path('clear_chat/', views.clear_chat, name='clear_chat'),
+   path('upload_question_paper/', views.upload_question_paper, name='upload_question_paper'),
+   path('delete_question_paper/<int:paper_id>/', views.delete_question_paper, name='delete_question_paper'),
+   path('viewqn/', views.viewqn, name='viewqn'),
    #path('run/', views.run, name='run'),
    path('runcode/', views.runcode, name='runcode'),
    # path('generate_certificate/', views.generate_certificate, name='generate_certificate'),

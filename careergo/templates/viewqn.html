@@ -1,0 +1,336 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% csrf_token %}
+<head>
+    <meta charset="utf-8">
+    <title>Edukate - Online Education Website Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="careergo/static/css/animate.min.css">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        label, select, button {
+            margin-bottom: 10px;
+        }
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        li:hover {
+            transform: translateY(-5px);
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+</head>
+
+<body>
+   
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-dark">
+        <div class="row py-2 px-lg-5">
+            <div class="col-lg-6 text-center text-lg-left mb-2 mb-lg-0">
+                <div class="d-inline-flex align-items-center text-white">
+                    <small><i class="fa fa-phone-alt mr-2"></i>+012 345 6789</small>
+                    <small class="px-3">|</small>
+                    <small><i class="fa fa-envelope mr-2"></i>info@example.com</small>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-white px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-white pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid p-0">
+        <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+            <a href="{% url 'index' %}" class="navbar-brand ml-lg-3">
+                <h1 class="m-0 text-uppercase text-primary"><i class="fa fa-book-reader mr-3"></i>CAREERGO</h1>
+            </a>
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse">
+                <div class="navbar-nav mx-auto py-0">
+                    
+
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="#checkout" class="nav-item nav-link">About</a>
+                  
+                    <a href="{% url 'courseprovider:courselist' %}" class="nav-item nav-link" id="course">Courses</a>
+                    <a href="{% url 'courseprovider:internlist' %}" class="nav-item nav-link">Internships</a>
+                    <a href="{% url 'courseprovider:webinarlist' %}" class="nav-item nav-link">Webinars</a>
+                    <a href="{% url 'courseprovider:schedule_mentor_session' %}" class="nav-item nav-link">Mentor Support</a>
+                    
+                    {% comment %} <div class="nav-item dropdown">
+                        <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
+                        <div class="dropdown-menu m-0">
+                            <a href="" class="dropdown-item">Course Detail</a>
+                            <a href="" class="dropdown-item">Our Features</a>
+                            <a href="" class="dropdown-item">Instructors</a>
+                            <a href="" class="dropdown-item">Testimonial</a>
+                        </div>
+                    </div> {% endcomment %}
+                    <a href="{% url 'courseprovider:studash' %}" class="nav-item nav-link">Dashboard</a>
+                    <div class="nav-item dropdown">
+                    <a href="{% url 'index' %}" id="ProfileDropdown" class="nav-link dropdown-toggle" data-toggle="dropdown">Welcome, {{user.username}}</a>
+                    <div class="dropdown-menu m-0">
+                        <a href="{% url 'profile' %}" id="profile" class="dropdown-item">Profile</a>
+                    </div>
+                </div>
+                {% comment %} <a href="{% url '' %}" class="nav-item nav-link active"> Enrolled Courses </a> {% endcomment %}
+                    <a href="{% url 'logout' %}" class="nav-item nav-link active" id="logout_sidebar_link"> Logout </a>
+
+
+                    {% else %}
+                    <a href="{% url 'index' %}" class="nav-item nav-link active">Home</a>
+                    <a href="" class="nav-item nav-link">About</a>
+                    <a href="" class="nav-item nav-link">Contact</a>
+                    <a href="{% url 'login' %}" class="nav-item nav-link">Login/Signup</a>
+                    {% endif %}
+                </div>
+               
+            </div>
+        </nav>
+    </div>
+    <!-- Navbar End -->
+
+
+    <!-- Header Start -->
+    
+    <div class="container">
+        <h1>Question Papers</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="exam_type">Exam Type:</label>
+                <select class="form-control" id="exam_type" name="exam_type" required>
+                    <option value="">Select Exam Type</option>
+                    <option value="KEAM">KEAM</option>
+                    <option value="NEET">NEET</option>
+                    <option value="JEE">JEE</option>
+                    <!-- Add more exam types as needed -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="year">Year:</label>
+                <select class="form-control" id="year" name="year" required>
+                    <option value="">Select Year</option>
+                    {% for year in years %}
+                        <option value="{{ year }}">{{ year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <select class="form-control" id="subject" name="subject" required>
+                    <option value="">Select Subject</option>
+                    {% for subject in subjects %}
+                        <option value="{{ subject }}">{{ subject }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+        
+        {% if question_papers %}
+            <h2>View Papers</h2>
+            <ul>
+                {% for paper in question_papers %}
+                    <li>
+                        <strong>Exam Type:</strong> {{ paper.exam_type }}<br>
+                        <strong>Year:</strong> {{ paper.year }}<br>
+                        <strong>Subject:</strong> {{ paper.subject }}<br>
+                        <a href="{{ paper.question_paper.url }}" target="_blank">View Question Paper</a><br>
+                        {% if paper.solution %}
+                            <a href="{{ paper.solution.url }}" target="_blank">View Solution</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No question papers found.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Add Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <!-- Footer Start -->
+    <div class="container-fluid position-relative overlay-top bg-dark text-white-50 py-5" style="margin-top: 90px;">
+        <div class="container mt-5 pt-5">
+            <div class="row">
+                <div class="col-md-6 mb-5">
+                    <a href="{% url 'index' %}" class="navbar-brand">
+                        <h1 class="mt-n2 text-uppercase text-white"><i class="fa fa-book-reader mr-3"></i>Edukate</h1>
+                    </a>
+                    <p class="m-0">Accusam nonumy clita sed rebum kasd eirmod elitr. Ipsum ea lorem at et diam est, tempor rebum ipsum sit ea tempor stet et consetetur dolores. Justo stet diam ipsum lorem vero clita diam</p>
+                </div>
+                <div class="col-md-6 mb-5">
+                    <h3 class="text-white mb-4">Newsletter</h3>
+                    <div class="w-100">
+                        <div class="input-group">
+                            <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Your Email Address">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary px-4">Sign Up</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Get In Touch</h3>
+                    <p><i class="fa fa-map-marker-alt mr-2"></i>123 Street, New York, USA</p>
+                    <p><i class="fa fa-phone-alt mr-2"></i>+012 345 67890</p>
+                    <p><i class="fa fa-envelope mr-2"></i>info@example.com</p>
+                    <div class="d-flex justify-content-start mt-4">
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-twitter"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-facebook-f"></i></a>
+                        <a class="text-white mr-4" href="#"><i class="fab fa-2x fa-linkedin-in"></i></a>
+                        <a class="text-white" href="#"><i class="fab fa-2x fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Our Courses</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Web Design</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Apps Design</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Marketing</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Research</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>SEO</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <h3 class="text-white mb-4">Quick Links</h3>
+                    <div class="d-flex flex-column justify-content-start">
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Regular FAQs</a>
+                        <a class="text-white-50 mb-2" href="#"><i class="fa fa-angle-right mr-2"></i>Help & Support</a>
+                        <a class="text-white-50" href="#"><i class="fa fa-angle-right mr-2"></i>Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-dark text-white-50 border-top py-4" style="border-color: rgba(256, 256, 256, .1) !important;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-left mb-3 mb-md-0">
+                    <p class="m-0">Copyright &copy; <a class="text-white" href="#">Your Site Name</a>. All Rights Reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-right">
+                    <p class="m-0">Designed by <a class="text-white" href="https://htmlcodex.com">HTML Codex</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary rounded-0 btn-lg-square back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

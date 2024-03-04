@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-glt_gx72mitvm53el2=byhl=f^n-yoa09hpf7h4)00#3eiu5#k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1']
 
 SITE_ID = 2
 SOCIALACCOUNT_LOGIN_ON_GET=True
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
+    # "rest_framework",
 ]
 
 SOCIALACCOUNT_PROVIDERS ={
