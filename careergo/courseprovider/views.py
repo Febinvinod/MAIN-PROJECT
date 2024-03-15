@@ -25,7 +25,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
-from .models import Oncourse, QuestionPaper, Video,Payment,Internship,UserVideo,Certificate
+from .models import Oncourse, QuestionPaper, Review, Video,Payment,Internship,UserVideo,Certificate
 from django.views.generic.edit import UpdateView, DeleteView
 from collections import defaultdict
 from django.db.models import Q
@@ -208,10 +208,18 @@ def addcourses(request):
     
     return render(request, 'addcourse.html',context)
 
+from django.db.models import Avg, Func, IntegerField
+from django.db.models.functions import Cast
 
+class Round(Func):
+    function = 'ROUND'
+    arity = 2
 def courselist(request):
     query = request.GET.get('q')
     show_carousel = not bool(query)
+    category = request.GET.get('category')
+    price_range = request.GET.get('price_range')
+    ratings = request.GET.get('ratings')
 
     if query:
         # Perform a case-insensitive search on relevant fields
@@ -231,17 +239,39 @@ def courselist(request):
     
 
     free_courses = all_courses.filter(is_free=True)
+
+    if category:
+        all_courses = all_courses.filter(category=category)
+    if price_range:
+        min_price, max_price = map(int, price_range.split('-'))
+        all_courses = all_courses.filter(price__gte=min_price, price__lte=max_price)
+    if ratings:
+        all_courses = all_courses.annotate(avg_rating_rounded=Cast(Round(Avg('review__rate'), 0), output_field=IntegerField()))
+        all_courses = all_courses.filter(avg_rating_rounded__in=ratings)
+    review_count = 0
     # Group courses by category
     courses_by_category = defaultdict(list)
     for course in all_courses:
         if not course.is_free:
+        
             courses_by_category[course.get_category_display()].append(course)
+
+    for courses in courses_by_category.values():
+        for course in courses:
+            # Calculate average rating for each course
+            average_rating = Review.objects.filter(course=course).aggregate(avg_rating=Avg('rate'))['avg_rating']
+            course.average_rating = average_rating
+            course.review_count = Review.objects.filter(course=course).count()
+            review_count = course.review_count
 
     context = {
         'courses_by_category': dict(courses_by_category), 
         'query': query,
         'show_carousel': show_carousel,
         'free_courses': free_courses, # Convert defaultdict to a regular dictionary
+        'review_count': review_count,
+        'categories': Oncourse.CATEGORY_CHOICES,  # Pass category choices to template for filter dropdown
+         
     }
 
     return render(request, 'courselist.html', context)
@@ -272,6 +302,11 @@ def coursedetail(request, course_id):
     for section in sections:
         videos_by_section[section] = Video.objects.filter(course=course, section_name=section)
 
+
+    # Fetching existing reviews
+    reviews = Review.objects.filter(course_id=course_id)
+    enrollment = Payment.objects.filter(user=request.user, course=course, payment_status=Payment.PaymentStatusChoices.SUCCESSFUL).exists()
+
     context = {
         'user': user,
         'oncourse': course,
@@ -280,6 +315,8 @@ def coursedetail(request, course_id):
         'payment' : payment,
         'all_videos_completed': all_videos_completed,
         'checked_video_ids': checked_video_ids, 
+        'reviews': reviews,
+        'enrollment' :enrollment
     }
 
     # Create a Razorpay Order
@@ -424,12 +461,16 @@ def studash(request):
     current_datetime = datetime.now()
     mentor_sessions = MentorSupportSession.objects.filter(student=user, scheduled_date_time__gte=current_datetime)
     enrolled_webinar = enrolled_webinar.filter(webinar__date_time__gte=current_datetime)
+    enrolled_internships = enrolled_internships.exclude(internship__end_date__lt=current_datetime)
     #enrolled_courses = Payment.objects.filter(user=request.user,payment_status=Payment.PaymentStatusChoices.SUCCESSFUL )
     if user.role == CustomUser.STUDENT:
         assessments = StudentAssessment.objects.filter(student=user)
         return render(request, 'studash.html', {'user': user, 'assessments': assessments, 'enrolled_courses': enrolled_courses, 'enrolled_internships': enrolled_internships,'certificates': certificates, 'mentor_sessions': mentor_sessions, 'enrolled_webinar' : enrolled_webinar})
 
     return render(request, 'studash')
+
+
+
 
 
 
@@ -712,6 +753,7 @@ def internlist(request):
 
     query = request.GET.get('q', '')
     
+    #current_datetime = datetime.now()
 
     # Filter internships based on the search query
     internships = Internship.objects.filter(
@@ -719,6 +761,7 @@ def internlist(request):
         Q(duration__icontains=query) |
         Q(instructor__icontains=query) |
         Q(category__icontains=query)
+        #application_deadline__gte=current_datetime
     )
 
     # Group filtered internships by category
@@ -1696,3 +1739,71 @@ def viewqn(request):
         return render(request, 'viewqn.html', {'question_papers': question_papers, 'years': years, 'subjects': subjects})
     
     return render(request, 'viewqn.html', {'question_papers': None, 'years': years, 'subjects': subjects})
+
+
+def save_review(request):
+    if request.method == 'POST':
+        # Extract data from the request
+        user = request.user
+        course_id = request.POST.get('course_id')
+        course = get_object_or_404(Oncourse, id=course_id)
+        comment = request.POST.get('comment')
+        rate = int(request.POST.get('rating'))
+
+        # Create and save the review
+        Review.objects.create(
+            user=user,
+            course=course,
+            comment=comment,
+            rate=rate
+        )
+
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+    
+
+
+# fluter codes
+    
+# views.py
+
+# from django.http import JsonResponse
+# from .models import Review
+
+# def review_list(request):
+#     reviews = Review.objects.all()
+#     data = [{'id': review.id, 'user': review.user.username, 'course': review.course.course_title, 'comment': review.comment, 'rate': review.rate, 'created_at': review.created_at} for review in reviews]
+#     return JsonResponse(data, safe=False)
+
+from django.http import HttpResponseNotAllowed
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+
+
+@csrf_exempt 
+def login(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get('username')
+        password = data.get('password')
+        user = authenticate(request, username=email, password=password)
+        if user is not None:
+            login(request, user)
+            return JsonResponse({'success': True})
+        else:
+            # Check if user with given email exists
+            if email and not user.objects.filter(email=email).exists():
+                return JsonResponse({'success': False, 'error': 'User with this email does not exist'}, status=400)
+            else:
+                return JsonResponse({'success': False, 'error': 'Invalid password'}, status=400)
+    else:
+        return JsonResponse({'error': 'Method not allowed'},status=405)

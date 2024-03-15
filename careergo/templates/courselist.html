@@ -106,6 +106,10 @@
         .category-link.active {
             color: #007bff;
         }
+
+        .gold-star {
+            color: gold;
+        }
        
     </style>
     <meta charset="utf-8">
@@ -264,22 +268,95 @@
                     </form>
                 </div>
             </div>
+
+
+            <nav class="col-md-3 col-lg-2 bg-light sidebar">
+                <div class="sidebar-sticky">
+                    <p><b>Filter Courses</b></p>
+                    <ul class="nav flex-column">
+                        <!-- Existing navigation items -->
+                        <!-- Add filter options for categories -->
+                        <li class="nav-item">
+                            <form method="get" action="{% url 'courseprovider:courselist' %}">
+                                <select class="form-select" name="category">
+                                    <option value="">Select Category</option>
+                                    {% for category, _ in courses_by_category.items %}
+                                        <option value="{{ category }}">{{ category }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-primary mt-2">Apply</button>
+                            </form>
+                        </li>
+                        <!-- Add filter options for price ranges -->
+                        <li class="nav-item">
+                            <form method="get" action="{% url 'courseprovider:courselist' %}">
+                                <select class="form-select" name="price_range">
+                                    <option value="">Select Price Range</option>
+                                    <option value="0-100">0-100</option>
+                                    <option value="100-500">100-500</option>
+                                    <option value="500-1000">500-1000</option>
+                                    <option value="1000-5000">1000-5000</option>
+                                    <option value="5000-10000">5000-10000</option>
+                                    <!-- Add more price range options as needed -->
+                                </select>
+                                <button type="submit" class="btn btn-primary mt-2">Apply</button>
+                            </form>
+                        </li>
+                        <!-- Add filter options for ratings -->
+                        <li class="nav-item">
+                            <form method="get" action="{% url 'courseprovider:courselist' %}">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="ratings" value="1">
+                                    <label class="form-check-label">1 Star</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="ratings" value="2">
+                                    <label class="form-check-label">2 Star</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="ratings" value="3">
+                                    <label class="form-check-label">3 Star</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="ratings" value="4">
+                                    <label class="form-check-label">4 Star</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="ratings" value="5">
+                                    <label class="form-check-label">5 Star</label>
+                                </div>
+                                <!-- Add checkboxes for other rating options (2, 3, 4, 5 stars) -->
+                                <button type="submit" class="btn btn-primary mt-2">Apply</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            
+
+
+
             <div class="container mx-auto mt-4">
                 {% for category, courses in courses_by_category.items %}
-                   <br>  <h2 id="{{ category|slugify }}" style="font-size: 28px; color: #007bff;">{{ category }}</h2>
+                    <br>
+                    <h2 id="{{ category|slugify }}" style="font-size: 28px; color: #007bff;">{{ category }}</h2>
                     <div class="row">
-                        {% for i in courses %}
+                        {% for course in courses %}
                             {% if forloop.counter0|divisibleby:4 %}<div class="w-100"></div>{% endif %}
                             <div class="col-md-4">
                                 <!-- Your course card HTML here -->
                                 <div class="card hover-card" style="width: 18rem;">
-                                    <img src="{{ i.thumbnail.url }}" style="width: 18rem; height:200px" class="card-img-top" alt="...">
+                                    <img src="{{ course.thumbnail.url }}" style="width: 18rem; height:200px" class="card-img-top" alt="...">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{ i.course_title }} | {{ i.duration }} <b>hrs</b></h5>
-                                        <h6 class="card-subtitle mb-2 text-muted"><b>Price</b> {{ i.price }}</h6>
-                                        <p class="card-text"><b>Instructor:</b>{{ i.instructor }}</p>
-                                        <a href="http://127.0.0.1:8000/courseprovider/coursedetail/{{i.id}}" class="btn mr-2"><i class=""></i>View Course</a>
-                                        
+                                        <h5 class="card-title">{{ course.course_title }} | {{ course.duration }} <b>hrs</b></h5>
+                                        <h6 class="card-subtitle mb-2 text-muted"><b>Price</b> {{ course.price }}</h6>
+                                        <p class="card-text"><b>Instructor:</b> {{ course.instructor }}</p>
+                                        <!-- Display rating details -->
+                                        <span class="text-black">
+                                            <i class="fa fa-star gold-star mr-2"></i>{{ course.average_rating|floatformat:1|default:"0" }} 
+                                            <small>({{ course.review_count }})</small>
+                                        </span>
+                                        <a href="http://127.0.0.1:8000/courseprovider/coursedetail/{{ course.id }}" class="btn mr-2"><i class=""></i>View Course</a>
                                     </div>
                                 </div>
                             </div>
@@ -287,6 +364,7 @@
                     </div>
                 {% endfor %}
             </div>
+            
             
         
         
@@ -311,7 +389,7 @@
                                     <div class="border-top w-100 mt-3">
                                         <div class="d-flex justify-content-between p-4">
                                             <span class="text-white"><i class="fa fa-user mr-2"></i>{{ course.instructor }}</span>
-                                            <span class="text-white"><i class="fa fa-star mr-2"></i>4.5 <small>(250)</small></span>
+                                            <span class="text-white"><i class="fa fa-star mr-2"></i>{{ course.average_rating|floatformat:1|default:"0" }} <small>({{ course.review_count }})</small></span>
                                         </div>
                                     </div>
                                     <div class="w-100 bg-white text-center p-4">
@@ -345,6 +423,10 @@
                                     <h5 class="card-title">{{  course.course_title }} | {{  course.duration }} <b>hrs</b></h5>
                                     <h6 class="card-subtitle mb-2 text-muted"><b>Price</b> {{  course.price }}</h6>
                                     <p class="card-text"><b>Instructor:</b> {{  course.instructor }}</p>
+                                    <span class="text-black">
+                                        <i class="fa fa-star gold-star mr-2"></i>{{ course.average_rating|floatformat:1|default:"0" }} 
+                                        <small>({{ course.review_count }})</small>
+                                    </span>
                                     <a href="{% url 'courseprovider:coursedetail'  course.id %}" class="btn mr-2"><i class=""></i>View Course</a>
                                     <!-- Add other actions or details here -->
                                 </div>

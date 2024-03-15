@@ -230,3 +230,14 @@ class QuestionPaper(models.Model):
 
     def __str__(self):
         return f"{self.exam_type} {self.year}"
+    
+
+class Review(models.Model):
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
+    course = models.ForeignKey(Oncourse, on_delete=models.CASCADE)
+    comment = models.TextField(max_length=250)
+    rate = models.IntegerField(default = 0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.id}"

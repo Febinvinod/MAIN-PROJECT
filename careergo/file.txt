@@ -1,0 +1,98 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Review App',
+      home: ReviewPage(),
+    );
+  }
+}
+
+class ReviewPage extends StatefulWidget {
+  @override
+  _ReviewPageState createState() => _ReviewPageState();
+}
+
+class _ReviewPageState extends State<ReviewPage> {
+  late Future<List<Review>> _reviews;
+
+  @override
+  void initState() {
+    super.initState();
+    _reviews = fetchReviews();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Reviews'),
+      ),
+      body: FutureBuilder<List<Review>>(
+        future: _reviews,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Review> reviews = snapshot.data!;
+            return ListView.builder(
+              itemCount: reviews.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(reviews[index].comment),
+                  subtitle: Text('Rating: ${reviews[index].rate}'),
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class Review {
+  final int id;
+  final String user;
+  final String course;
+  final String comment;
+  final int rate;
+  final String createdAt;
+
+  Review({required this.id, required this.user, required this.course, required this.comment, required this.rate, required this.createdAt});
+
+  factory Review.fromJson(Map<String, dynamic> json) {
+    return Review(
+      id: json['id'],
+      user: json['user'],
+      course: json['course'],
+      comment: json['comment'],
+      rate: json['rate'],
+      createdAt: json['created_at'],
+    );
+  }
+}
+
+Future<List<Review>> fetchReviews() async {
+  final response = await http.get(Uri.parse('http://10.0.2.2:8000/courseprovider/api/reviews/'));
+
+  if (response.statusCode == 200) {
+    Iterable data = json.decode(response.body);
+    return List<Review>.from(data.map((review) => Review.fromJson(review)));
+  } else {
+    throw Exception('Failed to load reviews');
+  }
+}
