@@ -24,6 +24,14 @@ class Mentor_profile(models.Model):
 def __str__(self):
         return self.title
 
+class Editor_profile(models.Model):
+
+   user=models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
+   
+
+def __str__(self):
+        return self.title
+
 
 class Oncourse(models.Model):
 

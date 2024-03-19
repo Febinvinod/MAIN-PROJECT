@@ -38,10 +38,13 @@
         }
         h1,h2 {
             background-color: #007bff;
-            color: white;
-            padding: 20px;
-            margin: 0;
-            cursor:pointer;
+    color: white;
+    padding: 20px;
+    margin: 0;
+    cursor: pointer;
+    width: 100%;
+    font-size: 20px;
+    border-bottom: 2px solid #0056b3;
         }
         table {
             width: 100%;
@@ -95,6 +98,23 @@
             font-size:20px;
         }
 
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        li:last-child {
+            border-bottom: none;
+        }
+        li.provider {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            border-top: 1px solid #ddd;
+        }
        
     </style>
     
@@ -181,7 +201,105 @@
             </div>
         </nav>
     </div>
-    <div class="container">
+
+    <nav style="padding:10px; margin-left:10px;" class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Admin Dashboard</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+    </nav>
+    <div class="container-fluid p-0" style="padding:10px; margin-left:10px;">
+        <div class="row">
+    <nav class="col-md-3 col-lg-2 bg-light sidebar">
+        <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'adminpage' %}">
+                            <i class="fa fa-home mr-2"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fa fa-info-circle mr-2"></i> About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#course">
+                            <i class="fa fa-book mr-2"></i> Courses
+                        </a>
+                    </li>
+                    
+                    
+                   
+                    <li class="nav-item">
+                        <a class="nav-link" href="#toggle-button">
+                            <i class="fa fa-book mr-2"></i> Assessment
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courseprovider:addprovider' %}">
+                            <i class="fas fa-chalkboard-teacher mr-2"></i> Add Course Provider
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courseprovider:addmentor' %}">
+                            <i class="fas fa-user-plus mr-2"></i> Add Mentor
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courseprovider:addeditor' %}">
+                            <i class="fas fa-user-edit mr-2"></i> Add Editor
+                        </a>
+                    </li>
+                    
+
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            <i class="fa fa-user mr-2"></i> Welcome, {{user.username}}
+                        </a>
+                        <div class="dropdown-menu m-0">
+                            <a class="dropdown-item" href="{% url 'profile' %}"><i class="fa fa-user-circle mr-2"></i> Profile</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="fa fa-sign-out-alt mr-2"></i> Logout
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'index' %}">
+                            <i class="fa fa-home mr-2"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fa fa-info-circle mr-2"></i> About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fa fa-envelope mr-2"></i> Contact
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="fa fa-sign-in-alt mr-2"></i> Login/Signup
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+
+
+    <main role="main" class="main-content col-md-9 ml-sm-auto col-lg-10 px-4">
+        <!-- Dashboard Container -->
+        <div class="container dashboard-container">
     <h1>User List</h1>
     <table>
         <thead>
@@ -224,37 +342,87 @@
         </tbody>
     </table>
 
-    <h2>Courses</h2>
-<ul>
-    {% for provider, courses in courses_by_provider.items %}
-        <li>{{ provider.username }}</li>
-        <ul>
-            {% for course in courses %}
-                <li>{{ course.course_title }}</li>
-                <!-- Display other course details here -->
-            {% endfor %}
-        </ul>
-    {% endfor %}
-</ul>
+    <h2 id="course" onclick="toggleSection('courses')"><center>Courses</center></h2>
+    <div class="container" id="courses">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Course Name</th>
+                    <th>Created Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for provider, courses in courses_by_provider.items %}
+                    {% for course in courses %}
+                        <tr>
+                            <td>{{ provider.username }}</td>
+                            <td>{{ course.course_title }}</td>
+                            <td>{{ course.created_date }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-<!-- Display Internships -->
-<h2>Internships</h2>
-<ul>
-    {% for provider, internships in internships_by_provider.items %}
-        <li>{{ provider.username }}</li>
-        <ul>
-            {% for internship in internships %}
-                <li>{{ internship.internship_title }}</li>
-                <!-- Display other internship details here -->
-            {% endfor %}
-        </ul>
-    {% endfor %}
-</ul>
-
+    <!-- Display Internships -->
+    <h2 id="intern" onclick="toggleSection('internships')"><center>Internships</center></h2>
+    <div class="container" id="internships">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Internship Name</th>
+                    <th>Created Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for provider, internships in internships_by_provider.items %}
+                    {% for internship in internships %}
+                        <tr>
+                            <td>{{ provider.username }}</td>
+                            <td>{{ internship.internship_title }}</td>
+                            <td>{{ internship.created_date }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Hide sections on page load
+            var coursesSection = document.getElementById("courses");
+            var internshipsSection = document.getElementById("internships");
+            coursesSection.style.display = "none";
+            internshipsSection.style.display = "none";
+    
+            // Toggle section visibility on click
+            function toggleSection(sectionId) {
+                var section = document.getElementById(sectionId);
+                if (section.style.display === "none") {
+                    section.style.display = "block";
+                } else {
+                    section.style.display = "none";
+                }
+            }
+    
+            // Attach click event listeners to section headers
+            document.getElementById("course").addEventListener("click", function() {
+                toggleSection("courses");
+            });
+    
+            document.getElementById("intern").addEventListener("click", function() {
+                toggleSection("internships");
+            });
+        });
+    </script>
+    
     
    <!-- admindash.html -->
     <button id="toggle-button" onclick="toggleContent()"><b>Assessment Scores</b></button>
-    <div id="hidden-content">
+    <div id="hidden-content" >
 <table>
     <thead>
         <tr>
@@ -300,6 +468,7 @@
     </tbody>
 </table>
 </div>
+</main>
 </body>
 </div>
 

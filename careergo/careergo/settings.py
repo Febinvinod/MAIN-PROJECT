@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'jazzmin',
     'home',
     'test',
+    'Blog',
     'courseprovider',
     'django.contrib.admin',
     'django.contrib.auth',

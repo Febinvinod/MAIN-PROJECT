@@ -13,6 +13,8 @@ urlpatterns = [
     path('adminpage',views.adminpage,name='adminpage'),
     path('providerpage',views.providerpage,name='providerpage'),
     path('mentorpage',views.mentorpage,name='mentorpage'),
+    path('editorpage',views.editorpage,name='editorpage'),
+
     # path('coursedetail',views.coursedetail,name='coursedetail'),
  
 

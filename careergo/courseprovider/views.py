@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib  import messages,auth
 import requests
 from home.models import CustomUser,UserProfile
-from courseprovider.models import Courseprovider_profile,Mentor_profile
+from courseprovider.models import Courseprovider_profile,Mentor_profile,Editor_profile
 # from accounts.backends import EmailBackend
 from django.contrib.auth import get_user_model
 from .forms import CustomUserForm
@@ -86,7 +86,7 @@ def addCourseprovider(request):
             user_profile = UserProfile(user=user)
             user_profile.save()
 
-            return redirect('index')
+            return redirect('adminpage')
 
     else:
         user_form = CustomUserForm()
@@ -125,7 +125,7 @@ def addmentor(request):
             user_profile = UserProfile(user=user)
             user_profile.save()
 
-            return redirect('index')
+            return redirect('adminpage')
 
     else:
         user_form = CustomUserForm()
@@ -136,7 +136,42 @@ def addmentor(request):
 
     return render(request, 'addmentor.html', context)
 
+@login_required
+def addeditor(request):
+    if request.method == 'POST':
+        user_form = CustomUserForm(request.POST)
 
+        if user_form.is_valid():
+            user = user_form.save(commit=False)
+            password = user_form.cleaned_data['password']
+
+            # Send welcome email
+            send_welcome_email(user.username, password, user.first_name,user.email)
+
+            user.set_password(password)
+            user.is_active = True
+
+            user.role = CustomUser.EDITOR 
+            user.save()
+
+            # Check if the user has the role=2 
+            if user.role == CustomUser.EDITOR:
+                Editor = Editor_profile(user=user)  
+                Editor.save()
+
+            user_profile = UserProfile(user=user)
+            user_profile.save()
+
+            return redirect('adminpage')
+
+    else:
+        user_form = CustomUserForm()
+
+    context = {
+        'user_form': user_form,
+    }
+
+    return render(request, 'addeditor.html', context)
 
 def send_welcome_email(username, password, name,email):
 
@@ -411,7 +446,7 @@ def delete_course(request, course_id):
     return render(request, 'delete_course.html', context)
 
 def admindash(request):
-    users = CustomUser.objects.filter(role__in=[CustomUser.STUDENT, CustomUser.COURSE_PROVIDER, CustomUser.MENTOR])
+    users = CustomUser.objects.filter(role__in=[CustomUser.STUDENT, CustomUser.COURSE_PROVIDER, CustomUser.MENTOR, CustomUser.EDITOR])
 
     course_providers = users.filter(role=CustomUser.COURSE_PROVIDER)
     courses_by_provider = {}

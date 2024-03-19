@@ -11,12 +11,14 @@ class CustomUser(AbstractUser):
     COURSE_PROVIDER = 2
     MENTOR = 3
     ADMIN = 4
+    EDITOR=5
 
     ROLE_CHOICE = (
         (STUDENT, 'student'),
         (COURSE_PROVIDER, 'course_provider'),
         (MENTOR , 'mentor'),
         (ADMIN , 'admin'),
+        (EDITOR , 'Editor'),
     )
 
     username = models.CharField(max_length=100,unique=True)

@@ -24,6 +24,9 @@ def providerpage(request):
 def mentorpage(request):
     return render(request,'mentorpage.html')
 
+def editorpage(request):
+    return render(request,'editorpage.html')
+
 
 def login(request):
     if request.method == 'POST':
@@ -49,6 +52,10 @@ def login(request):
                    elif request.user.role == CustomUser.MENTOR:
                        
                         return redirect(reverse('mentorpage'))
+                   
+                   elif request.user.role == CustomUser.EDITOR:
+                       
+                        return redirect(reverse('editorpage'))
               else:
                    messages.info(request,"Invalid User")
                    return redirect('login')
