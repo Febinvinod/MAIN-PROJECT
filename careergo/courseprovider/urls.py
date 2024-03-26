@@ -1,6 +1,6 @@
 from django.urls import path,include
 from.import views
-from .views import schedule_mentor_session, login
+from .views import schedule_mentor_session
 
 app_name = 'courseprovider'
 
@@ -58,7 +58,7 @@ urlpatterns = [
    path('runcode/', views.runcode, name='runcode'),
    path('save_review/', views.save_review, name='save_review'),
    # path('api/reviews/', review_list, name='review_list'),
-   path('api/login/', login, name='login'),
+   path('paymenth/<int:internship_id>/', views.paymenth, name='paymenth'),
    # path('generate_certificate/', views.generate_certificate, name='generate_certificate'),
    # path('certificate_download/<int:certificate_id>/', views.certificate_download, name='certificate_download'),
 ]

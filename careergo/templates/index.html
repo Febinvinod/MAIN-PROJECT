@@ -87,7 +87,7 @@
                     <a href="{% url 'courseprovider:internlist' %}" class="nav-item nav-link">Internships</a>
                 
                     <a href="{% url 'courseprovider:webinarlist' %}" class="nav-item nav-link">Webinars</a>
-                    <a href="{% url 'blogs' %}" class="nav-item nav-link">Blogs</a>
+                    <a href="{% url 'blogs' %}" class="nav-item nav-link" id="blog">Blogs</a>
                     
                     {% comment %} <div class="nav-item dropdown">
                         <a href="" class="nav-link dropdown-toggle" data-toggle="dropdown">Details</a>
@@ -231,7 +231,7 @@
                 <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
                     <div class="service-item text-center pt-3">
                         <div class="p-4">
-                            <a href="{% url 'courseprovider:viewqn' %}" style="text-decoration: none">
+                            <a href="{% url 'courseprovider:viewqn' %}" id="qn" style="text-decoration: none">
                                 <i class="fa fa-3x fa-book text-primary mb-4"></i>
                                 <h5 class="mb-3">Entrance Exam Qns</h5>
                                 <p>Schedule a mentor session from the available dates</p>

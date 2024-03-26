@@ -891,7 +891,7 @@ def confirmintern(request, internship_id):
         payment_capture='0'
     ))
     razorpay_order_id = razorpay_order['id']
-    callback_url = '/courseprovider/paymenthandler/'  # Define your callback URL here
+    callback_url = reverse('courseprovider:paymenth', kwargs={'internship_id': internship.id})  # Define your callback URL here
 
     payment = Payment.objects.create(
         user=request.user,
@@ -1799,46 +1799,54 @@ def save_review(request):
     
 
 
-# fluter codes
-    
-# views.py
+def paymenth(request,internship_id):
+    #course = get_object_or_404(Oncourse, id=course_id)
+    # Only accept POST requests.
+    intern=get_object_or_404(Internship, pk=internship_id)
+    if request.method == "POST":
+        # Get the required parameters from the POST request.
+        payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        signature = request.POST.get('razorpay_signature', '')
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        }
 
-# from django.http import JsonResponse
-# from .models import Review
+        # Verify the payment signature.
+        result = razorpay_client.utility.verify_payment_signature(params_dict)
+        print(result)
 
-# def review_list(request):
-#     reviews = Review.objects.all()
-#     data = [{'id': review.id, 'user': review.user.username, 'course': review.course.course_title, 'comment': review.comment, 'rate': review.rate, 'created_at': review.created_at} for review in reviews]
-#     return JsonResponse(data, safe=False)
+        if result is not None:
+            zoom_link = generate_zoom_link()  # Implement a function to generate Zoom link
+            passcode = "3Tf3aa"
+            payment = Payment.objects.get(razorpay_order_id=razorpay_order_id)
+            amount = int(payment.amount * 100)  # Convert Decimal to paise
 
-from django.http import HttpResponseNotAllowed
-from django.contrib.auth import authenticate, login
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-from django.contrib.auth import authenticate, login
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
+            # Capture the payment
+            razorpay_client.payment.capture(payment_id, amount)
+            payment = Payment.objects.get(razorpay_order_id=razorpay_order_id)
 
+           
+     # Update the order with payment ID and change status to "Successful"
+            payment.payment_id = payment_id
+            payment.payment_status = Payment.PaymentStatusChoices.SUCCESSFUL
+            payment.save()
 
+            
+            subject = 'Internship Enrollment Confirmation'
+            message = f'Thank you for enrolling in the Internship "{intern.internship_title}".\n\nDetails:\Internship Title: {intern.internship_title}\nZoom Link: {zoom_link}\nPasscode: {passcode}\Internship Date: {intern.start_date}'
+            from_email = 'mailtoshowvalidationok@gmail.com'  # Replace with your email address
+            recipient_list = [request.user.email]  # Use the student's email address
 
-
-@csrf_exempt 
-def login(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        email = data.get('username')
-        password = data.get('password')
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'success': True})
+            send_mail(subject, message, from_email, recipient_list)
+            # Render success page on successful capture of payment
+            return redirect('courseprovider:success')
         else:
-            # Check if user with given email exists
-            if email and not user.objects.filter(email=email).exists():
-                return JsonResponse({'success': False, 'error': 'User with this email does not exist'}, status=400)
-            else:
-                return JsonResponse({'success': False, 'error': 'Invalid password'}, status=400)
+            # If signature verification fails, render the payment failure page
+            return render(request, 'paymentfail.html')
+
     else:
-        return JsonResponse({'error': 'Method not allowed'},status=405)
+        # If a request other than POST is made, return a bad request
+        return HttpResponseBadRequest()

@@ -16,11 +16,8 @@ from collections import Counter
 import sklearn
 # import tabulate
 
-
-
-
 def predict_and_recommend(input_data):
-    df = pd.read_csv('model/courses_new_new.csv')
+    df = pd.read_csv('model/courses_new_new2.csv')
     college_df = pd.read_csv('model/Book1.csv')
 
     X = df[['Logical Reasoning', 'Communication Skills', 'Quantitative Skills', 'Analytical Skills', 'English', 'Maths', 'Physics', 'Biology', 'Chemistry', 'Accounting','Economics','Business Studies','History','Sociology','Politics','High School CGPA', 'Stream_Point']]
@@ -65,10 +62,9 @@ def predict_and_recommend(input_data):
     # Select only the college name and NIRF ranking columns
     
     # Take the top five recommended colleges
-      
+    
 
     # print(top_five_colleges)
-    
 
     return recommended_courses,  sorted_recommended_colleges
 
@@ -152,9 +148,6 @@ def assessment(request):
         return render(request, 'result.html', context)
 
     return render(request, 'assesment.html', {'assessment_status': exist})
-
-    # return render(request, 'assesment.html')
-
 def coursess(request):
     courses = course.objects.all() 
     return render(request, 'course.html', {'courses': courses})

@@ -680,9 +680,9 @@ window.onload = function() {
       <label for="stream">Select Stream:</label>
       <select id="stream" name="stream" required>
         <option value="none" disabled selected>Select Stream</option>
-        <option value="science">Science</option>
-        <option value="commerce">Commerce</option>
-        <option value="humanities">Humanities</option>
+        <option value="Science">Science</option>
+        <option value="Commerce">Commerce</option>
+        <option value="Humanities">Humanities</option>
       </select><br><br>
   
       <!-- Science Subjects -->
@@ -953,11 +953,11 @@ function updateTotalScore() {
       document.getElementById("commerceSubjects").style.display = "none";
       document.getElementById("humanitiesSubjects").style.display = "none";
 
-      if (selectedStream === "science") {
+      if (selectedStream === "Science") {
         document.getElementById("scienceSubjects").style.display = "block";
-      } else if (selectedStream === "commerce") {
+      } else if (selectedStream === "Commerce") {
         document.getElementById("commerceSubjects").style.display = "block";
-      } else if (selectedStream === "humanities") {
+      } else if (selectedStream === "Humanities") {
         document.getElementById("humanitiesSubjects").style.display = "block";
       }
     });
